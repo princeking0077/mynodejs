@@ -5,6 +5,7 @@ const fs = require('fs');
 const helmet = require('helmet');
 const compression = require('compression');
 const morgan = require('morgan');
+const pool = require('./db');
 require('dotenv').config();
 
 console.log("----- SERVER STARTING -----");
@@ -52,6 +53,27 @@ app.use('/', require('./routes/ads.routes')); // Serve /ads.txt at root level
 // Health Check
 app.get('/api/health', (req, res) => {
     res.json({ message: "Pharma Server Running" });
+});
+
+// Debug Route (Check Node.js DB Connection)
+app.get('/api/debug-status', async (req, res) => {
+    try {
+        const [rows] = await pool.query("SELECT count(*) as count FROM users");
+        res.json({
+            status: "OK",
+            db_name: process.env.DB_NAME,
+            db_user: process.env.DB_USER,
+            user_count: rows[0].count,
+            message: "Node.js is connected to the database!"
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: "ERROR",
+            db_name: process.env.DB_NAME,
+            error: error.message,
+            code: error.code
+        });
+    }
 });
 
 // Serve React Frontend (Production)
