@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/Layout';
-import { Lock, Upload, FileText, CheckSquare, LogOut, Plus, Save, Trash } from 'lucide-react';
+import { Lock, Upload, FileText, CheckSquare, LogOut, Plus, Save, Trash, Youtube, PenTool } from 'lucide-react';
 import { curriculum } from '../../data/curriculum';
 import { api } from '../../services/api';
 import SEO from '../../components/SEO';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const AdminDashboard = () => {
     const { currentUser, login, logout } = useAuth();
@@ -22,6 +24,7 @@ const AdminDashboard = () => {
     const [topicId, setTopicId] = useState(null); // For Edit Mode
     const [topicTitle, setTopicTitle] = useState('');
     const [youtubeId, setYoutubeId] = useState(''); // YouTube Video ID
+    const [blogContent, setBlogContent] = useState(''); // Rich Text Content
     const [metaTitle, setMetaTitle] = useState(''); // SEO
     const [metaDescription, setMetaDescription] = useState(''); // SEO
     const [animationCode, setAnimationCode] = useState(''); // HTML/JS Code
@@ -106,11 +109,12 @@ const AdminDashboard = () => {
         setTopicId(topic.id);
         setTopicTitle(topic.title);
         setYoutubeId(topic.youtube_id || '');
+        setBlogContent(topic.blog_content || '');
         setMetaTitle(topic.meta_title || '');
         setMetaDescription(topic.meta_description || '');
         setAnimationCode(topic.description); // We stored code in description
         setQuizQuestions(topic.quiz_data || []);
-        setFaqs(topic.faqs || []); // Load FAQs
+        setFaqs(typeof topic.faqs === 'string' ? JSON.parse(topic.faqs) : (topic.faqs || []));
         setNotesFile(null); // Reset file input
         setError('');
         setSuccessMsg('');
@@ -121,12 +125,15 @@ const AdminDashboard = () => {
         setTopicId(null);
         setTopicTitle('');
         setYoutubeId('');
+        setBlogContent('');
         setMetaTitle('');
         setMetaDescription('');
         setAnimationCode('');
         setQuizQuestions([]);
         setFaqs([]);
         setNotesFile(null);
+        setSuccessMsg('');
+        setError('');
     };
 
     const handleDeleteTopic = async (id, e) => {
@@ -177,6 +184,7 @@ const AdminDashboard = () => {
                 subjectId: selectedSubject,
                 title: topicTitle,
                 youtubeId,
+                blogContent, // New Rich Text Content
                 metaTitle,
                 metaDescription,
                 type: 'animation',
@@ -210,6 +218,25 @@ const AdminDashboard = () => {
             setLoading(false);
         }
     };
+
+    // Quill Modules for Toolbar
+    const modules = {
+        toolbar: [
+            [{ 'header': [1, 2, 3, false] }],
+            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
+            ['link', 'image'],
+            ['clean']
+        ],
+    };
+
+    const formats = [
+        'header',
+        'bold', 'italic', 'underline', 'strike', 'blockquote',
+        'list', 'bullet', 'indent',
+        'link', 'image'
+    ];
+
 
     if (!currentUser) {
         // ... (Keep existing Login UI) ...
@@ -375,7 +402,7 @@ const AdminDashboard = () => {
                                 {successMsg && <div style={{ background: 'rgba(34,197,94,0.2)', padding: '1rem', borderRadius: '0.5rem', marginBottom: '1.5rem', border: '1px solid #22c55e' }}>{successMsg}</div>}
                                 {error && <div style={{ background: 'rgba(239,68,68,0.2)', padding: '1rem', borderRadius: '0.5rem', marginBottom: '1.5rem', border: '1px solid #ef4444' }}>{error}</div>}
 
-                                {/* Topic Title */}
+                                {/* 1. Topic Title */}
                                 <div style={{ marginBottom: '1.5rem' }}>
                                     <label style={{ display: 'block', marginBottom: '0.5rem' }}>Topic Title</label>
                                     <input
@@ -387,9 +414,11 @@ const AdminDashboard = () => {
                                     />
                                 </div>
 
-                                {/* YouTube Video ID */}
+                                {/* 2. YouTube Video (Top) */}
                                 <div style={{ marginBottom: '1.5rem' }}>
-                                    <label style={{ display: 'block', marginBottom: '0.5rem' }}>YouTube Video ID (Optional)</label>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                                        <Youtube size={16} color="#ef4444" /> YouTube Video ID (Optional)
+                                    </label>
                                     <input
                                         type="text"
                                         value={youtubeId}
@@ -398,11 +427,31 @@ const AdminDashboard = () => {
                                         style={{ width: '100%', padding: '0.8rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)' }}
                                     />
                                     <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
-                                        Paste only the ID (part after v=), not the full URL. If provided, video will appear at the top.
+                                        Paste only the ID (part after v=), not the full URL.
                                     </p>
                                 </div>
 
-                                {/* SEO Section */}
+                                {/* 3. Modern Blog Writer */}
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                                        <PenTool size={16} color="#3b82f6" /> Study Notes / Blog Content
+                                    </label>
+                                    <div style={{ background: 'white', borderRadius: '0.5rem', overflow: 'hidden', color: 'black' }}>
+                                        <ReactQuill
+                                            theme="snow"
+                                            value={blogContent}
+                                            onChange={setBlogContent}
+                                            modules={modules}
+                                            formats={formats}
+                                            style={{ height: '300px', marginBottom: '50px' }}
+                                        />
+                                    </div>
+                                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
+                                        Write your full explanation here using the rich text editor.
+                                    </p>
+                                </div>
+
+                                {/* 4. SEO Section */}
                                 <div style={{ marginBottom: '1.5rem', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '0.5rem', border: '1px solid rgba(255,255,255,0.05)' }}>
                                     <h4 style={{ margin: '0 0 1rem 0', color: 'var(--primary)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                         <FileText size={14} /> SEO Settings (Optional)
@@ -431,11 +480,11 @@ const AdminDashboard = () => {
                                     </div>
                                 </div>
 
-                                {/* Animation Code */}
+                                {/* 5. Animation Code (Bottom) */}
                                 <div style={{ marginBottom: '1.5rem' }}>
                                     <label style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                                         <span>Animation Code (HTML/CSS/JS)</span>
-                                        <span style={{ fontSize: '0.8rem', color: 'var(--primary)' }}>Paste your code here</span>
+                                        <span style={{ fontSize: '0.8rem', color: 'var(--primary)' }}>Advanced</span>
                                     </label>
                                     <textarea
                                         value={animationCode}

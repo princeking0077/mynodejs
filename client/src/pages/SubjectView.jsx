@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Download, Play, BookOpen, PenTool, Layout as LayoutIcon, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, Download, Play, BookOpen, PenTool, Layout as LayoutIcon, ChevronRight, Clock, X } from 'lucide-react';
 import SEO from '../components/SEO';
 import Layout from '../components/Layout';
 import AnimationViewer from '../components/AnimationViewer';
@@ -16,19 +16,14 @@ const SubjectView = () => {
     const [topics, setTopics] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    // Download Timer State
+    const [downloadTimer, setDownloadTimer] = useState({ show: false, count: 30, url: null });
+
     // 1. Resolve Subject from Slug
     const findSubjectBySlug = () => {
-        // Helper to generate slug from title (matches logic used elsewhere if needed, or simple lowercase dash)
-        // For now, let's assume valid mapping or search through curriculum
-        // Since curriculum doesn't have explicit slugs, we'll generate them to compare
-        // OR better: The user linked to ID before. Ideally we should have slugs in curriculum.js.
-        // For now, I'll traverse and strictly match ID or generated slug.
-
         for (const year of curriculum) {
             for (const sem of year.semesters) {
-                // Try to find by partial match or ID if legacy
                 const normalize = (str) => str.toLowerCase().replace(/–/g, '-').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-
                 const sub = sem.subjects.find(s =>
                     normalize(s.title) === subjectSlug ||
                     s.id === subjectSlug
@@ -46,7 +41,6 @@ const SubjectView = () => {
             setLoading(true);
 
             try {
-                // Fetch ONLY dynamic topics from DB
                 const dynamicTopics = await api.getContent(subjectStatic.id);
 
                 let fetchedTopics = [];
@@ -54,17 +48,15 @@ const SubjectView = () => {
                     fetchedTopics = dynamicTopics.map(item => ({
                         id: item.id.toString(),
                         title: item.title,
-                        slug: item.slug, // Ensure backend provides this
+                        slug: item.slug,
                         youtubeId: item.youtube_id,
                         animationCode: item.description,
                         quiz: item.quiz_data || [],
                         notesUrl: item.file_url,
-                        // faqs: item.faqs || [], // Ensure faqs are mapped
                         faqs: (() => {
                             try {
                                 return typeof item.faqs === 'string' ? JSON.parse(item.faqs) : (item.faqs || []);
                             } catch (e) {
-                                console.warn("Invalid FAQs JSON for topic:", item.id);
                                 return [];
                             }
                         })(),
@@ -75,12 +67,10 @@ const SubjectView = () => {
 
                 setTopics(fetchedTopics);
 
-                // 2. Handle Deep Linking / URL syncing
                 if (topicSlug) {
                     const matched = fetchedTopics.find(t => t.slug === topicSlug);
                     if (matched) setSelectedTopic(matched);
                 } else if (fetchedTopics.length > 0) {
-                    // Default to first topic but DO NOT change URL automatically to avoid history loops
                     setSelectedTopic(fetchedTopics[0]);
                 }
             } catch (e) { console.error(e); }
@@ -89,9 +79,40 @@ const SubjectView = () => {
         };
 
         fetchTopics();
-    }, [subjectStatic?.id]); // Only re-fetch if ID changes
+    }, [subjectStatic?.id]);
 
-    // 3. Sync URL when Topic Changes (Internal Navigation)
+    // Timer Logic
+    useEffect(() => {
+        let interval;
+        if (downloadTimer.show && downloadTimer.count > 0) {
+            interval = setInterval(() => {
+                setDownloadTimer(prev => ({ ...prev, count: prev.count - 1 }));
+            }, 1000);
+        } else if (downloadTimer.show && downloadTimer.count === 0) {
+            // Auto Download Attempt
+            try {
+                const link = document.createElement('a');
+                link.href = downloadTimer.url;
+                link.setAttribute('download', ''); // Force download if same origin, or hint
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch (e) {
+                console.error("Auto-download failed", e);
+            }
+            // Don't close immediately so user can see "Download Ready" if needed, 
+            // or we can close it. Let's keep it open with a "Close" or "Download Again" option.
+            // For now, let's stop the timer but keep modal open with "Download Now" button 
+            // incase the auto-trigger failed.
+        }
+        return () => clearInterval(interval);
+    }, [downloadTimer]);
+
+    const handleStartDownload = (url) => {
+        setDownloadTimer({ show: true, count: 30, url });
+    };
+
     const handleTopicSelect = (topic) => {
         setSelectedTopic(topic);
         if (topic.slug && subjectSlug) {
@@ -103,7 +124,6 @@ const SubjectView = () => {
         <Layout>
             <div className="container flex-center" style={{ minHeight: '60vh', flexDirection: 'column', gap: '1rem' }}>
                 <h2>Subject Not Found</h2>
-                <p style={{ color: 'var(--text-muted)' }}>We couldn't find a subject with the ID or name "{subjectSlug}".</p>
                 <Link to="/year/1" className="btn btn-primary">Browse All Subjects</Link>
             </div>
         </Layout>
@@ -114,11 +134,60 @@ const SubjectView = () => {
             <SEO title={subjectStatic.title} description={`Learn ${subjectStatic.title} - Notes, Animations, and Quizzes.`} />
 
             <main className="container" style={{ paddingBottom: '4rem' }}>
+                {/* Download Modal */}
+                <AnimatePresence>
+                    {downloadTimer.show && (
+                        <motion.div
+                            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                            style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', justifyContent: 'center', alignItems: 'center', backdropFilter: 'blur(5px)' }}
+                        >
+                            <motion.div
+                                initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }}
+                                className="glass-panel"
+                                style={{ padding: '2rem', maxWidth: '400px', width: '90%', textAlign: 'center', border: '1px solid var(--primary)', boxShadow: '0 0 50px rgba(34, 211, 238, 0.2)' }}
+                            >
+                                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                    <button onClick={() => setDownloadTimer({ ...downloadTimer, show: false })} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}><X /></button>
+                                </div>
+
+                                {downloadTimer.count > 0 ? (
+                                    <>
+                                        <div style={{ marginBottom: '1.5rem', color: 'var(--primary)' }}>
+                                            <Clock size={48} className="animate-pulse" />
+                                        </div>
+                                        <h3 style={{ fontSize: '1.5rem', margin: '0 0 1rem 0' }}>Your download is preparing...</h3>
+                                        <div style={{ fontSize: '3rem', fontWeight: 'bold', fontFamily: 'monospace', marginBottom: '1rem' }}>
+                                            {downloadTimer.count}
+                                        </div>
+                                        <p style={{ color: 'var(--text-muted)' }}>Please wait while we generate your secure link.</p>
+                                    </>
+                                ) : (
+                                    <>
+                                        <div style={{ marginBottom: '1.5rem', color: '#22c55e' }}>
+                                            <Download size={48} />
+                                        </div>
+                                        <h3 style={{ fontSize: '1.5rem', margin: '0 0 1rem 0' }}>Download Ready!</h3>
+                                        <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>If the download didn't start automatically, click below.</p>
+                                        <a
+                                            href={downloadTimer.url}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="btn btn-primary"
+                                            onClick={() => setDownloadTimer({ ...downloadTimer, show: false })}
+                                        >
+                                            Download Now
+                                        </a>
+                                    </>
+                                )}
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
                 <Link to={`/year/${subjectStatic.yearId}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', marginBottom: '2rem', marginTop: '2rem', textDecoration: 'none', fontWeight: '500' }}>
                     <ArrowLeft size={18} /> Back to {subjectStatic.yearTitle}
                 </Link>
 
-                {/* Header */}
                 <div className="glass-panel" style={{ padding: '2.5rem', marginBottom: '2.5rem', borderRadius: 'var(--radius-lg)', display: 'flex', flexDirection: 'column', gap: '1rem', backgroundImage: 'linear-gradient(to right, rgba(16, 185, 129, 0.05), transparent)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
                         <div>
@@ -131,15 +200,11 @@ const SubjectView = () => {
                                 {loading ? 'Loading topics...' : `${topics.length} Topics Available`}
                             </p>
                         </div>
-                        <button className="btn btn-glass">
-                            <Download size={18} /> Syllabus
-                        </button>
                     </div>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 350px) 1fr', gap: '2rem', alignItems: 'start' }} className="subject-grid">
-
-                    {/* Sidebar: Topic List (Desktop Sticky, Mobile Top) */}
+                    {/* Sidebar */}
                     <div className="glass-panel" style={{ padding: '0', maxHeight: '80vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', position: 'sticky', top: '100px' }}>
                         <div style={{ padding: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(0,0,0,0.2)' }}>
                             <h3 style={{ fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
@@ -171,13 +236,11 @@ const SubjectView = () => {
                                     {selectedTopic?.id === t.id && <ChevronRight size={16} />}
                                 </div>
                             ))}
-                            {topics.length === 0 && !loading && <div style={{ padding: '1rem', color: 'var(--text-muted)' }}>No topics found.</div>}
                         </div>
                     </div>
 
-                    {/* Main Content Area - Vertical Flow */}
-                    <div style={{ minWidth: 0 }}> {/* minWidth 0 prevents flex child overflow */}
-
+                    {/* Main Content */}
+                    <div style={{ minWidth: 0 }}>
                         {!selectedTopic ? (
                             <div className="glass-panel flex-center" style={{ padding: '4rem', flexDirection: 'column', color: 'var(--text-muted)' }}>
                                 <LayoutIcon size={48} style={{ opacity: 0.2, marginBottom: '1rem' }} />
@@ -191,7 +254,7 @@ const SubjectView = () => {
                                 transition={{ duration: 0.4 }}
                                 style={{ display: 'flex', flexDirection: 'column', gap: '4rem' }}
                             >
-                                {/* 1. YouTube Video Section */}
+                                {/* 1. YouTube Video Section (TOP PRIORITY) */}
                                 {selectedTopic.youtubeId && (
                                     <section>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1.5rem' }}>
@@ -209,30 +272,42 @@ const SubjectView = () => {
                                     </section>
                                 )}
 
-                                {/* 2. Theory / Notes Section */}
+                                {/* 2. Blog Logic / Notes Section */}
                                 <section>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1.5rem' }}>
                                         <div style={{ background: '#3b82f6', padding: '8px', borderRadius: '8px', display: 'flex' }}><BookOpen size={20} color="white" /></div>
                                         <h2 style={{ fontSize: '1.8rem', fontWeight: '700', margin: 0 }}>Study Notes</h2>
                                     </div>
                                     <div className="glass-panel" style={{ padding: '2.5rem', lineHeight: '1.8', fontSize: '1.05rem', color: 'var(--text-secondary)' }}>
-                                        {selectedTopic.blogContent ? (
-                                            <div dangerouslySetInnerHTML={{ __html: selectedTopic.blogContent }} />
-                                        ) : (
+                                        {/* Rich Text Blog Content */}
+                                        {selectedTopic.blogContent && (
+                                            <div
+                                                className="rich-text-content"
+                                                dangerouslySetInnerHTML={{ __html: selectedTopic.blogContent }}
+                                                style={{ marginBottom: '2rem' }}
+                                            />
+                                        )}
+
+                                        {!selectedTopic.blogContent && !selectedTopic.notesUrl && (
                                             <p style={{ fontStyle: 'italic', color: 'var(--text-muted)' }}>No written notes available for this topic yet.</p>
                                         )}
 
+                                        {/* Download Option with Timer */}
                                         {selectedTopic.notesUrl && (
                                             <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                                                <a href={selectedTopic.notesUrl} target="_blank" rel="noreferrer" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                                                <button
+                                                    onClick={() => handleStartDownload(selectedTopic.notesUrl)}
+                                                    className="btn btn-primary"
+                                                    style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', width: 'auto' }}
+                                                >
                                                     <Download size={18} /> Download PDF Version
-                                                </a>
+                                                </button>
                                             </div>
                                         )}
                                     </div>
                                 </section>
 
-                                {/* 3. Animation Section */}
+                                {/* 3. Animation Section (HTML/CSS/JS) */}
                                 {selectedTopic.animationCode && (
                                     <section>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1.5rem' }}>
@@ -245,7 +320,7 @@ const SubjectView = () => {
                                     </section>
                                 )}
 
-                                {/* 4. FAQs Section (New) */}
+                                {/* 4. FAQs Section */}
                                 {selectedTopic.faqs && selectedTopic.faqs.length > 0 && (
                                     <section>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1.5rem' }}>
@@ -273,7 +348,6 @@ const SubjectView = () => {
                                         <Quiz topicTitle={selectedTopic.title} questions={selectedTopic.quiz} />
                                     </section>
                                 )}
-
                             </motion.div>
                         )}
                     </div>
@@ -281,7 +355,6 @@ const SubjectView = () => {
 
                 <style>{`
                     @media (max-width: 1024px) {
-                        /* Force Topic List to Top on Mobile/Tablet */
                         .subject-grid { 
                             display: flex !important; 
                             flex-direction: column; 
@@ -290,7 +363,7 @@ const SubjectView = () => {
                         .subject-grid > div:first-child { 
                             position: relative !important; 
                             top: 0 !important; 
-                            max-height: 250px !important; /* Limit height of list on mobile */
+                            max-height: 250px !important; 
                             order: 0 !important;
                             width: 100% !important;
                         }
@@ -299,6 +372,11 @@ const SubjectView = () => {
                             width: 100% !important;
                         }
                     }
+                    /* Simple formatting for blog content */
+                    .rich-text-content h1, .rich-text-content h2, .rich-text-content h3 { color: white; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+                    .rich-text-content ul, .rich-text-content ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+                    .rich-text-content p { margin-bottom: 1rem; }
+                    .rich-text-content a { color: var(--primary); text-decoration: underline; }
                 `}</style>
             </main>
         </Layout>
