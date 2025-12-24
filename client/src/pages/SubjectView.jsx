@@ -114,10 +114,6 @@ const SubjectView = () => {
             <SEO title={subjectStatic.title} description={`Learn ${subjectStatic.title} - Notes, Animations, and Quizzes.`} />
 
             <main className="container" style={{ paddingBottom: '4rem' }}>
-                <div style={{ background: '#fef08a', color: '#854d0e', padding: '0.5rem', marginBottom: '1rem', fontSize: '0.8rem', borderRadius: '4px', border: '1px solid #fde047' }}>
-                    <strong>DEBUG MODE:</strong> Slug: "{subjectSlug}" | Found: {subjectStatic ? `YES (${subjectStatic.id})` : 'NO'} | Topics: {topics.length} | Load: {loading ? 'Active' : 'Done'}
-                </div>
-
                 <Link to={`/year/${subjectStatic.yearId}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', marginBottom: '2rem', marginTop: '2rem', textDecoration: 'none', fontWeight: '500' }}>
                     <ArrowLeft size={18} /> Back to {subjectStatic.yearTitle}
                 </Link>
