@@ -9,7 +9,9 @@ const authenticateToken = (req, res, next) => {
         return res.status(401).json({ message: "Unauthorized: No token provided" });
     }
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    // FALLBACK SECRET applied
+    const secret = process.env.JWT_SECRET || 'fallback_secret_key_123456';
+    jwt.verify(token, secret, (err, user) => {
         if (err) {
             return res.status(403).json({ message: "Forbidden: Invalid token" });
         }
