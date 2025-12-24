@@ -37,6 +37,7 @@ const SubjectView = () => {
                     allTopics = [...allTopics, ...dynamicTopics.map(item => ({
                         id: item.id.toString(),
                         title: item.title,
+                        youtubeId: item.youtube_id,
                         animationCode: item.description,
                         quiz: item.quiz_data || [],
                         notesUrl: item.file_url,
