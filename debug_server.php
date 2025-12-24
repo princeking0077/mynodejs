@@ -72,5 +72,20 @@ if (file_exists('start_server.js')) echo "✅ start_server.js exists\n";
 if (file_exists('server/index.js')) echo "✅ server/index.js exists\n";
 
 
+// 6. Log File Check
+echo "\n<h2>6. Server Logs (stderr.log)</h2>";
+$logPath = __DIR__ . '/stderr.log';
+if (file_exists($logPath)) {
+    echo "Filesize: " . filesize($logPath) . " bytes\n";
+    echo "--- LAST 50 LINES ---\n";
+    // Read last 50 lines efficiently-ish
+    $lines = array_slice(file($logPath), -50);
+    foreach ($lines as $line) {
+        echo htmlspecialchars($line);
+    }
+} else {
+    echo "❌ stderr.log NOT found.\n";
+}
+
 echo "</pre>";
 ?>
