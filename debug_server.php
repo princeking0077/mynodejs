@@ -69,7 +69,13 @@ if (file_exists($uploads)) {
 
 echo "\n<h2>5. Entry Point Check</h2>";
 if (file_exists('start_server.js')) echo "✅ start_server.js exists\n";
-if (file_exists('server/index.js')) echo "✅ server/index.js exists\n";
+if (file_exists('app.js')) {
+    echo "✅ app.js exists\n";
+    echo "Permissions: " . substr(sprintf('%o', fileperms('app.js')), -4) . "\n";
+    echo "Readable: " . (is_readable('app.js') ? "YES" : "NO") . "\n";
+} else {
+    echo "❌ app.js MISSING\n";
+}
 
 
 // 6. Log File Check

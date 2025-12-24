@@ -1,12 +1,12 @@
 {
     "name": "pharma-app-root",
     "version": "1.0.0",
-    "main": "index.js",
+    "main": "app.js",
     "description": "Root Orchestration for Pharma App",
     "scripts": {
         "build": "echo 'Skipping build on server - using pre-built assets from git'",
         "build:local": "npm run build --prefix client",
-        "start": "node start_server.js",
+        "start": "node app.js",
         "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
         "setup": "node server/setup.js",
         "db:update": "node server/add_seo_columns.js",
