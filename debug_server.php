@@ -114,5 +114,12 @@ if (file_exists('index.js')) {
     echo "❌ index.js MISSING";
 }
 
+echo "\n<h2>9. Config Check (package.json)</h2>";
+if (file_exists('package.json')) {
+    echo "<pre>" . htmlspecialchars(file_get_contents('package.json')) . "</pre>";
+} else {
+    echo "❌ package.json MISSING";
+}
+
 echo "</pre>";
 ?>
