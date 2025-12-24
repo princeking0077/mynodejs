@@ -60,7 +60,15 @@ export const api = {
                 },
                 body: formData
             });
-            return await response.json();
+            const text = await response.text();
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                console.error("Upload - Server returned non-JSON:", text);
+                throw new Error(`Upload Failed: ${text.substring(0, 100)}...`);
+            }
+            return data;
         } catch (error) {
             console.error("Upload Error", error);
             throw error;
@@ -79,7 +87,14 @@ export const api = {
                 },
                 body: JSON.stringify(topicData)
             });
-            const data = await response.json();
+            const text = await response.text();
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                console.error("Server returned non-JSON:", text);
+                throw new Error(`Server Error: ${text.substring(0, 100)}...`);
+            }
             if (!response.ok) throw new Error(data.message || "Failed to save");
             return data;
         } catch (error) {
@@ -100,7 +115,14 @@ export const api = {
                 },
                 body: JSON.stringify(topicData)
             });
-            const data = await response.json();
+            const text = await response.text();
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                console.error("Update - Server returned non-JSON:", text);
+                throw new Error(`Update Failed: ${text.substring(0, 100)}...`);
+            }
             if (!response.ok) throw new Error(data.message || "Failed to update");
             return data;
         } catch (error) {
