@@ -73,7 +73,7 @@ if (fs.existsSync(buildPath)) {
 } else {
     // For development (or if build is missing), just log
     console.log("Client build not found at " + buildPath + ". Assuming local dev or separate deployment.");
-    app.get('/', (req, res) => res.send("Backend Running. Frontend not found."));
+    app.get('/', (req, res) => res.send(`Backend Running. Frontend not found.<br>Checked Path: <strong>${buildPath}</strong><br><br>Please run <code>npm run build</code> in the root directory.`));
 }
 
 const PORT = process.env.PORT || 3000;
