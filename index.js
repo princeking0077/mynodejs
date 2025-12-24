@@ -17,4 +17,34 @@ try {
     console.error('[Warning] Cleanup failed:', e.message);
 }
 
-require('./server/index.js');
+const logCrash = (type, err) => {
+    const report = `
+    TIME: ${new Date().toISOString()}
+    TYPE: ${type}
+    MESSAGE: ${err.message || err}
+    STACK: ${err.stack || 'No stack trace'}
+    \n`;
+    try {
+        fs.appendFileSync(path.join(__dirname, 'crash_report.txt'), report);
+    } catch (fsErr) {
+        console.error('Failed to write crash report:', fsErr);
+    }
+};
+
+process.on('uncaughtException', (err) => {
+    console.error('UNCAUGHT EXCEPTION:', err);
+    logCrash('UNCAUGHT_EXCEPTION', err);
+    process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('UNHANDLED REJECTION:', reason);
+    logCrash('UNHANDLED_REJECTION', reason);
+});
+
+try {
+    require('./server/index.js');
+} catch (err) {
+    console.error('Failed to start server:', err);
+    logCrash('STARTUP_ERROR', err);
+}

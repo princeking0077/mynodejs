@@ -73,7 +73,17 @@ if (file_exists('server/index.js')) echo "✅ server/index.js exists\n";
 
 
 // 6. Log File Check
-echo "\n<h2>6. Server Logs (stderr.log)</h2>";
+echo "\n<h2>6. Crash Reports (crash_report.txt)</h2>";
+$crashPath = __DIR__ . '/crash_report.txt';
+if (file_exists($crashPath)) {
+    echo "Filesize: " . filesize($crashPath) . " bytes\n";
+    echo "--- CONTENT ---\n";
+    echo htmlspecialchars(file_get_contents($crashPath));
+} else {
+    echo "❌ crash_report.txt NOT found (Server might simply be stopping without error, or permissions issue).\n";
+}
+
+echo "\n<h2>7. Server Logs (stderr.log)</h2>";
 $logPath = __DIR__ . '/stderr.log';
 if (file_exists($logPath)) {
     echo "Filesize: " . filesize($logPath) . " bytes\n";
