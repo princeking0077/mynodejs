@@ -4,6 +4,8 @@ import { Search, BookOpen, Sparkles, ArrowRight, Zap, Layers, Users } from 'luci
 import { Link, useNavigate } from 'react-router-dom';
 import SEO from '../components/SEO';
 import Layout from '../components/Layout';
+import ChemicalShowcase from '../components/ChemicalShowcase';
+import PharmaBackground from '../components/PharmaBackground';
 
 const Home = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -19,8 +21,9 @@ const Home = () => {
     return (
         <Layout>
             <SEO title="Home" description="Master Pharmacy with 3D Visuals and Notes" />
+            <PharmaBackground />
 
-            <div className="container" style={{ paddingBottom: '4rem' }}>
+            <div className="container" style={{ paddingBottom: '4rem', position: 'relative', zIndex: 1 }}>
                 {/* Hero Section */}
                 <section style={{
                     minHeight: '85vh',
@@ -124,6 +127,9 @@ const Home = () => {
                         />
                     </motion.form>
                 </section>
+
+                {/* Chemical Showcase Section (Restored) */}
+                <ChemicalShowcase />
 
                 {/* Stats Section */}
                 <section style={{
