@@ -69,9 +69,9 @@ app.get('/test-db', async (req, res) => {
         const connection = await pool.getConnection();
         const [rows] = await connection.execute('SELECT 1 as val');
         connection.release();
-        res.status(200).json({ status: 'success', message: 'DB Connected!', val: rows[0].val });
+        res.status(200).json({ status: 'success', message: 'DB Connected!', val: rows[0].val, version: 'IPv4-Enforced', connection_host: '127.0.0.1' });
     } catch (error) {
-        res.status(500).json({ status: 'error', message: error.message });
+        res.status(500).json({ status: 'error', message: error.message, version: 'IPv4-Enforced', hint: 'If you see ::1, the code is NOT updated.' });
     }
 });
 // --------------------------------------------------
