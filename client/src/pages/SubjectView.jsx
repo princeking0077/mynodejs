@@ -51,7 +51,13 @@ const SubjectView = () => {
                         slug: item.slug,
                         youtubeId: item.youtube_id,
                         animationCode: item.description,
-                        quiz: item.quiz_data || [],
+                        quiz: (() => {
+                            try {
+                                return typeof item.quiz_data === 'string' ? JSON.parse(item.quiz_data) : (item.quiz_data || []);
+                            } catch (e) {
+                                return [];
+                            }
+                        })(),
                         notesUrl: item.file_url,
                         faqs: (() => {
                             try {
