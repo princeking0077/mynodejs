@@ -10,23 +10,26 @@ import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import { AuthProvider } from './contexts/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
+import { HelmetProvider } from 'react-helmet-async';
 
 function App() {
   return (
     <Router>
-      <AuthProvider>
-        <ScrollToTop />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/year/:yearId" element={<YearView />} />
-          <Route path="/subject/:subId" element={<SubjectView />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-        </Routes>
-      </AuthProvider>
+      <HelmetProvider>
+        <AuthProvider>
+          <ScrollToTop />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/year/:yearId" element={<YearView />} />
+            <Route path="/subject/:subId" element={<SubjectView />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+          </Routes>
+        </AuthProvider>
+      </HelmetProvider>
     </Router>
   );
 }
