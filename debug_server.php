@@ -27,34 +27,50 @@ if (is_dir('node_modules')) {
     echo "❌ node_modules directory MISSING! This is why it crashed.\n";
 }
 
-// 3. Try to Run Node Manually
-echo "\n<h2>3. Test Node Execution</h2>";
-echo "Attempting to run: node -v\n";
-$output = shell_exec('node -v 2>&1');
-echo "Node Version: $output\n";
-
-echo "Attempting to run: node index.js (dry run)\n";
-// Run with a timeout or just check syntax
-$output_app = shell_exec('node index.js 2>&1');
-// This will hang if it works, so strictly this might not be perfect, 
-// strictly we want to see if it immediately crashes.
-// Better: Check syntax
-echo "Checking Syntax...\n";
-$syntax = shell_exec('node --check index.js 2>&1');
-echo "Syntax Check: " . ($syntax ? $syntax : "OK") . "\n";
-
-
-echo "\n<h2>4. Check Environment config</h2>";
-if (file_exists('server/.env')) {
+// 3. Environment Check
+echo "\n<h2>3. Environment Config Check</h2>";
+$envPath = __DIR__ . '/server/.env';
+if (file_exists($envPath)) {
     echo "✅ server/.env exists\n";
-    echo "Content Preview (Safe):\n";
-    $env = file_get_contents('server/.env');
-    // Mask passwords
-    $env = preg_replace('/(PASSWORD|PASS|KEY)=.*/', '$1=*****', $env);
-    echo $env;
+    $envContent = file_get_contents($envPath);
+    // basic parsing
+    $lines = explode("\n", $envContent);
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if (empty($line) || strpos($line, '#') === 0) continue;
+        
+        $parts = explode('=', $line, 2);
+        if (count($parts) == 2) {
+            $key = trim($parts[0]);
+            $val = trim($parts[1]);
+            // Hide secrets
+            if (strpos($key, 'PASS') !== false || strpos($key, 'KEY') !== false) {
+                $val = "********";
+            }
+            echo "$key = $val\n";
+        }
+    }
 } else {
     echo "❌ server/.env MISSING\n";
+    if (file_exists('.env.production')) {
+        echo "⚠️ .env.production exists in root (but app looks in server/)\n";
+    }
 }
+
+// 4. Permissions Check
+echo "\n<h2>4. Critical Paths Check</h2>";
+$uploads = __DIR__ . '/server/uploads';
+if (file_exists($uploads)) {
+    echo "server/uploads exists: " . (is_writable($uploads) ? "✅ Writable" : "❌ NOT Writable") . "\n";
+} else {
+    echo "server/uploads MISSING (App tries to create it)\n";
+    echo "parent dir writable? " . (is_writable(__DIR__ . '/server') ? "✅ YES" : "❌ NO") . "\n";
+}
+
+echo "\n<h2>5. Entry Point Check</h2>";
+if (file_exists('start_server.js')) echo "✅ start_server.js exists\n";
+if (file_exists('server/index.js')) echo "✅ server/index.js exists\n";
+
 
 echo "</pre>";
 ?>
