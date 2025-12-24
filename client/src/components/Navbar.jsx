@@ -11,51 +11,54 @@ const Navbar = () => {
     return (
         <>
             <nav className="glass-panel" style={{
-                margin: '1.5rem auto',
-                padding: '0.8rem 2rem',
-                borderRadius: '100px', // Pill shape
+                margin: '1rem auto',
+                padding: '0.8rem 1.5rem',
+                borderRadius: '50px',
                 position: 'sticky',
-                top: '1.5rem',
+                top: '1rem',
                 zIndex: 1000,
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 border: '1px solid rgba(255, 255, 255, 0.08)',
                 backdropFilter: 'blur(20px)',
-                background: 'rgba(5, 5, 10, 0.4)', // Darker glass
+                background: 'rgba(5, 5, 10, 0.65)',
                 maxWidth: '1200px',
-                width: '90%'
+                width: '92%',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
             }}>
                 {/* Brand */}
                 <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', textDecoration: 'none' }}>
-                    <img src="/logo.png" alt="LearnPharmacy Logo" style={{ width: '40px', height: '40px', borderRadius: '8px', objectFit: 'contain' }}
-                        onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+                    <img src="/logo.png" alt="LearnPharmacy"
+                        style={{ width: '38px', height: '38px', borderRadius: '8px', objectFit: 'contain' }}
+                        onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.nextSibling.style.display = 'flex';
+                        }}
                     />
                     {/* Fallback Icon */}
-                    <div style={{
-                        width: '40px', height: '40px',
+                    <div className="fallback-logo" style={{
+                        width: '38px', height: '38px',
                         background: 'linear-gradient(135deg, #10b981, #3b82f6)',
-                        borderRadius: '12px',
-                        display: 'none', alignItems: 'center', justifyContent: 'center',
-                        boxShadow: '0 0 15px rgba(16, 185, 129, 0.3)'
+                        borderRadius: '10px',
+                        display: 'none', alignItems: 'center', justifyContent: 'center'
                     }}>
-                        <Hexagon size={24} color="white" fill="white" fillOpacity={0.2} />
+                        <Hexagon size={22} color="white" fill="white" fillOpacity={0.2} />
                     </div>
-                    <span style={{ fontSize: '1.3rem', fontWeight: '800', letterSpacing: '-0.03em', background: 'linear-gradient(to right, white, #a7f3d0)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                        LearnPharmacy.in
+                    <span className="brand-text" style={{
+                        fontSize: '1.2rem',
+                        fontWeight: '800',
+                        letterSpacing: '-0.02em',
+                        background: 'linear-gradient(to right, #fff, #a7f3d0)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent'
+                    }}>
+                        LearnPharmacy
                     </span>
                 </Link>
 
-                {/* Desktop Links - Hidden on Mobile */}
-                <div className="desktop-menu" style={{ display: 'none', gap: '2.5rem', alignItems: 'center' }}>
-                    {/* Note: In a real CSS file we would use media queries. For inline styles, we assume desktop first but hiding needs JS or CSS class. 
-                         I'll add a style tag to index.css or just rely on the user adding media queries later? 
-                         Actually, let's keep the previous valid JSX but add the AnimatePresence. 
-                     */}
-                </div>
-                {/* Re-implementing correctly below */}
-                <div className="desktop-nav-links" style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-                    {/* (This div should be hidden via CSS on mobile, I will add a style block in index.css for .desktop-nav-links) */}
+                {/* Desktop Links - Hidden on Mobile via CSS */}
+                <div className="desktop-nav-links hidden-mobile" style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
                     {['Home', 'About', 'Contact'].map(item => {
                         const path = item === 'Home' ? '/' : `/${item.toLowerCase()}`;
                         const isActive = location.pathname === path;
@@ -63,33 +66,33 @@ const Navbar = () => {
                             <Link key={item} to={path} style={{
                                 color: isActive ? 'white' : 'var(--text-muted)',
                                 fontSize: '0.95rem',
-                                fontWeight: isActive ? '600' : '400',
+                                fontWeight: isActive ? '600' : '500',
                                 position: 'relative',
                                 transition: 'color 0.3s'
                             }}>
                                 {item}
-                                {isActive && <motion.div layoutId="nav-pill" style={{ position: 'absolute', bottom: '-4px', left: 0, right: 0, height: '2px', background: 'var(--primary)', borderRadius: '2px' }} />}
+                                {isActive && <motion.div layoutId="nav-pill" style={{ position: 'absolute', bottom: '-22px', left: 0, right: 0, height: '3px', background: 'var(--primary)', borderRadius: '2px 2px 0 0' }} />}
                             </Link>
                         )
                     })}
 
                     <Link to="/admin" style={{
-                        padding: '0.6rem 1.5rem',
-                        background: isAdmin ? 'var(--primary)' : 'rgba(255,255,255,0.08)',
+                        padding: '0.5rem 1.2rem',
+                        background: isAdmin ? 'var(--primary)' : 'rgba(255,255,255,0.1)',
                         color: isAdmin ? 'black' : 'white',
                         borderRadius: '2rem',
-                        fontSize: '0.9rem',
-                        fontWeight: '700',
-                        transition: 'all 0.3s',
-                        border: '1px solid rgba(255,255,255,0.1)'
+                        fontSize: '0.85rem',
+                        fontWeight: '600',
+                        border: '1px solid rgba(255,255,255,0.05)'
                     }}>
                         {isAdmin ? 'Dashboard' : 'Admin'}
                     </Link>
                 </div>
 
                 {/* Mobile Toggle */}
-                <button className="mobile-toggle" onClick={() => setMobileMenuOpen(true)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}>
-                    <Menu />
+                <button className="mobile-toggle hidden-desktop" onClick={() => setMobileMenuOpen(true)}
+                    style={{ background: 'transparent', border: 'none', color: 'white', display: 'flex', alignItems: 'center' }}>
+                    <Menu size={28} />
                 </button>
             </nav>
 
@@ -97,26 +100,26 @@ const Navbar = () => {
             <AnimatePresence>
                 {mobileMenuOpen && (
                     <motion.div
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
+                        initial={{ opacity: 0, x: '100%' }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: '100%' }}
+                        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
                         style={{
-                            position: 'fixed', inset: 0, zIndex: 999,
-                            background: 'rgba(5, 5, 10, 0.98)',
-                            backdropFilter: 'blur(20px)',
-                            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '3rem'
+                            position: 'fixed', inset: 0, zIndex: 2000,
+                            background: '#05050a',
+                            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '2.5rem'
                         }}
                     >
-                        <button onClick={() => setMobileMenuOpen(false)} style={{ position: 'absolute', top: '2rem', right: '2rem', background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}>
+                        <button onClick={() => setMobileMenuOpen(false)} style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'none', border: 'none', color: 'white', padding: '10px' }}>
                             <X size={32} />
                         </button>
 
-                        {['Home', 'About', 'Contact'].map(item => (
+                        {['Home', 'About', 'Contact', 'Admin'].map(item => (
                             <Link
                                 key={item}
                                 to={item === 'Home' ? '/' : `/${item.toLowerCase()}`}
                                 onClick={() => setMobileMenuOpen(false)}
-                                style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white' }}
+                                style={{ fontSize: '1.8rem', fontWeight: '700', color: 'white', letterSpacing: '-0.02em' }}
                             >
                                 {item}
                             </Link>
@@ -124,6 +127,16 @@ const Navbar = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            <style>{`
+                @media (max-width: 768px) {
+                    .hidden-mobile { display: none !important; }
+                    .brand-text { font-size: 1.1rem !important; }
+                }
+                @media (min-width: 769px) {
+                    .hidden-desktop { display: none !important; }
+                }
+            `}</style>
         </>
     );
 };
