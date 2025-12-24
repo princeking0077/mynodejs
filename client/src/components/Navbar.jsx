@@ -92,6 +92,7 @@ const Navbar = () => {
 
                 {/* Mobile Toggle */}
                 <button className="mobile-toggle hidden-desktop" onClick={() => setMobileMenuOpen(true)}
+                    aria-label="Toggle navigation menu"
                     style={{ background: 'transparent', border: 'none', color: 'white', display: 'flex', alignItems: 'center' }}>
                     <Menu size={28} />
                 </button>
