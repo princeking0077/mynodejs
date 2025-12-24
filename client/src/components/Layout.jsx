@@ -36,7 +36,7 @@ const Layout = ({ children }) => {
                 </Helmet>
             )}
             {settings.adsense_code && (
-                <div dangerouslySetInnerHTML={{ __html: settings.adsense_code }} style={{ display: 'none' }} />
+                <div dangerouslySetInnerHTML={{ __html: settings.adsense_code }} />
             )}
 
             <CanvasBackground />

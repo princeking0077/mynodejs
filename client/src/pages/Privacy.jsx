@@ -52,8 +52,12 @@ const Privacy = () => {
                     <section style={{ marginBottom: '2.5rem' }}>
                         <h2 style={{ marginBottom: '1rem', color: 'var(--primary)', fontSize: '1.4rem' }}>4. Google Analytics & Third-Party Tools</h2>
                         <p>
-                            We may use third-party vendors, such as Google Analytics, to allow tracking technologies and remarketing services on the Site through the use of first party cookies and third-party cookies,
-                            to, among other things, analyze and track users' use of the Site, determine the popularity of certain content and better understand online activity.
+                            We use third-party vendors, such as Google Analytics and Google AdSense, to allow tracking technologies and remarketing services on the Site through the use of first party cookies and third-party cookies.
+
+                            <br /><br /><strong>Google AdSense & DoubleClick Cookie:</strong><br />
+                            Google, as a third-party vendor, uses cookies to serve ads on our Service. Google's use of the DoubleClick cookie enables it and its partners to serve ads to our users based on their visit to our Service or other websites on the Internet.
+                            You may opt out of the use of the DoubleClick Cookie for interest-based advertising by visiting the <a href="http://www.google.com/ads/preferences/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)' }}>Google Ads Settings</a> page.
+                            <br /><br />
                             By accessing the Site, you consent to the collection and use of your information by these third-party vendors.
                         </p>
                     </section>
