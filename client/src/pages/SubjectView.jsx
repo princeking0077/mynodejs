@@ -10,49 +10,85 @@ import { curriculum } from '../data/curriculum';
 import { api } from '../services/api';
 
 const SubjectView = () => {
-    const { subId } = useParams();
-    const [activeTab, setActiveTab] = useState('animation');
+    const { subjectSlug, topicSlug } = useParams();
+    const navigate = useNavigate();
     const [selectedTopic, setSelectedTopic] = useState(null);
     const [topics, setTopics] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const findSubject = () => {
+    // 1. Resolve Subject from Slug
+    const findSubjectBySlug = () => {
+        // Helper to generate slug from title (matches logic used elsewhere if needed, or simple lowercase dash)
+        // For now, let's assume valid mapping or search through curriculum
+        // Since curriculum doesn't have explicit slugs, we'll generate them to compare
+        // OR better: The user linked to ID before. Ideally we should have slugs in curriculum.js.
+        // For now, I'll traverse and strictly match ID or generated slug.
+
         for (const year of curriculum) {
             for (const sem of year.semesters) {
-                const sub = sem.subjects.find(s => s.id === subId);
-                if (sub) return sub;
+                // Try to find by partial match or ID if legacy
+                const sub = sem.subjects.find(s =>
+                    s.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') === subjectSlug ||
+                    s.id === subjectSlug
+                );
+                if (sub) return { ...sub, yearId: year.id, yearTitle: year.title, semTitle: sem.title };
             }
         }
         return null;
     };
-    const subjectStatic = findSubject();
+    const subjectStatic = findSubjectBySlug();
 
     useEffect(() => {
         const fetchTopics = async () => {
+            if (!subjectStatic) return;
             setLoading(true);
-            let allTopics = subjectStatic?.topics || [];
+
             try {
-                const dynamicTopics = await api.getContent(subId);
+                // Fetch ONLY dynamic topics from DB
+                const dynamicTopics = await api.getContent(subjectStatic.id);
+
+                let fetchedTopics = [];
                 if (Array.isArray(dynamicTopics)) {
-                    allTopics = [...allTopics, ...dynamicTopics.map(item => ({
+                    fetchedTopics = dynamicTopics.map(item => ({
                         id: item.id.toString(),
                         title: item.title,
+                        slug: item.slug, // Ensure backend provides this
                         youtubeId: item.youtube_id,
                         animationCode: item.description,
                         quiz: item.quiz_data || [],
                         notesUrl: item.file_url,
+                        // faqs: item.faqs || [], // Ensure faqs are mapped
+                        faqs: typeof item.faqs === 'string' ? JSON.parse(item.faqs) : (item.faqs || []),
+                        blogContent: item.blog_content,
                         createdAt: item.created_at
-                    }))];
+                    }));
+                }
+
+                setTopics(fetchedTopics);
+
+                // 2. Handle Deep Linking / URL syncing
+                if (topicSlug) {
+                    const matched = fetchedTopics.find(t => t.slug === topicSlug);
+                    if (matched) setSelectedTopic(matched);
+                } else if (fetchedTopics.length > 0) {
+                    // Default to first topic but DO NOT change URL automatically to avoid history loops
+                    setSelectedTopic(fetchedTopics[0]);
                 }
             } catch (e) { console.error(e); }
 
-            setTopics(allTopics);
-            if (!selectedTopic && allTopics.length > 0) setSelectedTopic(allTopics[0]);
             setLoading(false);
         };
-        if (subId) fetchTopics();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [subId]);
+
+        fetchTopics();
+    }, [subjectStatic?.id]); // Only re-fetch if ID changes
+
+    // 3. Sync URL when Topic Changes (Internal Navigation)
+    const handleTopicSelect = (topic) => {
+        setSelectedTopic(topic);
+        if (topic.slug && subjectSlug) {
+            navigate(`/subject/${subjectSlug}/${topic.slug}`);
+        }
+    };
 
     if (!subjectStatic) return (
         <div className="container flex-center" style={{ minHeight: '60vh' }}>
@@ -102,7 +138,7 @@ const SubjectView = () => {
                                 <div
                                     key={t.id || idx}
                                     onClick={() => {
-                                        setSelectedTopic(t);
+                                        handleTopicSelect(t);
                                         window.scrollTo({ top: 0, behavior: 'smooth' });
                                     }}
                                     style={{

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import SubjectView from './pages/SubjectView';
 import YearView from './pages/YearView';
+import SearchPage from './pages/SearchPage';
 import AdminDashboard from './pages/Admin/Dashboard';
 import Settings from './pages/Admin/Settings';
 import About from './pages/About';
@@ -22,7 +23,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/year/:yearId" element={<YearView />} />
-            <Route path="/subject/:subId" element={<SubjectView />} />
+            <Route path="/subject/:subjectSlug/:topicSlug?" element={<SubjectView />} />
+            <Route path="/search" element={<SearchPage />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/privacy" element={<Privacy />} />

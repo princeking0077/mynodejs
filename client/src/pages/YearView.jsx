@@ -65,45 +65,48 @@ const YearView = () => {
                             </div>
 
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
-                                {sem.subjects.map((sub) => (
-                                    <Link key={sub.id} to={`/subject/${sub.id}`} style={{ textDecoration: 'none' }}>
-                                        <div className="glass-panel" style={{
-                                            padding: '1.5rem',
-                                            height: '100%',
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            justifyContent: 'space-between',
-                                            cursor: 'pointer',
-                                            transition: 'transform 0.2s, box-shadow 0.2s',
-                                            border: '1px solid rgba(255,255,255,0.05)'
-                                        }}
-                                            onMouseEnter={e => {
-                                                e.currentTarget.style.transform = 'translateY(-5px)';
-                                                e.currentTarget.style.boxShadow = '0 10px 40px -10px rgba(0,0,0,0.5)';
+                                {sem.subjects.map((sub) => {
+                                    const slug = sub.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                                    return (
+                                        <Link key={sub.id} to={`/subject/${slug}`} style={{ textDecoration: 'none' }}>
+                                            <div className="glass-panel" style={{
+                                                padding: '1.5rem',
+                                                height: '100%',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                justifyContent: 'space-between',
+                                                cursor: 'pointer',
+                                                transition: 'transform 0.2s, box-shadow 0.2s',
+                                                border: '1px solid rgba(255,255,255,0.05)'
                                             }}
-                                            onMouseLeave={e => {
-                                                e.currentTarget.style.transform = 'translateY(0)';
-                                                e.currentTarget.style.boxShadow = 'none';
-                                            }}
-                                        >
-                                            <div>
-                                                <div style={{
-                                                    display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem',
-                                                    color: sub.type.includes('Practical') ? '#a855f7' : '#22d3ee',
-                                                    fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em'
-                                                }}>
-                                                    <Book size={16} />
-                                                    {sub.type}
+                                                onMouseEnter={e => {
+                                                    e.currentTarget.style.transform = 'translateY(-5px)';
+                                                    e.currentTarget.style.boxShadow = '0 10px 40px -10px rgba(0,0,0,0.5)';
+                                                }}
+                                                onMouseLeave={e => {
+                                                    e.currentTarget.style.transform = 'translateY(0)';
+                                                    e.currentTarget.style.boxShadow = 'none';
+                                                }}
+                                            >
+                                                <div>
+                                                    <div style={{
+                                                        display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem',
+                                                        color: sub.type.includes('Practical') ? '#a855f7' : '#22d3ee',
+                                                        fontSize: '0.8rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em'
+                                                    }}>
+                                                        <Book size={16} />
+                                                        {sub.type}
+                                                    </div>
+                                                    <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', lineHeight: '1.4', color: 'white' }}>{sub.title}</h3>
                                                 </div>
-                                                <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', lineHeight: '1.4', color: 'white' }}>{sub.title}</h3>
-                                            </div>
 
-                                            <div style={{ marginTop: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.5rem', color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: '600' }}>
-                                                View Topics <ChevronRight size={16} />
+                                                <div style={{ marginTop: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.5rem', color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: '600' }}>
+                                                    View Topics <ChevronRight size={16} />
+                                                </div>
                                             </div>
-                                        </div>
-                                    </Link>
-                                ))}
+                                        </Link>
+                                    );
+                                })}
                             </div>
                         </motion.div>
                     ))}
