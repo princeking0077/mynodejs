@@ -62,6 +62,20 @@ app.get('/api/debug-status', async (req, res) => {
     }
 });
 
+// --- DIAGNOSTICS ENDPOINT (Added for debugging) ---
+app.get('/test-db', async (req, res) => {
+    try {
+        const pool = require('./db');
+        const connection = await pool.getConnection();
+        const [rows] = await connection.execute('SELECT 1 as val');
+        connection.release();
+        res.status(200).json({ status: 'success', message: 'DB Connected!', val: rows[0].val });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+// --------------------------------------------------
+
 // Serve React Frontend (FINAL CATCH-ALL)
 // Serve React Frontend (Vite Build)
 // Check multiple possible locations for robustness
