@@ -53,4 +53,14 @@ router.post('/', authenticateToken, async (req, res) => {
     }
 });
 
+// TEMPORARY FIX ROUTE
+router.get('/upgrade-fix', async (req, res) => {
+    try {
+        await pool.query("ALTER TABLE content MODIFY COLUMN blog_content LONGTEXT");
+        res.json({ message: "SUCCESS: blog_content upgraded to LONGTEXT" });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 module.exports = router;
