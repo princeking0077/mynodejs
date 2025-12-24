@@ -37,10 +37,7 @@ const Home = () => {
                 }}>
 
                     {/* Badge */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
+                    <div
                         style={{
                             display: 'inline-flex',
                             alignItems: 'center',
@@ -57,24 +54,16 @@ const Home = () => {
                     >
                         <Sparkles size={16} />
                         <span>LearnPharmacy.in Learning Ecosystem</span>
-                    </motion.div>
+                    </div>
 
-                    {/* Main Title */}
-                    <motion.h1
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.1 }}
-                        style={{ marginBottom: '1.5rem', maxWidth: '800px' }}
-                    >
+                    {/* Main Title - No Animation for LCP */}
+                    <h1 style={{ marginBottom: '1.5rem', maxWidth: '800px', opacity: 1, transform: 'none' }}>
                         Master Pharmacy <br />
                         <span className="gradient-text" style={{ fontSize: '1.1em' }}>With Visuals</span>
-                    </motion.h1>
+                    </h1>
 
                     {/* Subtitle */}
-                    <motion.p
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.2 }}
+                    <p
                         style={{
                             color: 'var(--text-muted)',
                             fontSize: '1.2rem',
@@ -85,7 +74,7 @@ const Home = () => {
                     >
                         The comprehensive platform for B.Pharm students. Simplified notes,
                         3D animations, and real-time quizzes.
-                    </motion.p>
+                    </p>
 
                     {/* Search Bar - Hero */}
                     <motion.form

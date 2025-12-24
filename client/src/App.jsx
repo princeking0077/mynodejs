@@ -5,8 +5,10 @@ import ScrollToTop from './components/ScrollToTop';
 import ErrorBoundary from './components/ErrorBoundary';
 import Loading from './components/Loading';
 
+// Eager Load Home for LCP
+import Home from './pages/Home';
+
 // Lazy Load Pages
-const Home = lazy(() => import('./pages/Home'));
 const SubjectView = lazy(() => import('./pages/SubjectView'));
 const YearView = lazy(() => import('./pages/YearView'));
 const SearchPage = lazy(() => import('./pages/SearchPage'));
