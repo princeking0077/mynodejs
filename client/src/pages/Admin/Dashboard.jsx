@@ -286,7 +286,7 @@ const AdminDashboard = () => {
             <SEO title="Admin Dashboard" description="Manage LearnPharmacy Content" />
             <div className="container">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                    <h1>Content Manager</h1>
+                    <h1>Content Manager <span style={{ fontSize: '0.8rem', opacity: 0.5 }}>(v1.1 Fixed)</span></h1>
                     <div style={{ display: 'flex', gap: '1rem' }}>
                         <button onClick={() => navigate('/admin/settings')} style={{ padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '0.5rem', cursor: 'pointer' }}>
                             Global Settings
