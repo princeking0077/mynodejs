@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import SubjectView from './pages/SubjectView';
 import YearView from './pages/YearView';
 import AdminDashboard from './pages/Admin/Dashboard';
+import Settings from './pages/Admin/Settings';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Privacy from './pages/Privacy';
@@ -27,6 +28,7 @@ function App() {
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/settings" element={<Settings />} />
           </Routes>
         </AuthProvider>
       </HelmetProvider>
