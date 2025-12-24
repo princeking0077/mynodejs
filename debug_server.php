@@ -103,5 +103,16 @@ if (file_exists($logPath)) {
     echo "❌ stderr.log NOT found.\n";
 }
 
+echo "\n<h2>8. Code Verification (index.js)</h2>";
+echo "--- FIRST 20 LINES ---\n";
+if (file_exists('index.js')) {
+    $lines = array_slice(file('index.js'), 0, 20);
+    foreach ($lines as $line) {
+        echo htmlspecialchars($line);
+    }
+} else {
+    echo "❌ index.js MISSING";
+}
+
 echo "</pre>";
 ?>
