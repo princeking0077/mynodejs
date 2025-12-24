@@ -64,8 +64,8 @@ const SubjectView = () => {
             <SEO title={subjectStatic.title} description={`Learn ${subjectStatic.title} - Notes, Animations, and Quizzes.`} />
 
             <main className="container" style={{ paddingBottom: '4rem' }}>
-                <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', marginBottom: '2rem', marginTop: '2rem', textDecoration: 'none', fontWeight: '500' }}>
-                    <ArrowLeft size={18} /> Back to Curriculum
+                <Link to={`/year/${subjectStatic.yearId}`} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', marginBottom: '2rem', marginTop: '2rem', textDecoration: 'none', fontWeight: '500' }}>
+                    <ArrowLeft size={18} /> Back to {subjectStatic.yearTitle}
                 </Link>
 
                 {/* Header */}
@@ -137,7 +137,8 @@ const SubjectView = () => {
                                         padding: '0.8rem 1.5rem', borderRadius: '50px', border: 'none',
                                         background: activeTab === tab.id ? 'var(--primary)' : 'rgba(255,255,255,0.05)',
                                         color: activeTab === tab.id ? 'black' : 'var(--text-muted)',
-                                        fontWeight: '700', cursor: 'pointer', transition: 'all 0.2s', fontSize: '0.95rem'
+                                        fontWeight: '700', cursor: 'pointer', transition: 'all 0.2s', fontSize: '0.95rem',
+                                        whiteSpace: 'nowrap'
                                     }}
                                 >
                                     <tab.icon size={18} /> {tab.label}
@@ -199,6 +200,8 @@ const SubjectView = () => {
                 <style>{`
                     @media (max-width: 900px) {
                         .subject-grid { grid-template-columns: 1fr !important; }
+                        .subject-grid > div:first-child { order: 2; maxHeight: 400px; }
+                        .subject-grid > div:last-child { order: 1; }
                     }
                 `}</style>
             </main>

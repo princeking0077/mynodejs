@@ -14,7 +14,7 @@ const Home = () => {
     const handleSearch = (e) => {
         e.preventDefault();
         if (searchQuery.trim()) {
-            navigate(`/subject/1?search=${searchQuery}`); // Placeholder logical redirect
+            navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
         }
     };
 
@@ -128,40 +128,8 @@ const Home = () => {
                     </motion.form>
                 </section>
 
-                {/* Chemical Showcase Section (Restored) */}
-                <ChemicalShowcase />
-
-                {/* Stats Section */}
-                <section style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                    gap: '2rem',
-                    marginBottom: '6rem'
-                }}>
-                    {[
-                        { label: 'Active Students', value: '10k+', icon: Users, color: '#3b82f6' },
-                        { label: 'Visual Topics', value: '500+', icon: Layers, color: '#10b981' },
-                        { label: 'Quizzes Taken', value: '50k+', icon: Zap, color: '#f59e0b' }
-                    ].map((stat, i) => (
-                        <motion.div
-                            key={i}
-                            whileHover={{ y: -5 }}
-                            className="glass-panel"
-                            style={{ padding: '2rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}
-                        >
-                            <div style={{ padding: '1rem', background: `${stat.color}20`, borderRadius: '50%', color: stat.color }}>
-                                <stat.icon size={24} />
-                            </div>
-                            <div>
-                                <h3 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '0.2rem' }}>{stat.value}</h3>
-                                <p style={{ color: 'var(--text-muted)' }}>{stat.label}</p>
-                            </div>
-                        </motion.div>
-                    ))}
-                </section>
-
-                {/* Browse Curriculum Section */}
-                <section>
+                {/* Browse Curriculum Section (Moved Up) */}
+                <section style={{ marginBottom: '8rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', marginBottom: '3rem' }}>
                         <div>
                             <h2 style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Browse Curriculum</h2>
@@ -227,15 +195,87 @@ const Home = () => {
                     </div>
                 </section>
 
-                {/* Call to Action */}
-                <section style={{ marginTop: '8rem', textAlign: 'center', padding: '4rem', background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1))', borderRadius: '3rem', border: '1px solid rgba(255,255,255,0.1)' }}>
-                    <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Ready to Excel?</h2>
-                    <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', marginBottom: '2rem', maxWidth: '600px', margin: '0 auto 2rem auto' }}>
-                        Join thousands of pharmacy students boosting their grades with our visual learning tools.
-                    </p>
-                    <Link to="/year/1" className="btn btn-primary" style={{ padding: '1rem 2.5rem', fontSize: '1.1rem' }}>
-                        Get Started Now
-                    </Link>
+                {/* Ready to Transform Section (Extracted & Enhanced) */}
+                <section style={{ textAlign: 'center', marginBottom: '8rem', padding: '0 1rem' }}>
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.8 }}
+                    >
+                        <h2 style={{ fontSize: '3.5rem', fontWeight: 'bold', marginBottom: '1.5rem', lineHeight: 1.1 }}>
+                            Ready to transform <br />
+                            <span className="text-gradient">your grades?</span>
+                        </h2>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto 2rem auto' }}>
+                            Join thousands of pharmacy students who are mastering complex topics through our visual learning platform.
+                        </p>
+                        <Link to="/year/1">
+                            <button style={{
+                                padding: '1.2rem 3rem', fontSize: '1.2rem', fontWeight: 'bold',
+                                background: 'linear-gradient(90deg, #22d3ee, #a855f7)',
+                                color: 'white', border: 'none', borderRadius: '3rem',
+                                cursor: 'pointer', transition: '0.3s', boxShadow: '0 0 30px rgba(168, 85, 247, 0.4)'
+                            }}
+                                onMouseEnter={e => e.target.style.transform = 'scale(1.05)'}
+                                onMouseLeave={e => e.target.style.transform = 'scale(1)'}
+                            >
+                                Get Started Now
+                            </button>
+                        </Link>
+                    </motion.div>
+                </section>
+
+                {/* Chemical Showcase Section */}
+                <ChemicalShowcase />
+
+                {/* Stats Section */}
+                <section style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                    gap: '2rem',
+                    marginBottom: '8rem'
+                }}>
+                    {[
+                        { label: 'Active Students', value: '10k+', icon: Users, color: '#3b82f6' },
+                        { label: 'Visual Topics', value: '500+', icon: Layers, color: '#10b981' },
+                        { label: 'Quizzes Taken', value: '50k+', icon: Zap, color: '#f59e0b' }
+                    ].map((stat, i) => (
+                        <motion.div
+                            key={i}
+                            whileHover={{ y: -5 }}
+                            className="glass-panel"
+                            style={{ padding: '2rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}
+                        >
+                            <div style={{ padding: '1rem', background: `${stat.color}20`, borderRadius: '50%', color: stat.color }}>
+                                <stat.icon size={24} />
+                            </div>
+                            <div>
+                                <h3 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '0.2rem' }}>{stat.value}</h3>
+                                <p style={{ color: 'var(--text-muted)' }}>{stat.label}</p>
+                            </div>
+                        </motion.div>
+                    ))}
+                </section>
+
+                {/* Call to Action - Ready to Excel */}
+                <section style={{
+                    textAlign: 'center',
+                    padding: '5rem 2rem',
+                    background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1))',
+                    borderRadius: '3rem',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    position: 'relative',
+                    overflow: 'hidden'
+                }}>
+                    <div style={{ position: 'relative', zIndex: 2 }}>
+                        <h2 style={{ fontSize: '3rem', marginBottom: '1rem', fontWeight: '800' }}>Ready to Excel?</h2>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', marginBottom: '3rem', maxWidth: '600px', margin: '0 auto 3rem auto' }}>
+                            Don't just pass your exams. Understand the science behind the pharmacy.
+                        </p>
+                        <Link to="/year/1" className="btn btn-primary" style={{ padding: '1rem 3rem', fontSize: '1.1rem' }}>
+                            Start Learning Free
+                        </Link>
+                    </div>
                 </section>
             </div>
         </Layout>

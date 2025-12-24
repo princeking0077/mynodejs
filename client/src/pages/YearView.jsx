@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SEO from '../components/SEO';
 import { curriculum } from '../data/curriculum';
-import { Book, ChevronRight, GraduationCap } from 'lucide-react';
+import { Book, ChevronRight, GraduationCap, ArrowLeft } from 'lucide-react';
 import Layout from '../components/Layout';
 
 const YearView = () => {
@@ -27,6 +27,9 @@ const YearView = () => {
             <SEO title={yearData.title} description={`Browse subjects and semesters for ${yearData.title} B.Pharm`} />
 
             <main className="container" style={{ paddingBottom: '4rem' }}>
+                <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', marginBottom: '1rem', marginTop: '2rem', textDecoration: 'none', fontWeight: '500' }}>
+                    <ArrowLeft size={18} /> Back to Home
+                </Link>
                 {/* Header */}
                 <div style={{ padding: '4rem 0', textAlign: 'center' }}>
                     <motion.div

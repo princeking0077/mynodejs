@@ -92,27 +92,13 @@ const ChemicalShowcase = () => {
 
                 </div>
 
-                {/* Final CTA */}
-                <div style={{ textAlign: 'center', marginTop: '10rem', position: 'relative', zIndex: 2 }}>
-                    <h2 style={{ fontSize: '3.5rem', fontWeight: 'bold', marginBottom: '2rem', lineHeight: 1.1 }}>
-                        Ready to transform <br /> your grades?
-                    </h2>
-                    <Link to="/year/year-1">
-                        <button style={{
-                            padding: '1.2rem 3rem', fontSize: '1.2rem', fontWeight: 'bold',
-                            background: 'linear-gradient(90deg, #22d3ee, #a855f7)',
-                            color: 'white', border: 'none', borderRadius: '3rem',
-                            cursor: 'pointer', transition: '0.3s', boxShadow: '0 0 30px rgba(168, 85, 247, 0.4)'
-                        }}
-                            onMouseEnter={e => e.target.style.transform = 'scale(1.05)'}
-                            onMouseLeave={e => e.target.style.transform = 'scale(1)'}
-                        >
-                            Get Started Now
-                        </button>
-                    </Link>
-                </div>
             </div>
         </div>
+        </div >
+    );
+};
+            </div >
+        </div >
     );
 };
 

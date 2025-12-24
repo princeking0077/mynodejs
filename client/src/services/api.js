@@ -109,6 +109,18 @@ export const api = {
         }
     },
 
+    // Search Content
+    searchContent: async (query) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/content/search?q=${encodeURIComponent(query)}`);
+            if (!response.ok) return [];
+            return await response.json();
+        } catch (error) {
+            console.error("Search Error", error);
+            return [];
+        }
+    },
+
     // Delete Topic
     deleteTopic: async (id) => {
         try {

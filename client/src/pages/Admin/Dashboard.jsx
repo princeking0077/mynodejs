@@ -5,6 +5,7 @@ import Layout from '../../components/Layout';
 import { Lock, Upload, FileText, CheckSquare, LogOut, Plus, Save, Trash } from 'lucide-react';
 import { curriculum } from '../../data/curriculum';
 import { api } from '../../services/api';
+import SEO from '../../components/SEO';
 
 const AdminDashboard = () => {
     const { currentUser, login, logout } = useAuth();
@@ -198,6 +199,7 @@ const AdminDashboard = () => {
         // ... (Keep existing Login UI) ...
         return (
             <Layout>
+                <SEO title="Admin Login" />
                 <div className="container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
                     <div className="glass-panel" style={{ padding: '3rem', width: '100%', maxWidth: '400px', textAlign: 'center' }}>
                         <div style={{ background: 'rgba(34, 211, 238, 0.1)', padding: '1rem', borderRadius: '50%', display: 'inline-flex', marginBottom: '1.5rem', color: '#22d3ee' }}>
@@ -238,6 +240,7 @@ const AdminDashboard = () => {
 
     return (
         <Layout>
+            <SEO title="Admin Dashboard" description="Manage LearnPharmacy Content" />
             <div className="container">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                     <h1>Content Manager</h1>
