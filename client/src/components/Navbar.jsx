@@ -28,17 +28,21 @@ const Navbar = () => {
             }}>
                 {/* Brand */}
                 <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', textDecoration: 'none' }}>
+                    <img src="/logo.png" alt="LearnPharmacy Logo" style={{ width: '40px', height: '40px', borderRadius: '8px', objectFit: 'contain' }}
+                        onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+                    />
+                    {/* Fallback Icon */}
                     <div style={{
                         width: '40px', height: '40px',
-                        background: 'linear-gradient(135deg, #22d3ee, #a855f7)',
+                        background: 'linear-gradient(135deg, #10b981, #3b82f6)',
                         borderRadius: '12px',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        boxShadow: '0 0 15px rgba(34, 211, 238, 0.3)'
+                        display: 'none', alignItems: 'center', justifyContent: 'center',
+                        boxShadow: '0 0 15px rgba(16, 185, 129, 0.3)'
                     }}>
                         <Hexagon size={24} color="white" fill="white" fillOpacity={0.2} />
                     </div>
-                    <span style={{ fontSize: '1.3rem', fontWeight: '800', letterSpacing: '-0.03em', background: 'linear-gradient(to right, white, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                        ApexApps
+                    <span style={{ fontSize: '1.3rem', fontWeight: '800', letterSpacing: '-0.03em', background: 'linear-gradient(to right, white, #a7f3d0)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                        LearnPharmacy.in
                     </span>
                 </Link>
 
