@@ -117,12 +117,28 @@ app.get('/test-db', async (req, res) => {
 (async () => {
     try {
         const connection = await pool.getConnection(); // Use the existing pool
-        await connection.query("ALTER TABLE content MODIFY COLUMN blog_content LONGTEXT");
-        console.log("✅ SCHEMA AUTO-FIX: blog_content upgraded to LONGTEXT");
+
+        // 1. Fix blog_content type
+        try {
+            await connection.query("ALTER TABLE content MODIFY COLUMN blog_content LONGTEXT");
+            console.log("✅ SCHEMA: blog_content -> LONGTEXT");
+        } catch (e) { }
+
+        // 2. Add Missing SEO Columns
+        const addCol = async (col) => {
+            try {
+                await connection.query(`ALTER TABLE content ADD COLUMN ${col}`);
+                console.log(`✅ SCHEMA: Added ${col}`);
+            } catch (e) { }
+        };
+
+        await addCol("meta_title VARCHAR(255)");
+        await addCol("meta_description TEXT");
+        await addCol("faqs JSON");
+
         connection.release();
     } catch (e) {
-        // If error is not "duplicate", log it. But usually safe to ignore if it fails (e.g. conn error)
-        console.log("ℹ️ Schema Fix Attempted:", e.message);
+        console.log("ℹ️ Schema Auto-Fix Failed:", e.message);
     }
 })();
 
