@@ -21,6 +21,7 @@ const AdminDashboard = () => {
     // Form State
     const [topicId, setTopicId] = useState(null); // For Edit Mode
     const [topicTitle, setTopicTitle] = useState('');
+    const [youtubeId, setYoutubeId] = useState(''); // YouTube Video ID
     const [metaTitle, setMetaTitle] = useState(''); // SEO
     const [metaDescription, setMetaDescription] = useState(''); // SEO
     const [animationCode, setAnimationCode] = useState(''); // HTML/JS Code
@@ -104,6 +105,7 @@ const AdminDashboard = () => {
     const handleEditTopic = (topic) => {
         setTopicId(topic.id);
         setTopicTitle(topic.title);
+        setYoutubeId(topic.youtube_id || '');
         setMetaTitle(topic.meta_title || '');
         setMetaDescription(topic.meta_description || '');
         setAnimationCode(topic.description); // We stored code in description
@@ -118,6 +120,7 @@ const AdminDashboard = () => {
     const resetForm = () => {
         setTopicId(null);
         setTopicTitle('');
+        setYoutubeId('');
         setMetaTitle('');
         setMetaDescription('');
         setAnimationCode('');
@@ -173,6 +176,7 @@ const AdminDashboard = () => {
             const topicData = {
                 subjectId: selectedSubject,
                 title: topicTitle,
+                youtubeId,
                 metaTitle,
                 metaDescription,
                 type: 'animation',
@@ -381,6 +385,21 @@ const AdminDashboard = () => {
                                         placeholder="e.g., Mechanism of Action"
                                         style={{ width: '100%', padding: '0.8rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)' }}
                                     />
+                                </div>
+
+                                {/* YouTube Video ID */}
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem' }}>YouTube Video ID (Optional)</label>
+                                    <input
+                                        type="text"
+                                        value={youtubeId}
+                                        onChange={e => setYoutubeId(e.target.value)}
+                                        placeholder="e.g., dQw4w9WgXcQ"
+                                        style={{ width: '100%', padding: '0.8rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)' }}
+                                    />
+                                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
+                                        Paste only the ID (part after v=), not the full URL. If provided, video will appear at the top.
+                                    </p>
                                 </div>
 
                                 {/* SEO Section */}
