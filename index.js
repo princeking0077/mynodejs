@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 console.log('--- BOOTSTRAP: Hostinger Entry Point ---');
+fs.writeFileSync(path.join(__dirname, 'crash_report.txt'), 'BOOTSTRAPPING STARTED ' + new Date().toISOString() + '\n');
 
 const logCrash = (type, err) => {
     const report = `
