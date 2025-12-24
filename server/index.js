@@ -89,14 +89,38 @@ if (buildPath) {
     });
 } else {
     // For development (or if build is missing), just log
+    // List contents of directories to help debug
+    const listDir = (dir) => {
+        try {
+            return fs.readdirSync(dir).join(', ');
+        } catch (e) {
+            return `[Error reading: ${e.message}]`;
+        }
+    };
+
     console.log("Client build not found. Checked: " + possiblePaths.join(", "));
     app.get('/', (req, res) => res.send(`
-        <h1>Backend Running</h1>
-        <p>Frontend build not found.</p>
-        <p>Checked Paths:</p>
-        <ul>${possiblePaths.map(p => `<li>${p}</li>`).join('')}</ul>
-        <p>Current Directory: ${__dirname}</p>
-        <p>Process CWD: ${process.cwd()}</p>
+        <div style="font-family: monospace; padding: 20px;">
+            <h1 style="color: red;">Backend Running - Frontend Not Found</h1>
+            <p><strong>Checked Paths:</strong></p>
+            <ul>${possiblePaths.map(p => `<li>${p}</li>`).join('')}</ul>
+            
+            <hr>
+            <h3>Server Diagnostics:</h3>
+            <p><strong>Current Directory (__dirname):</strong> ${__dirname}</p>
+            <p><strong>Files:</strong> ${listDir(__dirname)}</p>
+            
+            <p><strong>Process CWD:</strong> ${process.cwd()}</p>
+            <p><strong>Files:</strong> ${listDir(process.cwd())}</p>
+            
+            <p><strong>Parent Directory (../):</strong> ${path.resolve(__dirname, '..')}</p>
+            <p><strong>Files:</strong> ${listDir(path.resolve(__dirname, '..'))}</p>
+            
+            <p><strong>Client Directory Check (../client):</strong> ${path.resolve(__dirname, '../client')}</p>
+            <p><strong>Files:</strong> ${listDir(path.resolve(__dirname, '../client'))}</p>
+             <p><strong>Dist Directory Check (../client/dist):</strong> ${path.resolve(__dirname, '../client/dist')}</p>
+            <p><strong>Files:</strong> ${listDir(path.resolve(__dirname, '../client/dist'))}</p>
+        </div>
     `));
 }
 
