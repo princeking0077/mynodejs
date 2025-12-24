@@ -3,24 +3,34 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 const ChemicalShowcase = () => {
-    const drawAndFill = {
-        hidden: { pathLength: 0, fillOpacity: 0 },
-        visible: {
-            pathLength: 1,
-            fillOpacity: 1,
+
+    // Abstract Particle Variants
+    const particleVariant = (delay, duration) => ({
+        animate: {
+            y: [0, -30, 0],
+            x: [0, 15, 0],
+            opacity: [0.3, 0.8, 0.3],
+            scale: [1, 1.2, 1],
             transition: {
-                pathLength: { duration: 3, ease: "easeInOut" },
-                fillOpacity: { duration: 1, delay: 2 }
+                duration: duration,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: delay
             }
         }
-    };
+    });
 
-    const float = {
+    const orbVariant = {
         animate: {
-            y: [0, -20, 0],
-            rotate: [0, 5, -5, 0],
+            scale: [1, 1.1, 1],
+            opacity: [0.5, 0.8, 0.5],
+            boxShadow: [
+                "0 0 20px rgba(34, 211, 238, 0.2)",
+                "0 0 60px rgba(168, 85, 247, 0.4)",
+                "0 0 20px rgba(34, 211, 238, 0.2)"
+            ],
             transition: {
-                duration: 5,
+                duration: 4,
                 repeat: Infinity,
                 ease: "easeInOut"
             }
@@ -28,74 +38,100 @@ const ChemicalShowcase = () => {
     };
 
     return (
-        <div style={{ position: 'relative', padding: '8rem 0', overflow: 'hidden' }}>
-            <div className="container">
-                <div style={{ textAlign: 'center', marginBottom: '6rem' }}>
-                    <h2 className="text-gradient" style={{ fontSize: '3rem', fontWeight: '800', marginBottom: '1rem' }}>The Science of Life</h2>
-                    <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem' }}>visualizing the invisible building blocks of pharmacy.</p>
+        <div style={{ position: 'relative', padding: '10rem 0', overflow: 'hidden' }}>
+
+            {/* Background elements */}
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0 }}>
+                <div style={{ position: 'absolute', top: '10%', left: '10%', width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(168, 85, 247, 0.1) 0%, transparent 70%)', filter: 'blur(40px)' }}></div>
+                <div style={{ position: 'absolute', bottom: '10%', right: '10%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(34, 211, 238, 0.1) 0%, transparent 70%)', filter: 'blur(40px)' }}></div>
+            </div>
+
+            <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+                <div style={{ textAlign: 'center', marginBottom: '8rem' }}>
+                    <motion.h2
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="text-gradient"
+                        style={{ fontSize: '3.5rem', fontWeight: '800', marginBottom: '1.5rem', letterSpacing: '-0.02em' }}
+                    >
+                        The Science of Life
+                    </motion.h2>
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                        style={{ color: 'var(--text-muted)', fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto' }}
+                    >
+                        Explore the microscopic interactions that define capability and cure.
+                    </motion.p>
                 </div>
 
-                {/* Visual Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))', gap: '4rem', alignItems: 'center' }}>
+                {/* Abstract Visuals Container */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem', alignItems: 'center' }}>
 
-                    {/* SVG Animations */}
-                    <div className="glass-panel" style={{ padding: '2rem', minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                        <svg width="100%" height="auto" viewBox="0 0 200 200" style={{ maxWidth: '300px' }}>
-                            {/* Benzene Ring Style Structure */}
-                            <motion.path
-                                d="M100 20 L170 60 L170 140 L100 180 L30 140 L30 60 Z"
-                                stroke="#22d3ee"
-                                strokeWidth="4"
-                                fill="#22d3ee"
-                                fillOpacity="0.1"
-                                variants={drawAndFill}
-                                initial="hidden"
-                                whileInView="visible"
-                                viewport={{ once: true }}
-                            />
-                            <motion.circle cx="100" cy="100" r="40" stroke="#a855f7" strokeWidth="2" fill="none"
-                                initial={{ scale: 0, opacity: 0 }}
-                                whileInView={{ scale: 1, opacity: 1 }}
-                                transition={{ delay: 1.5, duration: 1 }}
-                            />
-                            {/* Bonds */}
-                            <motion.line x1="100" y1="20" x2="100" y2="0" stroke="#fbbf24" strokeWidth="3" initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} transition={{ delay: 2 }} />
-                            <motion.text x="90" y="-10" fill="#fbbf24" fontSize="14" fontWeight="bold">CH3</motion.text>
-                        </svg>
+                    {/* Left: Glowing Core Animation */}
+                    <div style={{ height: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                        {/* Central Orb */}
+                        <motion.div
+                            variants={orbVariant}
+                            animate="animate"
+                            style={{
+                                width: '150px', height: '150px',
+                                borderRadius: '50%',
+                                background: 'linear-gradient(135deg, rgba(34, 211, 238, 0.2), rgba(168, 85, 247, 0.2))',
+                                backdropFilter: 'blur(10px)',
+                                border: '1px solid rgba(255,255,255,0.1)',
+                                position: 'relative',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center'
+                            }}
+                        >
+                            <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'linear-gradient(135deg, #22d3ee, #a855f7)', opacity: 0.8 }}></div>
+                        </motion.div>
 
-                        <div style={{ position: 'absolute', bottom: '2rem', textAlign: 'center', width: '100%' }}>
-                            <h3 style={{ marginBottom: '0.5rem' }}>Molecular Structures</h3>
-                            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Learn structure-activity relationships (SAR) visually.</p>
-                        </div>
+                        {/* Orbiting Particles */}
+                        {[...Array(6)].map((_, i) => (
+                            <motion.div
+                                key={i}
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 10 + i * 2, repeat: Infinity, ease: "linear" }}
+                                style={{ position: 'absolute', width: `${200 + i * 40}px`, height: `${200 + i * 40}px`, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.03)' }}
+                            >
+                                <motion.div
+                                    style={{
+                                        width: '8px', height: '8px', background: i % 2 === 0 ? '#22d3ee' : '#a855f7', borderRadius: '50%',
+                                        position: 'absolute', top: '50%', left: '-4px', boxShadow: `0 0 10px ${i % 2 === 0 ? '#22d3ee' : '#a855f7'}`
+                                    }}
+                                />
+                            </motion.div>
+                        ))}
                     </div>
 
-                    {/* Formulas Info */}
-                    <div style={{ position: 'relative', height: '100%' }}>
-                        <motion.div variants={float} animate="animate" style={{ marginBottom: '3rem' }}>
-                            <div className="glass-panel" style={{ padding: '2rem', display: 'inline-block', border: '1px solid #22d3ee' }}>
-                                <span style={{ fontSize: '2rem', fontWeight: 'bold', color: '#22d3ee' }}>C₈H₁₀N₄O₂</span>
-                                <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '0.5rem' }}>Caffeine • Stimulant</div>
-                            </div>
+                    {/* Right: Floating Info Cards */}
+                    <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+
+                        <motion.div variants={particleVariant(0, 4)} animate="animate"
+                            className="glass-panel"
+                            style={{ padding: '2rem', borderLeft: '4px solid #a855f7', background: 'linear-gradient(90deg, rgba(168, 85, 247, 0.05), transparent)' }}
+                        >
+                            <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: 'white' }}>Molecular Dynamics</h3>
+                            <p style={{ color: 'var(--text-muted)' }}>Understand drug-receptor interactions at the atomic level.</p>
                         </motion.div>
 
-                        <motion.div
-                            animate={{ y: [0, 15, 0], x: [0, 10, 0] }}
-                            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-                            style={{ marginLeft: '4rem' }}
+                        <motion.div variants={particleVariant(2, 5)} animate="animate"
+                            className="glass-panel"
+                            style={{ padding: '2rem', borderLeft: '4px solid #22d3ee', marginLeft: '3rem', background: 'linear-gradient(90deg, rgba(34, 211, 238, 0.05), transparent)' }}
                         >
-                            <div className="glass-panel" style={{ padding: '2rem', display: 'inline-block', border: '1px solid #a855f7' }}>
-                                <span style={{ fontSize: '2rem', fontWeight: 'bold', color: '#a855f7' }}>C₉H₈O₄</span>
-                                <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '0.5rem' }}>Aspirin • Analgesic</div>
-                            </div>
+                            <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: 'white' }}>Pharmacokinetics</h3>
+                            <p style={{ color: 'var(--text-muted)' }}>Visualize absorption, distribution, metabolism, and excretion.</p>
                         </motion.div>
+
                     </div>
 
                 </div>
 
             </div>
         </div>
-
-
     );
 };
 

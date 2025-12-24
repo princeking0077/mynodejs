@@ -75,7 +75,7 @@ const generateSlug = (text) => {
 
 // Create Topic
 router.post('/', authenticateToken, async (req, res) => {
-    const { subjectId, title, description, blogContent, youtubeId, fileUrl, quiz } = req.body;
+    const { subjectId, title, description, blogContent, youtubeId, fileUrl, quiz, metaTitle, metaDescription } = req.body;
     let slug = generateSlug(title);
 
     try {
@@ -86,8 +86,8 @@ router.post('/', authenticateToken, async (req, res) => {
         }
 
         await pool.query(
-            "INSERT INTO content (subject_id, title, slug, description, blog_content, youtube_id, file_url, quiz_data) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-            [subjectId, title, slug, description, blogContent, youtubeId, fileUrl, JSON.stringify(quiz)]
+            "INSERT INTO content (subject_id, title, slug, description, blog_content, youtube_id, file_url, quiz_data, meta_title, meta_description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [subjectId, title, slug, description, blogContent, youtubeId, fileUrl, JSON.stringify(quiz), metaTitle, metaDescription]
         );
         res.json({ message: "Topic created successfully", slug });
     } catch (error) {
@@ -98,15 +98,15 @@ router.post('/', authenticateToken, async (req, res) => {
 
 // Update Topic (Matches update_topic.php)
 router.put('/', authenticateToken, async (req, res) => {
-    const { id, title, description, blogContent, youtubeId, fileUrl, quiz } = req.body;
+    const { id, title, description, blogContent, youtubeId, fileUrl, quiz, metaTitle, metaDescription } = req.body;
 
     if (!id || !title) {
         return res.status(400).json({ message: "Incomplete data." });
     }
 
     try {
-        let sql = "UPDATE content SET title = ?, description = ?, blog_content = ?, youtube_id = ?, quiz_data = ?";
-        const params = [title, description, blogContent, youtubeId, JSON.stringify(quiz)];
+        let sql = "UPDATE content SET title = ?, description = ?, blog_content = ?, youtube_id = ?, quiz_data = ?, meta_title = ?, meta_description = ?";
+        const params = [title, description, blogContent, youtubeId, JSON.stringify(quiz), metaTitle, metaDescription];
 
         if (fileUrl !== undefined) {
             sql += ", file_url = ?";

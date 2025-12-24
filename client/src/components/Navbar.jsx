@@ -29,21 +29,22 @@ const Navbar = () => {
             }}>
                 {/* Brand */}
                 <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', textDecoration: 'none' }}>
-                    <img src="/logo.png" alt="LearnPharmacy"
-                        style={{ width: '38px', height: '38px', borderRadius: '8px', objectFit: 'contain' }}
-                        onError={(e) => {
-                            e.target.style.display = 'none';
-                            e.target.nextSibling.style.display = 'flex';
-                        }}
-                    />
-                    {/* Fallback Icon */}
-                    <div className="fallback-logo" style={{
+                    {/* Logo Icon */}
+                    <div style={{
                         width: '38px', height: '38px',
-                        background: 'linear-gradient(135deg, #10b981, #3b82f6)',
+                        background: 'linear-gradient(135deg, #0f172a, #334155)',
+                        border: '1px solid rgba(255,255,255,0.1)',
                         borderRadius: '10px',
-                        display: 'none', alignItems: 'center', justifyContent: 'center'
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        boxShadow: '0 2px 10px rgba(0,0,0,0.3)'
                     }}>
-                        <Hexagon size={22} color="white" fill="white" fillOpacity={0.2} />
+                        <Hexagon size={24} className="text-gradient" style={{ stroke: 'url(#blue-purple-gradient)' }} />
+                        <svg width="0" height="0">
+                            <linearGradient id="blue-purple-gradient" x1="100%" y1="100%" x2="0%" y2="0%">
+                                <stop stopColor="#a855f7" offset="0%" />
+                                <stop stopColor="#22d3ee" offset="100%" />
+                            </linearGradient>
+                        </svg>
                     </div>
                     <span className="brand-text" style={{
                         fontSize: '1.2rem',

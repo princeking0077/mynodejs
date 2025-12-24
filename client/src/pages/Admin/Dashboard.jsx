@@ -21,6 +21,8 @@ const AdminDashboard = () => {
     // Form State
     const [topicId, setTopicId] = useState(null); // For Edit Mode
     const [topicTitle, setTopicTitle] = useState('');
+    const [metaTitle, setMetaTitle] = useState(''); // SEO
+    const [metaDescription, setMetaDescription] = useState(''); // SEO
     const [animationCode, setAnimationCode] = useState(''); // HTML/JS Code
     const [quizQuestions, setQuizQuestions] = useState([]);
     const [notesFile, setNotesFile] = useState(null);
@@ -101,6 +103,8 @@ const AdminDashboard = () => {
     const handleEditTopic = (topic) => {
         setTopicId(topic.id);
         setTopicTitle(topic.title);
+        setMetaTitle(topic.meta_title || '');
+        setMetaDescription(topic.meta_description || '');
         setAnimationCode(topic.description); // We stored code in description
         setQuizQuestions(topic.quiz_data || []);
         setNotesFile(null); // Reset file input
@@ -112,6 +116,8 @@ const AdminDashboard = () => {
     const resetForm = () => {
         setTopicId(null);
         setTopicTitle('');
+        setMetaTitle('');
+        setMetaDescription('');
         setAnimationCode('');
         setQuizQuestions([]);
         setNotesFile(null);
@@ -164,6 +170,8 @@ const AdminDashboard = () => {
             const topicData = {
                 subjectId: selectedSubject,
                 title: topicTitle,
+                metaTitle,
+                metaDescription,
                 type: 'animation',
                 description: animationCode,
                 quiz: quizQuestions
@@ -364,6 +372,35 @@ const AdminDashboard = () => {
                                         placeholder="e.g., Mechanism of Action"
                                         style={{ width: '100%', padding: '0.8rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)' }}
                                     />
+                                </div>
+
+                                {/* SEO Section */}
+                                <div style={{ marginBottom: '1.5rem', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '0.5rem', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                    <h4 style={{ margin: '0 0 1rem 0', color: 'var(--primary)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        <FileText size={14} /> SEO Settings (Optional)
+                                    </h4>
+                                    <div style={{ display: 'grid', gap: '1rem' }}>
+                                        <div>
+                                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Meta Title</label>
+                                            <input
+                                                type="text"
+                                                value={metaTitle}
+                                                onChange={e => setMetaTitle(e.target.value)}
+                                                placeholder="Custom Page Title"
+                                                style={{ width: '100%', padding: '0.6rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)', fontSize: '0.9rem' }}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Meta Description</label>
+                                            <textarea
+                                                value={metaDescription}
+                                                onChange={e => setMetaDescription(e.target.value)}
+                                                placeholder="Brief summary for search engines..."
+                                                rows={2}
+                                                style={{ width: '100%', padding: '0.6rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)', fontSize: '0.9rem', fontFamily: 'inherit' }}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
 
                                 {/* Animation Code */}
