@@ -76,6 +76,42 @@ app.get('/test-db', async (req, res) => {
 });
 // --------------------------------------------------
 
+app.get('/reset-admin', async (req, res) => {
+    try {
+        const pool = require('./db');
+        const bcrypt = require('bcryptjs');
+        const connection = await pool.getConnection();
+
+        const email = 'shoaib.ss300@gmail.com';
+        const rawPassword = 'Shaikh@#$001';
+        const hashedPassword = await bcrypt.hash(rawPassword, 10);
+
+        // Check if user exists
+        const [rows] = await connection.execute('SELECT * FROM users WHERE email = ?', [email]);
+
+        let message = '';
+        if (rows.length > 0) {
+            await connection.execute('UPDATE users SET password = ?, role = ? WHERE email = ?', [hashedPassword, 'admin', email]);
+            message = 'Admin Password UPDATED successfully.';
+        } else {
+            // Check if users table exists first (simple check)
+            try {
+                await connection.execute('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', ['Shoaib Shaikh', email, hashedPassword, 'admin']);
+                message = 'Admin User CREATED successfully.';
+            } catch (err) {
+                // Maybe table doesn't exist? Try creating it?
+                // optimizing for speed: assume table exists per previous context
+                throw err;
+            }
+        }
+
+        connection.release();
+        res.status(200).json({ status: 'success', message: message, credentials: { email, password: rawPassword } });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
 // Serve React Frontend (FINAL CATCH-ALL)
 // Serve React Frontend (Vite Build)
 // Check multiple possible locations for robustness
