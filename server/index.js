@@ -224,6 +224,22 @@ if (buildPath) {
     `));
 }
 
+// Global Error Handler (Must be last)
+app.use((err, req, res, next) => {
+    console.error("Global Error:", err);
+    if (res.headersSent) return next(err);
+
+    // Handle Body Parser 413
+    if (err.type === 'entity.too.large') {
+        return res.status(413).json({ message: "File/Content too large (Max 50MB)" });
+    }
+
+    res.status(err.status || 500).json({
+        message: err.message || "Internal Server Error",
+        error: process.env.NODE_ENV === 'development' ? err : {}
+    });
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
