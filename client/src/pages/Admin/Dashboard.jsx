@@ -108,7 +108,10 @@ const AdminDashboard = () => {
     const handleEditTopic = (topic) => {
         setTopicId(topic.id);
         setTopicTitle(topic.title);
-        setYoutubeId(topic.youtube_id || '');
+        // Auto-extract ID if full URL was stored conventionally
+        const ytVal = topic.youtube_id || '';
+        const ytMatch = ytVal.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([^&]+)/);
+        setYoutubeId(ytMatch ? ytMatch[1] : ytVal);
         setBlogContent(topic.blog_content || '');
         setMetaTitle(topic.meta_title || '');
         setMetaDescription(topic.meta_description || '');
