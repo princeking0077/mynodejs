@@ -58,7 +58,14 @@ const SubjectView = () => {
                         quiz: item.quiz_data || [],
                         notesUrl: item.file_url,
                         // faqs: item.faqs || [], // Ensure faqs are mapped
-                        faqs: typeof item.faqs === 'string' ? JSON.parse(item.faqs) : (item.faqs || []),
+                        faqs: (() => {
+                            try {
+                                return typeof item.faqs === 'string' ? JSON.parse(item.faqs) : (item.faqs || []);
+                            } catch (e) {
+                                console.warn("Invalid FAQs JSON for topic:", item.id);
+                                return [];
+                            }
+                        })(),
                         blogContent: item.blog_content,
                         createdAt: item.created_at
                     }));
