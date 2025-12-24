@@ -32,7 +32,7 @@ const Layout = ({ children }) => {
                 position: 'relative',
                 zIndex: 10
             }}>
-                <p>&copy; {new Date().getFullYear()} <span style={{ color: 'white' }}>ApexApps.in</span>. All rights reserved.</p>
+                <p>&copy; {new Date().getFullYear()} <span style={{ color: 'white' }}>LearnPharmacy.in</span>. All rights reserved.</p>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', marginTop: '1rem' }}>
                     <Link to="/privacy" style={{ color: 'var(--text-muted)' }}>Privacy Policy</Link>
                     <Link to="/terms" style={{ color: 'var(--text-muted)' }}>Terms of Service</Link>
