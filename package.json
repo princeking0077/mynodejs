@@ -9,7 +9,8 @@
         "build:local": "npm run build --prefix client",
         "start": "node index.js",
         "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
-        "setup": "node server/setup.js"
+        "setup": "node server/setup.js",
+        "db:update": "node server/add_seo_columns.js"
     },
     "dependencies": {
         "concurrently": "^8.2.2",
