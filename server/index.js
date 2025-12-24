@@ -113,6 +113,19 @@ app.get('/test-db', async (req, res) => {
 });
 // --------------------------------------------------
 
+// AUTO-MIGRATION: Fix Schema on Startup
+(async () => {
+    try {
+        const connection = await pool.getConnection(); // Use the existing pool
+        await connection.query("ALTER TABLE content MODIFY COLUMN blog_content LONGTEXT");
+        console.log("✅ SCHEMA AUTO-FIX: blog_content upgraded to LONGTEXT");
+        connection.release();
+    } catch (e) {
+        // If error is not "duplicate", log it. But usually safe to ignore if it fails (e.g. conn error)
+        console.log("ℹ️ Schema Fix Attempted:", e.message);
+    }
+})();
+
 app.get('/reset-admin', async (req, res) => {
     try {
         const pool = require('./db');
