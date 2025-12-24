@@ -6,6 +6,8 @@ import { Lock, Upload, FileText, CheckSquare, LogOut, Plus, Save, Trash } from '
 import { curriculum } from '../../data/curriculum';
 import { api } from '../../services/api';
 import SEO from '../../components/SEO';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const AdminDashboard = () => {
     const { currentUser, login, logout } = useAuth();
@@ -24,6 +26,7 @@ const AdminDashboard = () => {
     const [youtubeId, setYoutubeId] = useState(''); // YouTube Video ID
     const [metaTitle, setMetaTitle] = useState(''); // SEO
     const [metaDescription, setMetaDescription] = useState(''); // SEO
+    const [blogContent, setBlogContent] = useState(''); // Rich Text Content
     const [animationCode, setAnimationCode] = useState(''); // HTML/JS Code
     const [quizQuestions, setQuizQuestions] = useState([]);
     const [faqs, setFaqs] = useState([]); // FAQs State
@@ -108,6 +111,7 @@ const AdminDashboard = () => {
         setYoutubeId(topic.youtube_id || '');
         setMetaTitle(topic.meta_title || '');
         setMetaDescription(topic.meta_description || '');
+        setBlogContent(topic.blog_content || ''); // Load Blog Content
         setAnimationCode(topic.description); // We stored code in description
         setQuizQuestions(topic.quiz_data || []);
         setFaqs(topic.faqs || []); // Load FAQs
@@ -123,6 +127,7 @@ const AdminDashboard = () => {
         setYoutubeId('');
         setMetaTitle('');
         setMetaDescription('');
+        setBlogContent('');
         setAnimationCode('');
         setQuizQuestions([]);
         setFaqs([]);
@@ -181,6 +186,7 @@ const AdminDashboard = () => {
                 metaDescription,
                 type: 'animation',
                 description: animationCode,
+                blogContent: blogContent,
                 quiz: quizQuestions,
                 faqs: faqs
             };
@@ -444,6 +450,14 @@ const AdminDashboard = () => {
                                         rows={10}
                                         style={{ width: '100%', padding: '0.8rem', borderRadius: '0.5rem', background: '#0f172a', color: '#a5b4fc', border: '1px solid var(--border)', fontFamily: 'monospace' }}
                                     />
+                                </div>
+
+                                {/* Blog / Study Notes Editor */}
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem' }}>Study Notes / Blog Content</label>
+                                    <div style={{ background: 'white', color: 'black', borderRadius: '0.5rem', overflow: 'hidden' }}>
+                                        <ReactQuill theme="snow" value={blogContent} onChange={setBlogContent} style={{ height: '300px', marginBottom: '3rem' }} />
+                                    </div>
                                 </div>
 
                                 {/* Notes Upload */}
