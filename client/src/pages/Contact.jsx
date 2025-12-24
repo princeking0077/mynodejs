@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SEO from '../components/SEO';
 import Layout from '../components/Layout';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 
@@ -8,80 +9,63 @@ const Contact = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         setSubmitted(true);
-        // Here you would integrate EmailJS or Firebase function
     };
 
     return (
         <Layout>
-            <div className="container">
+            <SEO title="Contact Us" description="Get in touch with the LearnPharmacy team." />
+
+            <div className="container" style={{ paddingBottom: '4rem' }}>
                 <div style={{ textAlign: 'center', marginBottom: '4rem', marginTop: '4rem' }}>
-                    <h1 className="text-gradient" style={{ fontSize: '3.5rem', marginBottom: '1.5rem', fontWeight: '800' }}>Get in Touch</h1>
+                    <h1 className="gradient-text" style={{ fontSize: '3rem', marginBottom: '1rem', fontWeight: '800' }}>Get in Touch</h1>
                     <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem' }}>
                         Have questions or feedback? We'd love to hear from you.
                     </p>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'start' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem', alignItems: 'start' }}>
 
                     {/* Contact Info */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                        <div className="glass-panel" style={{ padding: '2rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                            <div style={{ background: 'rgba(34,211,238,0.1)', padding: '1rem', borderRadius: '50%', color: '#22d3ee' }}>
-                                <Mail size={24} />
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                        {[{ icon: Mail, title: 'Email Us', desc: 'support@learnpharmacy.in', color: '#22d3ee' },
+                        { icon: Phone, title: 'Call Us', desc: '+91 98765 43210', color: '#a855f7' },
+                        { icon: MapPin, title: 'Location', desc: 'Hyderabad, India', color: '#ec4899' }
+                        ].map((item, i) => (
+                            <div key={i} className="glass-panel" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                                <div style={{ background: `${item.color}20`, padding: '0.8rem', borderRadius: '50%', color: item.color }}>
+                                    <item.icon size={22} />
+                                </div>
+                                <div>
+                                    <h3 style={{ marginBottom: '0.2rem', fontSize: '1.1rem' }}>{item.title}</h3>
+                                    <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>{item.desc}</p>
+                                </div>
                             </div>
-                            <div>
-                                <h3 style={{ marginBottom: '0.2rem' }}>Email Us</h3>
-                                <p style={{ color: 'var(--text-muted)' }}>support@apexapps.in</p>
-                            </div>
-                        </div>
-
-                        <div className="glass-panel" style={{ padding: '2rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                            <div style={{ background: 'rgba(168,85,247,0.1)', padding: '1rem', borderRadius: '50%', color: '#a855f7' }}>
-                                <Phone size={24} />
-                            </div>
-                            <div>
-                                <h3 style={{ marginBottom: '0.2rem' }}>Call Us</h3>
-                                <p style={{ color: 'var(--text-muted)' }}>+91 98765 43210</p>
-                            </div>
-                        </div>
-
-                        <div className="glass-panel" style={{ padding: '2rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                            <div style={{ background: 'rgba(236,72,153,0.1)', padding: '1rem', borderRadius: '50%', color: '#ec4899' }}>
-                                <MapPin size={24} />
-                            </div>
-                            <div>
-                                <h3 style={{ marginBottom: '0.2rem' }}>Location</h3>
-                                <p style={{ color: 'var(--text-muted)' }}>Hyderabad, India</p>
-                            </div>
-                        </div>
+                        ))}
                     </div>
 
                     {/* Form */}
-                    <div className="glass-panel" style={{ padding: '3rem' }}>
+                    <div className="glass-panel" style={{ padding: '2.5rem' }}>
                         {!submitted ? (
                             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                                 <div>
-                                    <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Your Name</label>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>Your Name</label>
                                     <input type="text" placeholder="John Doe" required
-                                        style={{ width: '100%', padding: '1rem', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: '0.5rem', color: 'white' }}
+                                        style={{ width: '100%', padding: '0.9rem', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '0.5rem', color: 'white', outline: 'none' }}
                                     />
                                 </div>
                                 <div>
-                                    <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Email Address</label>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>Email Address</label>
                                     <input type="email" placeholder="john@example.com" required
-                                        style={{ width: '100%', padding: '1rem', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: '0.5rem', color: 'white' }}
+                                        style={{ width: '100%', padding: '0.9rem', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '0.5rem', color: 'white', outline: 'none' }}
                                     />
                                 </div>
                                 <div>
-                                    <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)' }}>Message</label>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>Message</label>
                                     <textarea placeholder="How can we help you?" rows={5} required
-                                        style={{ width: '100%', padding: '1rem', background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border)', borderRadius: '0.5rem', color: 'white', fontFamily: 'inherit' }}
+                                        style={{ width: '100%', padding: '0.9rem', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '0.5rem', color: 'white', fontFamily: 'inherit', outline: 'none' }}
                                     />
                                 </div>
-                                <button type="submit" style={{
-                                    padding: '1rem', background: 'var(--primary)', color: 'black', fontWeight: 'bold', border: 'none', borderRadius: '0.5rem',
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', cursor: 'pointer', marginTop: '1rem'
-                                }}>
+                                <button type="submit" className="btn btn-primary" style={{ justifyContent: 'center' }}>
                                     <Send size={18} /> Send Message
                                 </button>
                             </form>
@@ -92,7 +76,7 @@ const Contact = () => {
                                 </div>
                                 <h2>Message Sent!</h2>
                                 <p style={{ color: 'var(--text-muted)', marginTop: '0.5rem' }}>Thank you for reaching out. We will get back to you shortly.</p>
-                                <button onClick={() => setSubmitted(false)} style={{ marginTop: '2rem', background: 'transparent', border: '1px solid var(--primary)', color: 'var(--primary)', padding: '0.5rem 1.5rem', borderRadius: '2rem', cursor: 'pointer' }}>
+                                <button onClick={() => setSubmitted(false)} className="btn btn-glass" style={{ marginTop: '2rem' }}>
                                     Send Another
                                 </button>
                             </div>

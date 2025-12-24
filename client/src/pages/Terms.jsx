@@ -11,7 +11,7 @@ const Terms = () => {
 
                     <section style={{ marginBottom: '2rem' }}>
                         <h2 style={{ marginBottom: '1rem', color: 'var(--primary)' }}>1. Acceptance of Terms</h2>
-                        <p>By accessing and using <strong>ApexApps.in</strong>, you accept and agree to be bound by the terms and provision of this agreement.</p>
+                        <p>By accessing and using <strong>LearnPharmacy.in</strong>, you accept and agree to be bound by the terms and provision of this agreement.</p>
                     </section>
 
                     <section style={{ marginBottom: '2rem' }}>
@@ -21,7 +21,7 @@ const Terms = () => {
 
                     <section style={{ marginBottom: '2rem' }}>
                         <h2 style={{ marginBottom: '1rem', color: 'var(--primary)' }}>3. Intellectual Property</h2>
-                        <p>All content, including the custom 3D animations, code, and design, is the intellectual property of ApexApps.in. Unauthorized redistribution or commercial use is strictly prohibited.</p>
+                        <p>All content, including the custom 3D animations, code, and design, is the intellectual property of LearnPharmacy.in. Unauthorized redistribution or commercial use is strictly prohibited.</p>
                     </section>
 
                     <section>
