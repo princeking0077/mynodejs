@@ -110,8 +110,9 @@ const AdminDashboard = () => {
         setTopicTitle(topic.title);
         // Auto-extract ID if full URL was stored conventionally
         const ytVal = topic.youtube_id || '';
-        const ytMatch = ytVal.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([^&]+)/);
-        setYoutubeId(ytMatch ? ytMatch[1] : ytVal);
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+        const ytMatch = ytVal.match(regExp);
+        setYoutubeId((ytMatch && ytMatch[2].length === 11) ? ytMatch[2] : ytVal);
         setBlogContent(topic.blog_content || '');
         setMetaTitle(topic.meta_title || '');
         setMetaDescription(topic.meta_description || '');
@@ -437,15 +438,16 @@ const AdminDashboard = () => {
                                         value={youtubeId}
                                         onChange={e => {
                                             const val = e.target.value;
-                                            // Auto-extract ID if URL is pasted
-                                            const match = val.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([^&]+)/);
-                                            setYoutubeId(match ? match[1] : val);
+                                            // Robust Regex for ID extraction
+                                            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+                                            const match = val.match(regExp);
+                                            setYoutubeId((match && match[2].length === 11) ? match[2] : val);
                                         }}
                                         placeholder="Paste full YouTube URL or just the ID"
                                         style={{ width: '100%', padding: '0.8rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)' }}
                                     />
                                     <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
-                                        You can paste the full video URL (e.g. https://youtu.be/...) and we'll fix it.
+                                        Supports Shorts, standard videos, and shortened URLs.
                                     </p>
                                 </div>
 

@@ -272,9 +272,14 @@ const SubjectView = () => {
                                         <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, borderRadius: '1rem', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)' }}>
                                             <iframe
                                                 src={`https://www.youtube.com/embed/${(() => {
-                                                    const val = selectedTopic.youtubeId;
-                                                    const match = val.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([^&]+)/);
-                                                    return match ? match[1] : val;
+                                                    const url = selectedTopic.youtubeId || '';
+                                                    // Robust Regex for ID extraction
+                                                    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+                                                    const match = url.match(regExp);
+
+                                                    // If match found, return ID (match[2]). 
+                                                    // If no match (implied it's already an ID?), return strictly if it looks like an ID, else return original (fallback)
+                                                    return (match && match[2].length === 11) ? match[2] : url;
                                                 })()}`}
                                                 title={selectedTopic.title}
                                                 style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
