@@ -6,7 +6,7 @@ const updateSchema = async () => {
         const connection = await mysql.createConnection({
             host: process.env.DB_HOST || 'localhost',
             user: process.env.DB_USER || 'root',
-            password: process.env.DB_PASSWORD || '',
+            password: process.env.DB_PASS || process.env.DB_PASSWORD || '',
             database: process.env.DB_NAME || 'pharmacy_db'
         });
 
@@ -49,12 +49,12 @@ const updateSchema = async () => {
             CREATE TABLE IF NOT EXISTS content (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 subject_id VARCHAR(50) NOT NULL,
-                title VARCHAR(200) NOT NULL,
-                slug VARCHAR(255) UNIQUE,
+                title VARCHAR(255) NOT NULL,
+                slug VARCHAR(255) NOT NULL UNIQUE,
                 type ENUM('animation', 'note', 'video', 'topic') DEFAULT 'topic',
                 file_url VARCHAR(500),
-                description TEXT,
-                blog_content TEXT,
+                description LONGTEXT,
+                blog_content LONGTEXT,
                 youtube_id VARCHAR(50),
                 quiz_data JSON,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

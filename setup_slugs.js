@@ -5,13 +5,17 @@ const runMigration = async () => {
     try {
         console.log("Starting Migration...");
 
-        // 1. Add 'slug' column to topics if not exists
+        // Prefer 'content' table; fall back to legacy 'topics' if needed
+        const [[{ content_table }]] = await pool.query("SELECT COUNT(*) AS content_table FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'content'");
+        const targetTable = content_table > 0 ? 'content' : 'topics';
+
+        // 1. Add 'slug' column to target table if not exists
         try {
-            await pool.query("ALTER TABLE topics ADD COLUMN slug VARCHAR(255) UNIQUE");
-            console.log("Added 'slug' column to topics.");
+            await pool.query(`ALTER TABLE ${targetTable} ADD COLUMN slug VARCHAR(255) UNIQUE`);
+            console.log(`Added 'slug' column to ${targetTable}.`);
         } catch (e) {
             if (e.code === 'ER_DUP_FIELDNAME') {
-                console.log("'slug' column already exists.");
+                console.log(`'slug' column already exists on ${targetTable}.`);
             } else {
                 console.error("Error adding slug column:", e);
             }
@@ -39,8 +43,8 @@ const runMigration = async () => {
         }
 
         // 3. Backfill Slugs
-        console.log("Backfilling slugs...");
-        const [topics] = await pool.query("SELECT id, title, slug FROM topics");
+        console.log(`Backfilling slugs on ${targetTable}...`);
+        const [topics] = await pool.query(`SELECT id, title, slug FROM ${targetTable}`);
 
         for (const topic of topics) {
             if (!topic.slug) {
@@ -50,8 +54,8 @@ const runMigration = async () => {
                     .replace(/^-+|-+$/g, '');   // Remove leading/trailing hyphens
 
                 // Ensure uniqueness (simple append id if needed, though rare for backfill)
-                await pool.query("UPDATE topics SET slug = ? WHERE id = ?", [slug, topic.id]);
-                console.log(`Generated slug '${slug}' for topic '${topic.title}'`);
+                await pool.query(`UPDATE ${targetTable} SET slug = ? WHERE id = ?`, [slug, topic.id]);
+                console.log(`Generated slug '${slug}' for record '${topic.title}' in ${targetTable}`);
             }
         }
 

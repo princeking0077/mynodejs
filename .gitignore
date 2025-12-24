@@ -1,0 +1,15 @@
+node_modules
+dist
+dist-*
+*.zip
+client_build
+deploy_package
+.env
+.env.*
+!.env.example
+*.log
+pharmacy-app-win32-x64
+ApexApps_Deployment_v1
+ApexApps_Final_Rebuild
+backup_untracked
+hostinger-clean

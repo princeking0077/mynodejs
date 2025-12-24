@@ -1,0 +1,102 @@
+{
+  "info": {
+    "name": "ApexApps Backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/health.php",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "health.php"]
+        }
+      }
+    },
+    {
+      "name": "Login (captures token)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let data = {};",
+              "try { data = pm.response.json(); } catch(e) {}",
+              "if (data.token) { pm.collectionVariables.set('token', data.token); }"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/login.php",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "login.php"]
+        }
+      }
+    },
+    {
+      "name": "Verify Token",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/verify_token.php",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "verify_token.php"]
+        }
+      }
+    },
+    {
+      "name": "Get Settings",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/get_settings.php",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "get_settings.php"]
+        }
+      }
+    },
+    {
+      "name": "Save Settings (protected)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"google_analytics_id\": \"G-XXXXXXX\",\n  \"google_search_console\": \"\",\n  \"google_adsense_code\": \"\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/save_settings.php",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "save_settings.php"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "https://your-domain.com" },
+    { "key": "email", "value": "admin@example.com" },
+    { "key": "password", "value": "yourpassword" },
+    { "key": "token", "value": "" }
+  ]
+}

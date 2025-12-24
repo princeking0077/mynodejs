@@ -26,7 +26,7 @@ async function setup() {
             database: process.env.DB_NAME
         });
 
-        // 1. Users Table
+        // 1. Users Table (minimal fields needed by auth)
         await db.query(`
             CREATE TABLE IF NOT EXISTS users (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -35,7 +35,7 @@ async function setup() {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `);
-        console.log("Users table created.");
+        console.log("Users table ready.");
 
         // 2. Settings Table
         await db.query(`
@@ -46,23 +46,64 @@ async function setup() {
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             )
         `);
-        console.log("Settings table created.");
+        console.log("Settings table ready.");
 
-        // 3. Topics Table (Content)
+        // 3. Content Table (matches API usage)
         await db.query(`
-            CREATE TABLE IF NOT EXISTS topics (
+            CREATE TABLE IF NOT EXISTS content (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 subject_id VARCHAR(50) NOT NULL,
                 title VARCHAR(255) NOT NULL,
-                description LONGTEXT, /* Animation Code */
-                blog_content LONGTEXT, /* Rich Text Blog */
+                slug VARCHAR(255) NOT NULL UNIQUE,
+                description LONGTEXT,
+                blog_content LONGTEXT,
                 youtube_id VARCHAR(50),
-                file_url VARCHAR(255),
+                file_url VARCHAR(500),
                 quiz_data JSON,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `);
-        console.log("Topics table created.");
+        try {
+            await db.query("CREATE INDEX idx_content_subject_slug ON content(subject_id, slug)");
+        } catch (e) {
+            if (e.code !== 'ER_DUP_KEYNAME') {
+                console.error("Index creation failed:", e.message);
+            }
+        }
+        console.log("Content table ready.");
+
+        // Optional: migrate legacy 'topics' table into 'content' once
+        const [[{ table_count }]] = await db.query("SELECT COUNT(*) AS table_count FROM information_schema.tables WHERE table_schema = ? AND table_name = 'topics'", [process.env.DB_NAME]);
+        const [[{ content_rows }]] = await db.query("SELECT COUNT(*) AS content_rows FROM content");
+
+        if (table_count > 0 && content_rows === 0) {
+            console.log("Found legacy 'topics' table. Copying rows into 'content'...");
+            const [topics] = await db.query("SELECT subject_id, title, description, blog_content, youtube_id, file_url, quiz_data, created_at FROM topics");
+
+            const generateSlug = (text) => text.toString().toLowerCase()
+                .replace(/\s+/g, '-')
+                .replace(/[^\w\-]+/g, '')
+                .replace(/\-\-+/g, '-')
+                .replace(/^-+/, '')
+                .replace(/-+$/, '');
+
+            for (const row of topics) {
+                let slug = generateSlug(row.title || "");
+                if (!slug) slug = `item-${Date.now()}`;
+
+                // Ensure slug uniqueness on import
+                const [existing] = await db.query("SELECT id FROM content WHERE slug = ?", [slug]);
+                if (existing.length > 0) {
+                    slug = `${slug}-${Date.now()}`;
+                }
+
+                await db.query(
+                    "INSERT INTO content (subject_id, title, slug, description, blog_content, youtube_id, file_url, quiz_data, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    [row.subject_id, row.title, slug, row.description, row.blog_content, row.youtube_id, row.file_url, row.quiz_data, row.created_at]
+                );
+            }
+            console.log(`Migrated ${topics.length} rows from 'topics' to 'content'.`);
+        }
 
         // Create Default Admin User
         const [rows] = await db.query("SELECT * FROM users WHERE email = 'admin@apexapps.in'");
