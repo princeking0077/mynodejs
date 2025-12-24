@@ -72,8 +72,8 @@ app.use(helmet({
 app.use(compression());
 app.use(morgan('combined'));
 app.use(cors());
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.json({ limit: '200mb' }));
+app.use(express.urlencoded({ extended: true, limit: '200mb' }));
 
 // Serve Uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -88,7 +88,7 @@ app.use('/api/settings', require('./routes/settings.routes'));
 
 // Health & Debug
 app.get('/api/health', (req, res) => res.json({ message: "Pharma Server Running" }));
-app.get('/api/ping', (req, res) => res.send("PONG - Production Server Alive"));
+app.get('/api/ping', (req, res) => res.send("PONG - Production Server Alive (v2.0 - 200MB Limit)"));
 
 app.get('/api/debug-status', async (req, res) => {
     try {
