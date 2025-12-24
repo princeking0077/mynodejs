@@ -8,9 +8,11 @@ import Layout from '../components/Layout';
 
 const YearView = () => {
     const { yearId } = useParams();
-    // Handle both direct ID match or numeric shortcut (e.g., '1' -> 'year-1')
-    const lookupId = yearId.startsWith('year-') ? yearId : `year-${yearId}`;
-    const yearData = curriculum.find(y => y.id === lookupId);
+    // Handle both direct ID match (e.g., 'gpat-module') or numeric shortcut (e.g., '1' -> 'year-1')
+    let yearData = curriculum.find(y => y.id === yearId);
+    if (!yearData) {
+        yearData = curriculum.find(y => y.id === `year-${yearId}`);
+    }
 
     if (!yearData) {
         return (
