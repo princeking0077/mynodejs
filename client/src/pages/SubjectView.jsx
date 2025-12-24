@@ -231,16 +231,24 @@ const SubjectView = () => {
                 </div>
 
                 <style>{`
-                    @media (max-width: 900px) {
-                        /* Force Topic List to Top on Mobile */
-                        .subject-grid { display: flex !important; flexDirection: column; gap: 2rem; }
+                    @media (max-width: 1024px) {
+                        /* Force Topic List to Top on Mobile/Tablet */
+                        .subject-grid { 
+                            display: flex !important; 
+                            flex-direction: column; 
+                            gap: 1.5rem; 
+                        }
                         .subject-grid > div:first-child { 
                             position: relative !important; 
                             top: 0 !important; 
-                            max-height: 300px !important;
+                            max-height: 250px !important; /* Limit height of list on mobile */
                             order: 0 !important;
+                            width: 100% !important;
                         }
-                        .subject-grid > div:last-child { order: 1 !important; }
+                        .subject-grid > div:last-child { 
+                            order: 1 !important; 
+                            width: 100% !important;
+                        }
                     }
                 `}</style>
             </main>
