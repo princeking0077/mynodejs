@@ -67,7 +67,8 @@ const app = express();
 // Middleware
 app.use(helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
-    contentSecurityPolicy: false // Allow inline scripts for React/Images
+    contentSecurityPolicy: false, // Allow inline scripts for React/Images
+    xRobotsTag: false // Allow Googlebot and AdSense to crawl
 }));
 app.use(compression());
 app.use(morgan('combined'));
