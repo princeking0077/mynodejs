@@ -5,7 +5,8 @@
     "description": "Root Orchestration for Pharma App",
     "scripts": {
         "postinstall": "npm install --prefix server && npm install --prefix client",
-        "build": "npm run build --prefix client",
+        "build": "echo 'Skipping build on server - using pre-built assets from git'",
+        "build:local": "npm run build --prefix client",
         "start": "node index.js",
         "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
         "setup": "node server/setup.js"
