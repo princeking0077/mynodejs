@@ -113,8 +113,18 @@ const AdminDashboard = () => {
         setMetaTitle(topic.meta_title || '');
         setMetaDescription(topic.meta_description || '');
         setAnimationCode(topic.description); // We stored code in description
-        setQuizQuestions(topic.quiz_data || []);
-        setFaqs(typeof topic.faqs === 'string' ? JSON.parse(topic.faqs) : (topic.faqs || []));
+        // Safely parse JSON fields
+        let parsedQuiz = [];
+        try {
+            parsedQuiz = typeof topic.quiz_data === 'string' ? JSON.parse(topic.quiz_data) : (topic.quiz_data || []);
+        } catch (e) { console.warn("Quiz parse error", e); }
+        setQuizQuestions(Array.isArray(parsedQuiz) ? parsedQuiz : []);
+
+        let parsedFaqs = [];
+        try {
+            parsedFaqs = typeof topic.faqs === 'string' ? JSON.parse(topic.faqs) : (topic.faqs || []);
+        } catch (e) { console.warn("FAQ parse error", e); }
+        setFaqs(Array.isArray(parsedFaqs) ? parsedFaqs : []);
         setNotesFile(null); // Reset file input
         setError('');
         setSuccessMsg('');
