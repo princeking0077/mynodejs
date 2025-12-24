@@ -5,7 +5,7 @@ const path = require('path');
 
 // HARDCODED CREDENTIALS FOR VERIFICATION
 const dbConfig = {
-    host: 'localhost',
+    host: '127.0.0.1',
     user: 'u480091743_shoaib',
     password: 'Shaikh@001001',
     database: 'u480091743_pharmacy',

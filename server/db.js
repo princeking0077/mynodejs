@@ -10,7 +10,7 @@ if (!process.env.DB_USER) {
 }
 
 const pool = mysql.createPool({
-    host: 'localhost',
+    host: '127.0.0.1', // Force IPv4 to avoid ::1 access denied errors
     user: 'u480091743_shoaib',
     password: 'Shaikh@001001',
     database: 'u480091743_pharmacy',
