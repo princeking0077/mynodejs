@@ -2,6 +2,42 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+
+// --- SERVER-SIDE BOOTSTRAP PROTECTION ---
+// Hostinger often runs this file directly, so we must protect it here too.
+const logCrash = (type, err) => {
+    const report = `
+    TIME: ${new Date().toISOString()}
+    TYPE: ${type}
+    MESSAGE: ${err.message || err}
+    STACK: ${err.stack || 'No stack trace'}
+    \n`;
+    try {
+        // Write to BOTH locations to be safe
+        fs.appendFileSync(path.join(__dirname, 'server_crash_report.txt'), report);
+        fs.appendFileSync(path.join(__dirname, '../crash_report.txt'), report); // Try parent too
+    } catch (fsErr) {
+        console.error('Failed to write crash report:', fsErr);
+    }
+};
+
+// AUTO-CLEANUP: Remove conflicting server/node_modules if present
+// This deletes ITSELF recursively if executed from within the bad folder?
+// No, this file is in 'server/index.js', we want to delete 'server/node_modules' relative to 'server/'??
+// Wait, the structure is ROOT/server/node_modules.
+// If we are IN ROOT/server/index.js, then node_modules is ./node_modules
+try {
+    const stalePath = path.join(__dirname, 'node_modules');
+    if (fs.existsSync(stalePath)) {
+        console.log('[Fix] Removing stale server/node_modules...');
+        fs.rmSync(stalePath, { recursive: true, force: true });
+        console.log('[Fix] Cleanup Complete.');
+    }
+} catch (e) {
+    console.error('[Warning] Cleanup failed:', e.message);
+    logCrash('CLEANUP_ERROR', e);
+}
+// ----------------------------------------
 const helmet = require('helmet');
 const compression = require('compression');
 const morgan = require('morgan');

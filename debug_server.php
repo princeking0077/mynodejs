@@ -121,5 +121,23 @@ if (file_exists('package.json')) {
     echo "❌ package.json MISSING";
 }
 
+echo "\n<h2>10. Deep Logic Check (server/index.js)</h2>";
+if (file_exists('server/index.js')) {
+    echo "--- FIRST 20 LINES ---\n";
+    $lines = array_slice(file('server/index.js'), 0, 20);
+    foreach ($lines as $line) {
+        echo htmlspecialchars($line);
+    }
+} else {
+    echo "❌ server/index.js MISSING";
+}
+
+echo "\n<h2>11. Server-Side Crash Report</h2>";
+if (file_exists('server/server_crash_report.txt')) {
+    echo "<pre>" . htmlspecialchars(file_get_contents('server/server_crash_report.txt')) . "</pre>";
+} else {
+    echo "No server/server_crash_report.txt found.";
+}
+
 echo "</pre>";
 ?>
