@@ -67,6 +67,8 @@ const SubjectView = () => {
                             }
                         })(),
                         blogContent: item.blog_content,
+                        metaTitle: item.meta_title,
+                        metaDescription: item.meta_description,
                         createdAt: item.created_at
                     }));
                 }
@@ -133,7 +135,10 @@ const SubjectView = () => {
 
     return (
         <Layout>
-            <SEO title={subjectStatic.title} description={`Learn ${subjectStatic.title} - Notes, Animations, and Quizzes.`} />
+            <SEO
+                title={selectedTopic?.metaTitle || selectedTopic?.title || subjectStatic.title}
+                description={selectedTopic?.metaDescription || `Learn ${subjectStatic.title} - Notes, Animations, and Quizzes.`}
+            />
 
             <main className="container" style={{ paddingBottom: '4rem' }}>
                 {/* Download Modal */}
