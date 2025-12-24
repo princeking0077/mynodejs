@@ -6,8 +6,7 @@
     "scripts": {
         "build": "echo 'Skipping build on server - using pre-built assets from git'",
         "build:local": "npm run build --prefix client",
-        "prestart": "rm -rf server/node_modules server/package.json server/package-lock.json",
-        "start": "node index.js",
+        "start": "node start_server.js",
         "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
         "setup": "node server/setup.js",
         "db:update": "node server/add_seo_columns.js",
