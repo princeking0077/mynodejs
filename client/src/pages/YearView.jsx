@@ -66,7 +66,7 @@ const YearView = () => {
 
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
                                 {sem.subjects.map((sub) => {
-                                    const slug = sub.title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                                    const slug = sub.title.toLowerCase().replace(/–/g, '-').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
                                     return (
                                         <Link key={sub.id} to={`/subject/${slug}`} style={{ textDecoration: 'none' }}>
                                             <div className="glass-panel" style={{
