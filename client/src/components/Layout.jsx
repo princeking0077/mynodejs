@@ -64,6 +64,9 @@ const Layout = ({ children }) => {
                 zIndex: 10
             }}>
                 <p>&copy; {new Date().getFullYear()} <span style={{ color: 'white' }}>LearnPharmacy.in</span>. All rights reserved.</p>
+                <p style={{ marginTop: '0.5rem', opacity: 0.7, fontSize: '0.85rem' }}>
+                    Created and designed by Pharmacy Students <span style={{ color: 'var(--primary)' }}>Shaikh Shoaib</span> and <span style={{ color: 'var(--primary)' }}>Yousha Ansari</span>
+                </p>
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', marginTop: '1rem' }}>
                     <Link to="/about" style={{ color: 'var(--text-muted)' }}>About Us</Link>
                     <Link to="/contact" style={{ color: 'var(--text-muted)' }}>Contact Us</Link>
