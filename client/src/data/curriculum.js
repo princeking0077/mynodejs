@@ -1,16 +1,23 @@
 export const curriculum = [
     {
-        id: 'gpat-notes',
-        title: 'GPAT Notes',
+        id: 'gpat-module',
+        title: 'GPAT & Competitive Exams',
         semesters: [
             {
+                id: 'gpat-60-days',
+                title: '60 Days Crack GPAT',
+                subjects: Array.from({ length: 60 }, (_, i) => ({
+                    id: `gpat-day-${i + 1}`,
+                    title: `Day ${i + 1}`,
+                    type: 'Study Plan'
+                }))
+            },
+            {
                 id: 'gpat-resources',
-                title: 'Study Materials',
+                title: 'Additional Resources',
                 subjects: [
                     { id: 'gpat-prev-years', title: 'Previous Year Papers', type: 'PDFs & Solutions' },
-                    { id: 'gpat-mock-tests', title: 'Mock Tests', type: 'Interactive' },
-                    { id: 'gpat-study-notes', title: 'Subject-wise Notes', type: 'Notes' },
-                    { id: 'gpat-videos', title: 'Video Lectures', type: 'Videos' }
+                    { id: 'gpat-mock-tests', title: 'Mock Tests', type: 'Interactive' }
                 ]
             }
         ]

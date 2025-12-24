@@ -143,10 +143,11 @@ const Home = () => {
                         gap: '2rem'
                     }}>
                         {[
-                            { year: '1st Year', desc: 'Semesters 1 & 2', color: '#3b82f6', id: '1' },
-                            { year: '2nd Year', desc: 'Semesters 3 & 4', color: '#10b981', id: '2' },
-                            { year: '3rd Year', desc: 'Semesters 5 & 6', color: '#f59e0b', id: '3' },
-                            { year: '4th Year', desc: 'Semesters 7 & 8', color: '#8b5cf6', id: '4' }
+                            { year: 'GPAT / Competitive', desc: '60 Days Crash Course', color: '#ef4444', id: 'gpat-module' },
+                            { year: '1st Year', desc: 'Semesters 1 & 2', color: '#3b82f6', id: 'year-1' },
+                            { year: '2nd Year', desc: 'Semesters 3 & 4', color: '#10b981', id: 'year-2' },
+                            { year: '3rd Year', desc: 'Semesters 5 & 6', color: '#f59e0b', id: 'year-3' },
+                            { year: '4th Year', desc: 'Semesters 7 & 8', color: '#8b5cf6', id: 'year-4' }
                         ].map((item, index) => (
                             <Link to={`/year/${item.id}`} key={item.id} style={{ textDecoration: 'none' }}>
                                 <motion.div
