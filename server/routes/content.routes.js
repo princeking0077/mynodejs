@@ -91,8 +91,11 @@ router.post('/', authenticateToken, async (req, res) => {
         );
         res.json({ message: "Topic created successfully", slug });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Failed to create topic" });
+        console.error("Save Topic DB Error:", error);
+        res.status(500).json({
+            message: "Failed to create topic: " + (error.sqlMessage || error.message),
+            code: error.code
+        });
     }
 });
 
@@ -119,8 +122,11 @@ router.put('/', authenticateToken, async (req, res) => {
         await pool.query(sql, params);
         res.json({ message: "Topic updated successfully" });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Failed to update topic" });
+        console.error("Update Topic DB Error:", error);
+        res.status(500).json({
+            message: "Failed to update topic: " + (error.sqlMessage || error.message),
+            code: error.code
+        });
     }
 });
 
