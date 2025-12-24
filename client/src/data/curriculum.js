@@ -1,5 +1,21 @@
 export const curriculum = [
     {
+        id: 'gpat-notes',
+        title: 'GPAT Notes',
+        semesters: [
+            {
+                id: 'gpat-resources',
+                title: 'Study Materials',
+                subjects: [
+                    { id: 'gpat-prev-years', title: 'Previous Year Papers', type: 'PDFs & Solutions' },
+                    { id: 'gpat-mock-tests', title: 'Mock Tests', type: 'Interactive' },
+                    { id: 'gpat-study-notes', title: 'Subject-wise Notes', type: 'Notes' },
+                    { id: 'gpat-videos', title: 'Video Lectures', type: 'Videos' }
+                ]
+            }
+        ]
+    },
+    {
         id: 'year-1',
         title: 'First Year',
         semesters: [
