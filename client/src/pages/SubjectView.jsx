@@ -27,8 +27,10 @@ const SubjectView = () => {
         for (const year of curriculum) {
             for (const sem of year.semesters) {
                 // Try to find by partial match or ID if legacy
+                const normalize = (str) => str.toLowerCase().replace(/–/g, '-').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
                 const sub = sem.subjects.find(s =>
-                    s.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') === subjectSlug ||
+                    normalize(s.title) === subjectSlug ||
                     s.id === subjectSlug
                 );
                 if (sub) return { ...sub, yearId: year.id, yearTitle: year.title, semTitle: sem.title };
@@ -98,9 +100,13 @@ const SubjectView = () => {
     };
 
     if (!subjectStatic) return (
-        <div className="container flex-center" style={{ minHeight: '60vh' }}>
-            <h2>Subject Not Found</h2>
-        </div>
+        <Layout>
+            <div className="container flex-center" style={{ minHeight: '60vh', flexDirection: 'column', gap: '1rem' }}>
+                <h2>Subject Not Found</h2>
+                <p style={{ color: 'var(--text-muted)' }}>We couldn't find a subject with the ID or name "{subjectSlug}".</p>
+                <Link to="/year/1" className="btn btn-primary">Browse All Subjects</Link>
+            </div>
+        </Layout>
     );
 
     return (
