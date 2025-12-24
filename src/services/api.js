@@ -42,9 +42,8 @@ export const api = {
     // Admin Login
     login: async (email, password) => {
         try {
-                const useNode = await detectNodeApi();
-                const url = useNode ? `${API_BASE_URL}/auth/login` : `${API_BASE_URL}/login.php`;
-                const response = await fetch(url, {
+            const url = `${API_BASE_URL}/auth/login`;
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
