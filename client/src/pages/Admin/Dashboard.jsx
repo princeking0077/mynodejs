@@ -25,6 +25,7 @@ const AdminDashboard = () => {
     const [metaDescription, setMetaDescription] = useState(''); // SEO
     const [animationCode, setAnimationCode] = useState(''); // HTML/JS Code
     const [quizQuestions, setQuizQuestions] = useState([]);
+    const [faqs, setFaqs] = useState([]); // FAQs State
     const [notesFile, setNotesFile] = useState(null);
     const [loading, setLoading] = useState(false);
     const [successMsg, setSuccessMsg] = useState('');
@@ -107,6 +108,7 @@ const AdminDashboard = () => {
         setMetaDescription(topic.meta_description || '');
         setAnimationCode(topic.description); // We stored code in description
         setQuizQuestions(topic.quiz_data || []);
+        setFaqs(topic.faqs || []); // Load FAQs
         setNotesFile(null); // Reset file input
         setError('');
         setSuccessMsg('');
@@ -120,6 +122,7 @@ const AdminDashboard = () => {
         setMetaDescription('');
         setAnimationCode('');
         setQuizQuestions([]);
+        setFaqs([]);
         setNotesFile(null);
     };
 
@@ -174,7 +177,8 @@ const AdminDashboard = () => {
                 metaDescription,
                 type: 'animation',
                 description: animationCode,
-                quiz: quizQuestions
+                quiz: quizQuestions,
+                faqs: faqs
             };
 
             if (notesUrl) topicData.fileUrl = notesUrl;
@@ -252,9 +256,14 @@ const AdminDashboard = () => {
             <div className="container">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                     <h1>Content Manager</h1>
-                    <button onClick={handleLogout} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', padding: '0.5rem 1rem', background: 'rgba(239,68,68,0.2)', border: '1px solid #ef4444', color: '#ef4444', borderRadius: '0.5rem', cursor: 'pointer' }}>
-                        <LogOut size={16} /> Logout
-                    </button>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                        <button onClick={() => navigate('/admin/settings')} style={{ padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '0.5rem', cursor: 'pointer' }}>
+                            Global Settings
+                        </button>
+                        <button onClick={handleLogout} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', padding: '0.5rem 1rem', background: 'rgba(239,68,68,0.2)', border: '1px solid #ef4444', color: '#ef4444', borderRadius: '0.5rem', cursor: 'pointer' }}>
+                            <LogOut size={16} /> Logout
+                        </button>
+                    </div>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: '2rem', alignItems: 'start' }}>
@@ -477,6 +486,53 @@ const AdminDashboard = () => {
                                         style={{ marginTop: '1rem', padding: '0.5rem 1rem', borderRadius: '0.5rem', background: 'transparent', border: '1px dashed var(--text-muted)', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
                                     >
                                         <Plus size={16} /> Add Question
+                                    </button>
+                                </div>
+
+                                {/* FAQ Builder */}
+                                <div style={{ marginBottom: '2rem', padding: '1rem', background: 'rgba(255,255,255,0.02)', borderRadius: '0.5rem' }}>
+                                    <label style={{ display: 'block', marginBottom: '1rem', fontSize: '1.1rem', fontWeight: 'bold' }}>FAQs</label>
+
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                        {faqs.map((faq, idx) => (
+                                            <div key={idx} style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '0.5rem', position: 'relative' }}>
+                                                <button
+                                                    onClick={() => setFaqs(faqs.filter((_, i) => i !== idx))}
+                                                    style={{ position: 'absolute', top: '0.5rem', right: '0.5rem', background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}
+                                                >
+                                                    <Trash size={14} />
+                                                </button>
+                                                <input
+                                                    type="text"
+                                                    placeholder="Question"
+                                                    value={faq.question}
+                                                    onChange={e => {
+                                                        const newFaqs = [...faqs];
+                                                        newFaqs[idx].question = e.target.value;
+                                                        setFaqs(newFaqs);
+                                                    }}
+                                                    style={{ width: '100%', padding: '0.5rem', marginBottom: '0.5rem', borderRadius: '0.3rem', background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid var(--border)' }}
+                                                />
+                                                <textarea
+                                                    placeholder="Answer"
+                                                    value={faq.answer}
+                                                    onChange={e => {
+                                                        const newFaqs = [...faqs];
+                                                        newFaqs[idx].answer = e.target.value;
+                                                        setFaqs(newFaqs);
+                                                    }}
+                                                    rows={2}
+                                                    style={{ width: '100%', padding: '0.5rem', borderRadius: '0.3rem', background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)', border: '1px solid var(--border)' }}
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <button
+                                        onClick={() => setFaqs([...faqs, { question: '', answer: '' }])}
+                                        style={{ marginTop: '1rem', padding: '0.5rem 1rem', borderRadius: '0.5rem', background: 'transparent', border: '1px dashed var(--text-muted)', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                                    >
+                                        <Plus size={16} /> Add FAQ
                                     </button>
                                 </div>
 

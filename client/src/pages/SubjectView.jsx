@@ -89,10 +89,10 @@ const SubjectView = () => {
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 350px) 1fr', gap: '2rem', alignItems: 'start' }} className="subject-grid">
 
-                    {/* Sidebar: Topic List */}
-                    <div className="glass-panel" style={{ padding: '0', maxHeight: '75vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                    {/* Sidebar: Topic List (Desktop Sticky, Mobile Top) */}
+                    <div className="glass-panel" style={{ padding: '0', maxHeight: '80vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', position: 'sticky', top: '100px' }}>
                         <div style={{ padding: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(0,0,0,0.2)' }}>
-                            <h3 style={{ fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            <h3 style={{ fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
                                 <LayoutIcon size={18} /> Topics
                             </h3>
                         </div>
@@ -100,7 +100,10 @@ const SubjectView = () => {
                             {topics.map((t, idx) => (
                                 <div
                                     key={t.id || idx}
-                                    onClick={() => { setSelectedTopic(t); setActiveTab('animation'); }}
+                                    onClick={() => {
+                                        setSelectedTopic(t);
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                                    }}
                                     style={{
                                         padding: '1rem',
                                         borderRadius: 'var(--radius-sm)',
@@ -109,10 +112,12 @@ const SubjectView = () => {
                                         cursor: 'pointer',
                                         fontWeight: selectedTopic?.id === t.id ? '700' : '500',
                                         transition: 'all 0.2s',
-                                        display: 'flex', alignItems: 'center', justifyContent: 'space-between'
+                                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                        border: selectedTopic?.id === t.id ? 'none' : '1px solid transparent',
+                                        borderColor: selectedTopic?.id === t.id ? 'none' : 'rgba(255,255,255,0.05)'
                                     }}
                                 >
-                                    <span style={{ color: selectedTopic?.id === t.id ? 'black' : 'var(--text-main)' }}>{t.title}</span>
+                                    <span style={{ color: selectedTopic?.id === t.id ? 'black' : 'var(--text-main)', fontSize: '0.95rem' }}>{t.title}</span>
                                     {selectedTopic?.id === t.id && <ChevronRight size={16} />}
                                 </div>
                             ))}
@@ -120,88 +125,121 @@ const SubjectView = () => {
                         </div>
                     </div>
 
-                    {/* Main Content */}
-                    <div>
-                        {/* Tabs */}
-                        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
-                            {[
-                                { id: 'animation', label: 'Animation', icon: Play },
-                                { id: 'notes', label: 'Notes', icon: BookOpen },
-                                { id: 'quiz', label: 'Quiz', icon: PenTool }
-                            ].map(tab => (
-                                <button
-                                    key={tab.id}
-                                    onClick={() => setActiveTab(tab.id)}
-                                    style={{
-                                        display: 'flex', gap: '0.6rem', alignItems: 'center',
-                                        padding: '0.8rem 1.5rem', borderRadius: '50px', border: 'none',
-                                        background: activeTab === tab.id ? 'var(--primary)' : 'rgba(255,255,255,0.05)',
-                                        color: activeTab === tab.id ? 'black' : 'var(--text-muted)',
-                                        fontWeight: '700', cursor: 'pointer', transition: 'all 0.2s', fontSize: '0.95rem',
-                                        whiteSpace: 'nowrap'
-                                    }}
-                                >
-                                    <tab.icon size={18} /> {tab.label}
-                                </button>
-                            ))}
-                        </div>
+                    {/* Main Content Area - Vertical Flow */}
+                    <div style={{ minWidth: 0 }}> {/* minWidth 0 prevents flex child overflow */}
 
-                        {/* Content Display */}
-                        <motion.div
-                            key={activeTab + (selectedTopic?.id || 'none')}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3 }}
-                        >
-                            {!selectedTopic ? (
-                                <div className="glass-panel flex-center" style={{ padding: '4rem', flexDirection: 'column', color: 'var(--text-muted)' }}>
-                                    <LayoutIcon size={48} style={{ opacity: 0.2, marginBottom: '1rem' }} />
-                                    <p>Select a topic to view content</p>
-                                </div>
-                            ) : (
-                                <>
-                                    {activeTab === 'animation' && (
-                                        <div style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
-                                            <AnimationViewer animationId={selectedTopic?.animationId} code={selectedTopic?.animationCode} />
+                        {!selectedTopic ? (
+                            <div className="glass-panel flex-center" style={{ padding: '4rem', flexDirection: 'column', color: 'var(--text-muted)' }}>
+                                <LayoutIcon size={48} style={{ opacity: 0.2, marginBottom: '1rem' }} />
+                                <p>Select a topic to start learning</p>
+                            </div>
+                        ) : (
+                            <motion.div
+                                key={selectedTopic.id}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.4 }}
+                                style={{ display: 'flex', flexDirection: 'column', gap: '4rem' }}
+                            >
+                                {/* 1. YouTube Video Section */}
+                                {selectedTopic.youtubeId && (
+                                    <section>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1.5rem' }}>
+                                            <div style={{ background: '#ef4444', padding: '8px', borderRadius: '8px', display: 'flex' }}><Play size={20} color="white" fill="white" /></div>
+                                            <h2 style={{ fontSize: '1.8rem', fontWeight: '700', margin: 0 }}>Video Lecture</h2>
                                         </div>
-                                    )}
+                                        <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, borderRadius: '1rem', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                            <iframe
+                                                src={`https://www.youtube.com/embed/${selectedTopic.youtubeId}`}
+                                                title={selectedTopic.title}
+                                                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
+                                                allowFullScreen
+                                            />
+                                        </div>
+                                    </section>
+                                )}
 
-                                    {activeTab === 'notes' && (
-                                        <div className="glass-panel" style={{ padding: '4rem', textAlign: 'center' }}>
-                                            <div style={{ width: '80px', height: '80px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
-                                                <BookOpen size={40} color="var(--primary)" />
-                                            </div>
-                                            <h2 style={{ marginBottom: '0.5rem' }}>Digital Notes</h2>
-                                            <p style={{ color: 'var(--text-muted)', marginBottom: '2.5rem', maxWidth: '400px', marginLeft: 'auto', marginRight: 'auto' }}>
-                                                High-quality, simplified notes for <strong>{selectedTopic.title}</strong> created by top pharmacists.
-                                            </p>
+                                {/* 2. Theory / Notes Section */}
+                                <section>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1.5rem' }}>
+                                        <div style={{ background: '#3b82f6', padding: '8px', borderRadius: '8px', display: 'flex' }}><BookOpen size={20} color="white" /></div>
+                                        <h2 style={{ fontSize: '1.8rem', fontWeight: '700', margin: 0 }}>Study Notes</h2>
+                                    </div>
+                                    <div className="glass-panel" style={{ padding: '2.5rem', lineHeight: '1.8', fontSize: '1.05rem', color: 'var(--text-secondary)' }}>
+                                        {selectedTopic.blogContent ? (
+                                            <div dangerouslySetInnerHTML={{ __html: selectedTopic.blogContent }} />
+                                        ) : (
+                                            <p style={{ fontStyle: 'italic', color: 'var(--text-muted)' }}>No written notes available for this topic yet.</p>
+                                        )}
 
-                                            {selectedTopic.notesUrl ? (
-                                                <a href={selectedTopic.notesUrl} target="_blank" rel="noreferrer" className="btn btn-primary">
-                                                    <Download size={18} /> Download PDF Note
+                                        {selectedTopic.notesUrl && (
+                                            <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                                                <a href={selectedTopic.notesUrl} target="_blank" rel="noreferrer" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                                                    <Download size={18} /> Download PDF Version
                                                 </a>
-                                            ) : (
-                                                <button className="btn" style={{ background: 'rgba(255,255,255,0.1)', cursor: 'not-allowed', color: 'var(--text-muted)' }}>
-                                                    Notes Coming Soon
-                                                </button>
-                                            )}
-                                        </div>
-                                    )}
+                                            </div>
+                                        )}
+                                    </div>
+                                </section>
 
-                                    {activeTab === 'quiz' && (
+                                {/* 3. Animation Section */}
+                                {selectedTopic.animationCode && (
+                                    <section>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1.5rem' }}>
+                                            <div style={{ background: '#8b5cf6', padding: '8px', borderRadius: '8px', display: 'flex' }}><LayoutIcon size={20} color="white" /></div>
+                                            <h2 style={{ fontSize: '1.8rem', fontWeight: '700', margin: 0 }}>Interactive Simulation</h2>
+                                        </div>
+                                        <div style={{ borderRadius: '1rem', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', background: 'black' }}>
+                                            <AnimationViewer code={selectedTopic.animationCode} />
+                                        </div>
+                                    </section>
+                                )}
+
+                                {/* 4. FAQs Section (New) */}
+                                {selectedTopic.faqs && selectedTopic.faqs.length > 0 && (
+                                    <section>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1.5rem' }}>
+                                            <div style={{ background: '#f59e0b', padding: '8px', borderRadius: '8px', display: 'flex' }}><PenTool size={20} color="white" /></div>
+                                            <h2 style={{ fontSize: '1.8rem', fontWeight: '700', margin: 0 }}>Common Questions</h2>
+                                        </div>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                            {selectedTopic.faqs.map((faq, i) => (
+                                                <div key={i} className="glass-panel" style={{ padding: '1.5rem' }}>
+                                                    <h3 style={{ fontSize: '1.1rem', marginBottom: '0.8rem', color: 'white' }}>{faq.question}</h3>
+                                                    <p style={{ color: 'var(--text-muted)', margin: 0 }}>{faq.answer}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </section>
+                                )}
+
+                                {/* 5. Quiz Section */}
+                                {selectedTopic.quiz && selectedTopic.quiz.length > 0 && (
+                                    <section style={{ paddingBottom: '2rem' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1.5rem' }}>
+                                            <div style={{ background: '#10b981', padding: '8px', borderRadius: '8px', display: 'flex' }}><CheckSquare size={20} color="white" /></div>
+                                            <h2 style={{ fontSize: '1.8rem', fontWeight: '700', margin: 0 }}>Assessment Quiz</h2>
+                                        </div>
                                         <Quiz topicTitle={selectedTopic.title} questions={selectedTopic.quiz} />
-                                    )}
-                                </>
-                            )}
-                        </motion.div>
+                                    </section>
+                                )}
+
+                            </motion.div>
+                        )}
                     </div>
                 </div>
 
                 <style>{`
                     @media (max-width: 900px) {
-                        .subject-grid { grid-template-columns: 1fr !important; }
-                        .subject-grid > div:first-child { order: 2; maxHeight: 400px; }
-                        .subject-grid > div:last-child { order: 1; }
+                        /* Force Topic List to Top on Mobile */
+                        .subject-grid { display: flex !important; flexDirection: column; gap: 2rem; }
+                        .subject-grid > div:first-child { 
+                            position: relative !important; 
+                            top: 0 !important; 
+                            max-height: 300px !important;
+                            order: 0 !important;
+                        }
+                        .subject-grid > div:last-child { order: 1 !important; }
                     }
                 `}</style>
             </main>

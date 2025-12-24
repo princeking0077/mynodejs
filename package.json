@@ -10,7 +10,8 @@
         "start": "node index.js",
         "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
         "setup": "node server/setup.js",
-        "db:update": "node server/add_seo_columns.js"
+        "db:update": "node server/add_seo_columns.js",
+        "db:update:v2": "node server/update_schema_settings.js"
     },
     "dependencies": {
         "concurrently": "^8.2.2",

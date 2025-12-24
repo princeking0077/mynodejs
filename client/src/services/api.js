@@ -138,6 +138,54 @@ export const api = {
             console.error("Delete Topic Error", error);
             throw error;
         }
+    },
+
+    // Global Settings
+    getSettings: async () => {
+        try {
+            const user = JSON.parse(localStorage.getItem('apex_user'));
+            const response = await fetch(`${API_BASE_URL}/settings`, {
+                headers: {
+                    'Authorization': `Bearer ${user?.token}`
+                }
+            });
+            if (!response.ok) return {};
+            return await response.json();
+        } catch (error) {
+            console.error("Get Settings Error", error);
+            return {};
+        }
+    },
+
+    getPublicSettings: async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/settings/public`);
+            if (!response.ok) return {};
+            return await response.json();
+        } catch (error) {
+            console.error("Get Public Settings Error", error);
+            return {};
+        }
+    },
+
+    saveSettings: async (settings) => {
+        try {
+            const user = JSON.parse(localStorage.getItem('apex_user'));
+            const response = await fetch(`${API_BASE_URL}/settings`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user?.token}`
+                },
+                body: JSON.stringify(settings)
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || "Failed to save settings");
+            return data;
+        } catch (error) {
+            console.error("Save Settings Error", error);
+            throw error;
+        }
     }
 };
 

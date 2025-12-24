@@ -47,6 +47,7 @@ app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/content', require('./routes/content.routes'));
 app.use('/api/upload', require('./routes/upload.routes'));
 app.use('/api/settings', require('./routes/settings.routes'));
+app.use('/api/settings', require('./routes/settings.routes'));
 // app.use('/', require('./routes/ads.routes')); 
 
 // Health & Debug

@@ -1,13 +1,44 @@
 
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
 import CanvasBackground from './CanvasBackground';
 import { motion } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
+import { api } from '../services/api';
 
 const Layout = ({ children }) => {
+    const location = useLocation();
+    const [settings, setSettings] = useState({});
+
+    useEffect(() => {
+        api.getPublicSettings().then(setSettings).catch(console.error);
+        window.scrollTo(0, 0);
+    }, [location.pathname]);
+
     return (
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+            {/* Inject Global Scripts */}
+            {settings.google_analytics_id && (
+                <Helmet>
+                    <script async src={`https://www.googletagmanager.com/gtag/js?id=${settings.google_analytics_id}`}></script>
+                    <script>{`
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', '${settings.google_analytics_id}');
+                    `}</script>
+                </Helmet>
+            )}
+            {settings.google_search_console && (
+                <Helmet>
+                    <meta name="google-site-verification" content={settings.google_search_console.replace(/.*content="([^"]+)".*/, '$1')} />
+                </Helmet>
+            )}
+            {settings.adsense_code && (
+                <div dangerouslySetInnerHTML={{ __html: settings.adsense_code }} style={{ display: 'none' }} />
+            )}
+
             <CanvasBackground />
             <div className="noise-overlay"></div>
 
