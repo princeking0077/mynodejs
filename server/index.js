@@ -64,16 +64,40 @@ app.get('/api/debug-status', async (req, res) => {
 
 // Serve React Frontend (FINAL CATCH-ALL)
 // Serve React Frontend (Vite Build)
-const buildPath = path.join(__dirname, '../client/dist');
-if (fs.existsSync(buildPath)) {
+// Check multiple possible locations for robustness
+const possiblePaths = [
+    path.join(__dirname, '../client/dist'), // Standard Structure
+    path.join(__dirname, '../client/build'), // React Standard
+    path.join(__dirname, 'client/dist'),    // If running from server root
+    path.join(process.cwd(), 'client/dist'), // From project root
+    path.join(process.cwd(), 'dist')         // Fallback
+];
+
+let buildPath = null;
+for (const p of possiblePaths) {
+    if (fs.existsSync(p)) {
+        buildPath = p;
+        break;
+    }
+}
+
+if (buildPath) {
+    console.log(`Serving Frontend from: ${buildPath}`);
     app.use(express.static(buildPath));
     app.get('*', (req, res) => {
         res.sendFile(path.join(buildPath, 'index.html'));
     });
 } else {
     // For development (or if build is missing), just log
-    console.log("Client build not found at " + buildPath + ". Assuming local dev or separate deployment.");
-    app.get('/', (req, res) => res.send(`Backend Running. Frontend not found.<br>Checked Path: <strong>${buildPath}</strong><br><br>Please run <code>npm run build</code> in the root directory.`));
+    console.log("Client build not found. Checked: " + possiblePaths.join(", "));
+    app.get('/', (req, res) => res.send(`
+        <h1>Backend Running</h1>
+        <p>Frontend build not found.</p>
+        <p>Checked Paths:</p>
+        <ul>${possiblePaths.map(p => `<li>${p}</li>`).join('')}</ul>
+        <p>Current Directory: ${__dirname}</p>
+        <p>Process CWD: ${process.cwd()}</p>
+    `));
 }
 
 const PORT = process.env.PORT || 3000;
