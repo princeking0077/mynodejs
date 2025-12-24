@@ -1,17 +1,17 @@
-const API_BASE_URL = import.meta.env.PROD
-    ? 'https://apexapps.in/api'
-    : 'https://apexapps.in/api'; // In dev, we still hit the live Hostinger API if the PHP files are uploaded there
+// Node.js Backend API Service
+// Since the frontend is served by the same Node server in production, we use a relative path '/api'.
+// In development, Vite proxys '/api' to 'http://localhost:3000/api' (check vite.config.js) or we can hardcode.
 
-// Note: For this to work in dev (localhost), the PHP script on Hostinger must allow CORS from localhost (which we configured).
+const API_BASE_URL = '/api';
 
 export const api = {
     // Admin Login
-    login: async (username, password) => {
+    login: async (email, password) => {
         try {
-            const response = await fetch(`${API_BASE_URL}/login.php`, {
+            const response = await fetch(`${API_BASE_URL}/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({ email, password })
             });
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || 'Login failed');
@@ -25,7 +25,7 @@ export const api = {
     // Verify Backend Status
     checkStatus: async () => {
         try {
-            const response = await fetch(`${API_BASE_URL}/test.php`);
+            const response = await fetch(`${API_BASE_URL}/health`);
             return await response.json();
         } catch (error) {
             console.error("API Error", error);
@@ -33,10 +33,11 @@ export const api = {
         }
     },
 
-    // Get Content (for Students)
-    getContent: async (subjectSlug) => {
+    // Get Content (for Students/Admin)
+    getContent: async (subjectId) => {
         try {
-            const response = await fetch(`${API_BASE_URL}/get_content.php?subject=${subjectSlug}`);
+            const response = await fetch(`${API_BASE_URL}/content?subject=${subjectId}`);
+            if (!response.ok) return [];
             return await response.json();
         } catch (error) {
             console.error("Fetch Content Error", error);
@@ -44,12 +45,19 @@ export const api = {
         }
     },
 
-    // Upload Content (for Admin) - This will need to be handled by Electron specifically or a generic fetch
+    // Upload Content (for Admin) 
     uploadContent: async (formData) => {
         try {
-            // We use fetch directly for FormData to let browser handle multipart headers
-            const response = await fetch(`${API_BASE_URL}/upload.php`, {
+            // Need to send token for auth
+            const user = JSON.parse(localStorage.getItem('apex_user'));
+            const token = user?.token;
+
+            const response = await fetch(`${API_BASE_URL}/upload`, {
                 method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                    // Do NOT set Content-Type header for FormData, browser does it automatically with boundary
+                },
                 body: formData
             });
             return await response.json();
@@ -59,12 +67,16 @@ export const api = {
         }
     },
 
-    // Save Topic (Metadata + Code + Quiz)
+    // Save Topic (Create)
     saveTopic: async (topicData) => {
         try {
-            const response = await fetch(`${API_BASE_URL}/save_topic.php`, {
+            const user = JSON.parse(localStorage.getItem('apex_user'));
+            const response = await fetch(`${API_BASE_URL}/content`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user?.token}`
+                },
                 body: JSON.stringify(topicData)
             });
             const data = await response.json();
@@ -79,9 +91,13 @@ export const api = {
     // Update Topic
     updateTopic: async (topicData) => {
         try {
-            const response = await fetch(`${API_BASE_URL}/update_topic.php`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+            const user = JSON.parse(localStorage.getItem('apex_user'));
+            const response = await fetch(`${API_BASE_URL}/content`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user?.token}`
+                },
                 body: JSON.stringify(topicData)
             });
             const data = await response.json();
@@ -96,10 +112,12 @@ export const api = {
     // Delete Topic
     deleteTopic: async (id) => {
         try {
-            const response = await fetch(`${API_BASE_URL}/delete_topic.php`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id })
+            const user = JSON.parse(localStorage.getItem('apex_user'));
+            const response = await fetch(`${API_BASE_URL}/content/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${user?.token}`
+                }
             });
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || "Failed to delete");
