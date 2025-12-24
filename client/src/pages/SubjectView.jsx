@@ -107,10 +107,6 @@ const SubjectView = () => {
             } catch (e) {
                 console.error("Auto-download failed", e);
             }
-            // Don't close immediately so user can see "Download Ready" if needed, 
-            // or we can close it. Let's keep it open with a "Close" or "Download Again" option.
-            // For now, let's stop the timer but keep modal open with "Download Now" button 
-            // incase the auto-trigger failed.
         }
         return () => clearInterval(interval);
     }, [downloadTimer]);
@@ -273,12 +269,23 @@ const SubjectView = () => {
                                             <iframe
                                                 src={`https://www.youtube.com/embed/${(() => {
                                                     const url = selectedTopic.youtubeId || '';
-                                                    // Robust Regex for ID extraction
+                                                    if (!url) return '';
+
+                                                    // 1. If it's already an ID (11 chars, alphanumeric w/ optional _-)
+                                                    if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
+
+                                                    // 2. Try URL object parsing
+                                                    try {
+                                                        const urlObj = new URL(url.startsWith('http') ? url : `https://${url}`);
+                                                        if (urlObj.searchParams.has('v')) return urlObj.searchParams.get('v');
+                                                        if (urlObj.pathname.includes('/shorts/')) return urlObj.pathname.split('/shorts/')[1].split('/')[0];
+                                                        if (urlObj.hostname.includes('youtu.be')) return urlObj.pathname.substring(1).split('/')[0];
+                                                        if (urlObj.pathname.includes('/embed/')) return urlObj.pathname.split('/embed/')[1].split('/')[0];
+                                                    } catch (e) { /* ignore */ }
+
+                                                    // 3. Fallback Regex
                                                     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
                                                     const match = url.match(regExp);
-
-                                                    // If match found, return ID (match[2]). 
-                                                    // If no match (implied it's already an ID?), return strictly if it looks like an ID, else return original (fallback)
                                                     return (match && match[2].length === 11) ? match[2] : url;
                                                 })()}`}
                                                 title={selectedTopic.title}
