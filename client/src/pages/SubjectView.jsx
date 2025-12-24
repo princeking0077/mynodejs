@@ -271,7 +271,11 @@ const SubjectView = () => {
                                         </div>
                                         <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, borderRadius: '1rem', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)' }}>
                                             <iframe
-                                                src={`https://www.youtube.com/embed/${selectedTopic.youtubeId}`}
+                                                src={`https://www.youtube.com/embed/${(() => {
+                                                    const val = selectedTopic.youtubeId;
+                                                    const match = val.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([^&]+)/);
+                                                    return match ? match[1] : val;
+                                                })()}`}
                                                 title={selectedTopic.title}
                                                 style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
                                                 allowFullScreen
