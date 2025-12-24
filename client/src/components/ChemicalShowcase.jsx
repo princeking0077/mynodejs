@@ -94,11 +94,8 @@ const ChemicalShowcase = () => {
 
             </div>
         </div>
-        </div >
-    );
-};
-            </div >
-        </div >
+
+
     );
 };
 
