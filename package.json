@@ -1,6 +1,7 @@
 {
     "name": "pharma-app-root",
     "version": "1.0.0",
+    "main": "index.js",
     "description": "Root Orchestration for Pharma App",
     "scripts": {
         "postinstall": "npm install --prefix server && npm install --prefix client",
