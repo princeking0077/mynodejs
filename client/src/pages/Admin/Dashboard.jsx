@@ -427,17 +427,22 @@ const AdminDashboard = () => {
                                 {/* 2. YouTube Video (Top) */}
                                 <div style={{ marginBottom: '1.5rem' }}>
                                     <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                                        <Youtube size={16} color="#ef4444" /> YouTube Video ID (Optional)
+                                        <Youtube size={16} color="#ef4444" /> YouTube Video ID (Auto-extracted from URL)
                                     </label>
                                     <input
                                         type="text"
                                         value={youtubeId}
-                                        onChange={e => setYoutubeId(e.target.value)}
-                                        placeholder="e.g., dQw4w9WgXcQ"
+                                        onChange={e => {
+                                            const val = e.target.value;
+                                            // Auto-extract ID if URL is pasted
+                                            const match = val.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([^&]+)/);
+                                            setYoutubeId(match ? match[1] : val);
+                                        }}
+                                        placeholder="Paste full YouTube URL or just the ID"
                                         style={{ width: '100%', padding: '0.8rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)' }}
                                     />
                                     <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
-                                        Paste only the ID (part after v=), not the full URL.
+                                        You can paste the full video URL (e.g. https://youtu.be/...) and we'll fix it.
                                     </p>
                                 </div>
 
