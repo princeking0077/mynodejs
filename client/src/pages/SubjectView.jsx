@@ -209,39 +209,41 @@ const SubjectView = () => {
                     </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 350px) 1fr', gap: '2rem', alignItems: 'start' }} className="subject-grid">
+                <div className="subject-grid">
                     {/* Sidebar */}
-                    <div className="glass-panel" style={{ padding: '0', maxHeight: '80vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', position: 'sticky', top: '100px' }}>
-                        <div style={{ padding: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(0,0,0,0.2)' }}>
-                            <h3 style={{ fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
-                                <LayoutIcon size={18} /> Topics
-                            </h3>
-                        </div>
-                        <div style={{ overflowY: 'auto', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                            {topics.map((t, idx) => (
-                                <div
-                                    key={t.id || idx}
-                                    onClick={() => {
-                                        handleTopicSelect(t);
-                                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                                    }}
-                                    style={{
-                                        padding: '1rem',
-                                        borderRadius: 'var(--radius-sm)',
-                                        background: selectedTopic?.id === t.id ? 'var(--primary)' : 'transparent',
-                                        color: selectedTopic?.id === t.id ? 'black' : 'var(--text-muted)',
-                                        cursor: 'pointer',
-                                        fontWeight: selectedTopic?.id === t.id ? '700' : '500',
-                                        transition: 'all 0.2s',
-                                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                        border: selectedTopic?.id === t.id ? 'none' : '1px solid transparent',
-                                        borderColor: selectedTopic?.id === t.id ? 'none' : 'rgba(255,255,255,0.05)'
-                                    }}
-                                >
-                                    <span style={{ color: selectedTopic?.id === t.id ? 'black' : 'var(--text-main)', fontSize: '0.95rem' }}>{t.title}</span>
-                                    {selectedTopic?.id === t.id && <ChevronRight size={16} />}
-                                </div>
-                            ))}
+                    <div className="subject-sidebar">
+                        <div className="glass-panel" style={{ padding: '0', maxHeight: '80vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                            <div style={{ padding: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(0,0,0,0.2)' }}>
+                                <h3 style={{ fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
+                                    <LayoutIcon size={18} /> Topics
+                                </h3>
+                            </div>
+                            <div style={{ overflowY: 'auto', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                {topics.map((t, idx) => (
+                                    <div
+                                        key={t.id || idx}
+                                        onClick={() => {
+                                            handleTopicSelect(t);
+                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        }}
+                                        style={{
+                                            padding: '1rem',
+                                            borderRadius: 'var(--radius-sm)',
+                                            background: selectedTopic?.id === t.id ? 'var(--primary)' : 'transparent',
+                                            color: selectedTopic?.id === t.id ? 'black' : 'var(--text-muted)',
+                                            cursor: 'pointer',
+                                            fontWeight: selectedTopic?.id === t.id ? '700' : '500',
+                                            transition: 'all 0.2s',
+                                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                            border: selectedTopic?.id === t.id ? 'none' : '1px solid transparent',
+                                            borderColor: selectedTopic?.id === t.id ? 'none' : 'rgba(255,255,255,0.05)'
+                                        }}
+                                    >
+                                        <span style={{ color: selectedTopic?.id === t.id ? 'black' : 'var(--text-main)', fontSize: '0.95rem' }}>{t.title}</span>
+                                        {selectedTopic?.id === t.id && <ChevronRight size={16} />}
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
 
@@ -360,29 +362,52 @@ const SubjectView = () => {
                 </div>
 
                 <style>{`
+                    .subject-grid {
+                        display: grid;
+                        grid-template-columns: minmax(300px, 350px) 1fr;
+                        gap: 2rem;
+                        align-items: start;
+                    }
+                    .subject-sidebar > div {
+                        position: sticky;
+                        top: 100px;
+                    }
                     @media (max-width: 1024px) {
                         .subject-grid { 
-                            display: flex !important; 
+                            display: flex; 
                             flex-direction: column; 
                             gap: 1.5rem; 
                         }
+                        .subject-sidebar > div {
+                            position: relative;
+                            top: 0;
+                            max-height: 250px;
+                        }
                         .subject-grid > div:first-child { 
-                            position: relative !important; 
-                            top: 0 !important; 
-                            max-height: 250px !important; 
-                            order: 0 !important;
-                            width: 100% !important;
+                            order: 0;
+                            width: 100%;
                         }
                         .subject-grid > div:last-child { 
-                            order: 1 !important; 
-                            width: 100% !important;
+                            order: 1;
+                            width: 100%;
                         }
                     }
-                    /* Simple formatting for blog content */
+                    /* Rich Text Formatting */
+                    .rich-text-content { overflow-wrap: break-word; word-wrap: break-word; }
                     .rich-text-content h1, .rich-text-content h2, .rich-text-content h3 { color: white; margin-top: 1.5rem; margin-bottom: 0.5rem; }
                     .rich-text-content ul, .rich-text-content ol { padding-left: 1.5rem; margin-bottom: 1rem; }
                     .rich-text-content p { margin-bottom: 1rem; }
                     .rich-text-content a { color: var(--primary); text-decoration: underline; }
+                    
+                    /* Image Responsiveness - Critical Fix */
+                    .rich-text-content img {
+                        max-width: 100%;
+                        height: auto;
+                        display: block;
+                        margin: 1.5rem 0;
+                        border-radius: var(--radius-sm);
+                        border: 1px solid rgba(255,255,255,0.1);
+                    }
                 `}</style>
             </main>
         </Layout>
