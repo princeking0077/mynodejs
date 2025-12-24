@@ -10,10 +10,10 @@ if (!process.env.DB_USER) {
 }
 
 const pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: process.env.DB_NAME,
+    host: 'localhost',
+    user: 'u480091743_shoaib',
+    password: 'Shaikh@001001',
+    database: 'u480091743_pharmacy',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
