@@ -95,6 +95,13 @@ export const api = {
                 console.error("Server returned non-JSON:", text);
                 throw new Error(`Server Error: ${text.substring(0, 100)}...`);
             }
+
+            // Handle token expiry/invalid
+            if (response.status === 403 || response.status === 401) {
+                localStorage.removeItem('apex_user');
+                throw new Error("Session expired. Please log out and log back in.");
+            }
+
             if (!response.ok) throw new Error(data.message || "Failed to save");
             return data;
         } catch (error) {
@@ -123,6 +130,13 @@ export const api = {
                 console.error("Update - Server returned non-JSON:", text);
                 throw new Error(`Update Failed: ${text.substring(0, 100)}...`);
             }
+
+            // Handle token expiry/invalid
+            if (response.status === 403 || response.status === 401) {
+                localStorage.removeItem('apex_user');
+                throw new Error("Session expired. Please log out and log back in.");
+            }
+
             if (!response.ok) throw new Error(data.message || "Failed to update");
             return data;
         } catch (error) {
