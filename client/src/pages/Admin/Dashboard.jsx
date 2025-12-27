@@ -34,6 +34,12 @@ const AdminDashboard = () => {
     const [loading, setLoading] = useState(false);
     const [successMsg, setSuccessMsg] = useState('');
 
+    // NEW: SEO Fields for Ranking & Internal Linking
+    const [yearSlug, setYearSlug] = useState('1st-year'); // Default to 1st year
+    const [unitNumber, setUnitNumber] = useState(1);
+    const [primaryKeyword, setPrimaryKeyword] = useState('');
+    const [targetKeywords, setTargetKeywords] = useState(''); // Comma-separated input
+
     // Existing Topics List
     const [existingTopics, setExistingTopics] = useState([]);
     const [fetchingTopics, setFetchingTopics] = useState(false);
@@ -129,6 +135,19 @@ const AdminDashboard = () => {
             parsedFaqs = typeof topic.faqs === 'string' ? JSON.parse(topic.faqs) : (topic.faqs || []);
         } catch (e) { console.warn("FAQ parse error", e); }
         setFaqs(Array.isArray(parsedFaqs) ? parsedFaqs : []);
+
+        // NEW: Populate SEO Fields
+        setYearSlug(topic.year_slug || '1st-year');
+        setUnitNumber(topic.unit_number || 1);
+        setPrimaryKeyword(topic.primary_keyword || '');
+        // Convert array back to comma-separated string
+        let targetKw = '';
+        try {
+            const parsedKw = typeof topic.target_keywords === 'string' ? JSON.parse(topic.target_keywords) : (topic.target_keywords || []);
+            targetKw = Array.isArray(parsedKw) ? parsedKw.join(', ') : '';
+        } catch (e) { console.warn("Target keywords parse error", e); }
+        setTargetKeywords(targetKw);
+
         setNotesFile(null); // Reset file input
         setError('');
         setSuccessMsg('');
@@ -146,6 +165,11 @@ const AdminDashboard = () => {
         setQuizQuestions([]);
         setFaqs([]);
         setNotesFile(null);
+        // Reset SEO fields to defaults
+        setYearSlug('1st-year');
+        setUnitNumber(1);
+        setPrimaryKeyword('');
+        setTargetKeywords('');
         setSuccessMsg('');
         setError('');
     };
@@ -204,7 +228,12 @@ const AdminDashboard = () => {
                 type: 'animation',
                 description: animationCode,
                 quiz: quizQuestions,
-                faqs: faqs
+                faqs: faqs,
+                // NEW: SEO Fields
+                yearSlug,
+                unitNumber,
+                primaryKeyword,
+                targetKeywords: targetKeywords.split(',').map(k => k.trim()).filter(k => k) // Convert to array
             };
 
             if (notesUrl) topicData.fileUrl = notesUrl;
@@ -471,11 +500,87 @@ const AdminDashboard = () => {
                                     </p>
                                 </div>
 
-                                {/* 4. SEO Section */}
-                                <div style={{ marginBottom: '1.5rem', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '0.5rem', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                    <h4 style={{ margin: '0 0 1rem 0', color: 'var(--primary)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                        <FileText size={14} /> SEO Settings (Optional)
+                                {/* 4. SEO Section - EXPANDED FOR RANKING */}
+                                <div style={{ marginBottom: '1.5rem', padding: '1.5rem', background: 'linear-gradient(135deg, rgba(34,211,238,0.1), rgba(139,92,246,0.1))', borderRadius: '0.5rem', border: '1px solid rgba(34,211,238,0.3)' }}>
+                                    <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--primary)', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        <FileText size={16} /> SEO & Ranking Settings
                                     </h4>
+                                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+                                        🚀 These fields enable automatic internal linking, canonical URLs, sitemaps, and breadcrumb generation.
+                                    </p>
+
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                                        {/* Year Slug */}
+                                        <div>
+                                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                                                B.Pharmacy Year <span style={{ color: '#ef4444' }}>*</span>
+                                            </label>
+                                            <select
+                                                value={yearSlug}
+                                                onChange={e => setYearSlug(e.target.value)}
+                                                style={{ width: '100%', padding: '0.7rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.4)', color: 'white', border: '1px solid var(--border)', fontSize: '0.9rem', cursor: 'pointer' }}
+                                            >
+                                                <option value="1st-year">1st Year</option>
+                                                <option value="2nd-year">2nd Year</option>
+                                                <option value="3rd-year">3rd Year</option>
+                                                <option value="4th-year">4th Year</option>
+                                            </select>
+                                        </div>
+
+                                        {/* Unit Number */}
+                                        <div>
+                                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                                                Unit Number <span style={{ color: '#ef4444' }}>*</span>
+                                            </label>
+                                            <input
+                                                type="number"
+                                                min="1"
+                                                max="10"
+                                                value={unitNumber}
+                                                onChange={e => setUnitNumber(parseInt(e.target.value) || 1)}
+                                                placeholder="1"
+                                                style={{ width: '100%', padding: '0.7rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.4)', color: 'white', border: '1px solid var(--border)', fontSize: '0.9rem' }}
+                                            />
+                                            <p style={{ fontSize: '0.75rem', color: 'rgba(34,211,238,0.7)', marginTop: '0.3rem' }}>
+                                                For prev/next navigation
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Primary Keyword */}
+                                    <div style={{ marginBottom: '1rem' }}>
+                                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                                            Primary Keyword <span style={{ color: '#ef4444' }}>*</span> <span style={{ color: 'rgba(34,211,238,0.7)', fontSize: '0.75rem' }}>(Google ranking target)</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={primaryKeyword}
+                                            onChange={e => setPrimaryKeyword(e.target.value)}
+                                            placeholder="e.g., pharmaceutics 1 notes"
+                                            style={{ width: '100%', padding: '0.7rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.4)', color: 'white', border: '1px solid var(--primary)', fontSize: '0.9rem' }}
+                                        />
+                                        <p style={{ fontSize: '0.75rem', color: 'rgba(34,211,238,0.7)', marginTop: '0.3rem' }}>
+                                            💡 The MAIN keyword students will search for. Anti-cannibalization system ensures no duplicate keywords.
+                                        </p>
+                                    </div>
+
+                                    {/* Target Keywords */}
+                                    <div style={{ marginBottom: '1rem' }}>
+                                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                                            Target Keywords <span style={{ fontSize: '0.75rem' }}>(comma-separated)</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={targetKeywords}
+                                            onChange={e => setTargetKeywords(e.target.value)}
+                                            placeholder="e.g., drug formulation, dosage forms, pharmaceutical science"
+                                            style={{ width: '100%', padding: '0.7rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.4)', color: 'white', border: '1px solid var(--border)', fontSize: '0.9rem' }}
+                                        />
+                                        <p style={{ fontSize: '0.75rem', color: 'rgba(139,92,246,0.7)', marginTop: '0.3rem' }}>
+                                            🔗 Used for related content linking. Separate with commas.
+                                        </p>
+                                    </div>
+
                                     <div style={{ display: 'grid', gap: '1rem' }}>
                                         <div>
                                             <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Meta Title</label>
@@ -483,7 +588,7 @@ const AdminDashboard = () => {
                                                 type="text"
                                                 value={metaTitle}
                                                 onChange={e => setMetaTitle(e.target.value)}
-                                                placeholder="Custom Page Title"
+                                                placeholder="Custom Page Title (auto-generated if empty)"
                                                 style={{ width: '100%', padding: '0.6rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)', fontSize: '0.9rem' }}
                                             />
                                         </div>
@@ -492,11 +597,16 @@ const AdminDashboard = () => {
                                             <textarea
                                                 value={metaDescription}
                                                 onChange={e => setMetaDescription(e.target.value)}
-                                                placeholder="Brief summary for search engines..."
+                                                placeholder="Brief summary for Google search results..."
                                                 rows={2}
                                                 style={{ width: '100%', padding: '0.6rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)', fontSize: '0.9rem', fontFamily: 'inherit' }}
                                             />
                                         </div>
+                                    </div>
+
+                                    {/* Auto-calculated info box */}
+                                    <div style={{ marginTop: '1rem', padding: '0.8rem', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '0.5rem', fontSize: '0.8rem', color: 'rgba(34,197,94,0.9)' }}>
+                                        ✅ <strong>Auto-calculated on save:</strong> Word count, reading time, canonical URL, breadcrumbs, internal links, sitemap update
                                     </div>
                                 </div>
 
