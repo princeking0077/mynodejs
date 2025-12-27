@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db');
 const authenticateToken = require('../middleware/auth.middleware');
+const URLMapper = require('../services/url-mapper');
+const InternalLinkingEngine = require('../services/internal-linking-engine');
+const SitemapGenerator = require('../services/sitemap-generator');
 
 // Get content by Subject ID
 router.get('/', async (req, res) => {
@@ -75,7 +78,7 @@ const generateSlug = (text) => {
 
 // Create Topic
 router.post('/', authenticateToken, async (req, res) => {
-    const { subjectId, title, description, blogContent, youtubeId, fileUrl, quiz, metaTitle, metaDescription, faqs } = req.body;
+    const { subjectId, title, description, blogContent, youtubeId, fileUrl, quiz, metaTitle, metaDescription, faqs, yearSlug, unitNumber, primaryKeyword, targetKeywords } = req.body;
     let slug = generateSlug(title);
 
     try {
@@ -85,11 +88,49 @@ router.post('/', authenticateToken, async (req, res) => {
             slug = `${slug}-${Date.now()}`;
         }
 
-        await pool.query(
-            "INSERT INTO content (subject_id, title, slug, description, blog_content, youtube_id, file_url, quiz_data, meta_title, meta_description, faqs) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            [subjectId, title, slug, description, blogContent, youtubeId, fileUrl, JSON.stringify(quiz), metaTitle, metaDescription, JSON.stringify(faqs || [])]
+        // Calculate SEO fields automatically
+        const wordCount = URLMapper.extractWordCount(blogContent);
+        const readingTime = URLMapper.calculateReadingTime(wordCount);
+        const canonicalUrl = URLMapper.generateCanonicalURL({
+            yearSlug: yearSlug || '1st-year',
+            subjectSlug: subjectId,
+            unitSlug: slug
+        });
+
+        // Generate breadcrumbs
+        const breadcrumbPath = JSON.stringify(URLMapper.generateBreadcrumbs({
+            yearSlug: yearSlug || '1st-year',
+            subjectSlug: subjectId,
+            unitSlug: slug,
+            yearTitle: yearSlug ? yearSlug.replace(/-/g, ' ').toUpperCase() : '1st Year',
+            subjectTitle: title.split('-')[0] || title,
+            unitTitle: title
+        }));
+
+        const [result] = await pool.query(
+            `INSERT INTO content (
+                subject_id, title, slug, description, blog_content, youtube_id, file_url, quiz_data, 
+                meta_title, meta_description, faqs, year_slug, unit_number, primary_keyword, 
+                target_keywords, canonical_url, breadcrumb_path, content_word_count, reading_time_minutes
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [subjectId, title, slug, description, blogContent, youtubeId, fileUrl, JSON.stringify(quiz),
+                metaTitle, metaDescription, JSON.stringify(faqs || []), yearSlug, unitNumber, primaryKeyword,
+                JSON.stringify(targetKeywords || []), canonicalUrl, breadcrumbPath, wordCount, readingTime]
         );
-        res.json({ message: "Topic created successfully", slug });
+
+        const contentId = result.insertId;
+
+        // Generate internal links asynchronously
+        InternalLinkingEngine.generateLinks(contentId).catch(err =>
+            console.error('Internal link generation failed:', err)
+        );
+
+        // Invalidate sitemap cache
+        SitemapGenerator.invalidateCache('content').catch(err =>
+            console.error('Sitemap invalidation failed:', err)
+        );
+
+        res.json({ message: "Topic created successfully", slug, id: contentId });
     } catch (error) {
         console.error("Save Topic DB Error:", error);
         res.status(500).json({
@@ -101,16 +142,43 @@ router.post('/', authenticateToken, async (req, res) => {
 
 // Update Topic (Matches update_topic.php)
 router.put('/', authenticateToken, async (req, res) => {
-    const { id, title, description, blogContent, youtubeId, fileUrl, quiz, metaTitle, metaDescription, faqs } = req.body;
+    const { id, title, description, blogContent, youtubeId, fileUrl, quiz, metaTitle, metaDescription, faqs, yearSlug, unitNumber, primaryKeyword, targetKeywords } = req.body;
 
     if (!id || !title) {
         return res.status(400).json({ message: "Incomplete data." });
     }
 
     try {
-        let sql = "UPDATE content SET title = ?, description = ?, blog_content = ?, youtube_id = ?, quiz_data = ?, meta_title = ?, meta_description = ?, faqs = ?";
-        const params = [title, description, blogContent, youtubeId, JSON.stringify(quiz), metaTitle, metaDescription, JSON.stringify(faqs || [])];
+        // Recalculate SEO fields
+        const wordCount = URLMapper.extractWordCount(blogContent);
+        const readingTime = URLMapper.calculateReadingTime(wordCount);
 
+        let sql = `UPDATE content SET 
+            title = ?, description = ?, blog_content = ?, youtube_id = ?, quiz_data = ?, 
+            meta_title = ?, meta_description = ?, faqs = ?, content_word_count = ?, 
+            reading_time_minutes = ?`;
+        const params = [
+            title, description, blogContent, youtubeId, JSON.stringify(quiz),
+            metaTitle, metaDescription, JSON.stringify(faqs || []), wordCount, readingTime
+        ];
+
+        // Update optional SEO fields if provided
+        if (yearSlug !== undefined) {
+            sql += ", year_slug = ?";
+            params.push(yearSlug);
+        }
+        if (unitNumber !== undefined) {
+            sql += ", unit_number = ?";
+            params.push(unitNumber);
+        }
+        if (primaryKeyword !== undefined) {
+            sql += ", primary_keyword = ?";
+            params.push(primaryKeyword);
+        }
+        if (targetKeywords !== undefined) {
+            sql += ", target_keywords = ?";
+            params.push(JSON.stringify(targetKeywords));
+        }
         if (fileUrl !== undefined) {
             sql += ", file_url = ?";
             params.push(fileUrl);
@@ -120,6 +188,17 @@ router.put('/', authenticateToken, async (req, res) => {
         params.push(id);
 
         await pool.query(sql, params);
+
+        // Regenerate internal links asynchronously
+        InternalLinkingEngine.generateLinks(id).catch(err =>
+            console.error('Internal link regeneration failed:', err)
+        );
+
+        // Invalidate sitemap cache
+        SitemapGenerator.invalidateCache('content').catch(err =>
+            console.error('Sitemap invalidation failed:', err)
+        );
+
         res.json({ message: "Topic updated successfully" });
     } catch (error) {
         console.error("Update Topic DB Error:", error);

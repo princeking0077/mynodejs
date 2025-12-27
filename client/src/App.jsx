@@ -18,6 +18,7 @@ const About = lazy(() => import('./pages/About'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const Terms = lazy(() => import('./pages/Terms'));
+const Disclaimer = lazy(() => import('./pages/Disclaimer'));
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
+              <Route path="/disclaimer" element={<Disclaimer />} />
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/settings" element={<Settings />} />
             </Routes>

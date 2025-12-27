@@ -63,15 +63,19 @@ const Layout = ({ children }) => {
                 position: 'relative',
                 zIndex: 10
             }}>
+                <p style={{ fontSize: '0.85rem', marginBottom: '1rem', color: 'rgba(239, 68, 68, 0.8)' }}>
+                    ⚠️ Educational Content Only - Not Medical Advice
+                </p>
                 <p>&copy; {new Date().getFullYear()} <span style={{ color: 'white' }}>LearnPharmacy.in</span>. All rights reserved.</p>
                 <p style={{ marginTop: '0.5rem', opacity: 1, fontSize: '0.85rem', color: '#cbd5e1' }}>
                     Created and designed by Pharmacy Students <span style={{ color: '#60a5fa', fontWeight: '500' }}>Shaikh Shoaib</span> and <span style={{ color: '#60a5fa', fontWeight: '500' }}>Yousha Ansari</span>
                 </p>
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', marginTop: '1rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', marginTop: '1rem', flexWrap: 'wrap' }}>
                     <Link to="/about" style={{ color: 'var(--text-muted)' }}>About Us</Link>
                     <Link to="/contact" style={{ color: 'var(--text-muted)' }}>Contact Us</Link>
                     <Link to="/privacy" style={{ color: 'var(--text-muted)' }}>Privacy Policy</Link>
                     <Link to="/terms" style={{ color: 'var(--text-muted)' }}>Terms of Service</Link>
+                    <Link to="/disclaimer" style={{ color: 'var(--text-muted)' }}>Disclaimer</Link>
                 </div>
             </footer>
         </div>

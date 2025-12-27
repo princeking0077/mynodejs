@@ -84,8 +84,54 @@ app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/content', require('./routes/content.routes'));
 app.use('/api/upload', require('./routes/upload.routes'));
 app.use('/api/settings', require('./routes/settings.routes'));
-app.use('/api/settings', require('./routes/settings.routes'));
+app.use('/api/seo', require('./routes/seo.routes'));
 // app.use('/', require('./routes/ads.routes')); 
+
+// SEO Endpoints (serve at root level for Google)
+app.get('/sitemap-index.xml', async (req, res) => {
+    try {
+        const SitemapGenerator = require('./services/sitemap-generator');
+        const xml = await SitemapGenerator.getSitemap('index');
+        res.header('Content-Type', 'application/xml');
+        res.send(xml);
+    } catch (error) {
+        console.error('Sitemap index error:', error);
+        res.status(500).send('Error generating sitemap');
+    }
+});
+
+app.get('/sitemap-core.xml', async (req, res) => {
+    try {
+        const SitemapGenerator = require('./services/sitemap-generator');
+        const xml = await SitemapGenerator.getSitemap('core');
+        res.header('Content-Type', 'application/xml');
+        res.send(xml);
+    } catch (error) {
+        res.status(500).send('Error generating sitemap');
+    }
+});
+
+app.get('/sitemap-content.xml', async (req, res) => {
+    try {
+        const SitemapGenerator = require('./services/sitemap-generator');
+        const xml = await SitemapGenerator.getSitemap('content');
+        res.header('Content-Type', 'application/xml');
+        res.send(xml);
+    } catch (error) {
+        res.status(500).send('Error generating sitemap');
+    }
+});
+
+app.get('/robots.txt', (req, res) => {
+    try {
+        const SitemapGenerator = require('./services/sitemap-generator');
+        const robotsTxt = SitemapGenerator.generateRobotsTxt();
+        res.header('Content-Type', 'text/plain');
+        res.send(robotsTxt);
+    } catch (error) {
+        res.status(500).send('Error generating robots.txt');
+    }
+});
 
 // Health & Debug
 app.get('/api/health', (req, res) => res.json({ message: "Pharma Server Running" }));
