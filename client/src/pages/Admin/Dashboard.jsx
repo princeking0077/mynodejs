@@ -447,14 +447,21 @@ const AdminDashboard = () => {
 
                                 {/* 1. Topic Title */}
                                 <div style={{ marginBottom: '1.5rem' }}>
-                                    <label style={{ display: 'block', marginBottom: '0.5rem' }}>Topic Title</label>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem' }}>
+                                        Topic Title {yearSlug === 'gpat' && <span style={{ fontSize: '0.85rem', color: 'rgba(34,211,238,0.7)' }}>(Topic name within the day)</span>}
+                                    </label>
                                     <input
                                         type="text"
                                         value={topicTitle}
                                         onChange={e => setTopicTitle(e.target.value)}
-                                        placeholder="e.g., Mechanism of Action"
+                                        placeholder={yearSlug === 'gpat' ? 'e.g., Receptor Theory MCQs' : 'e.g., Mechanism of Action'}
                                         style={{ width: '100%', padding: '0.8rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)' }}
                                     />
+                                    {yearSlug === 'gpat' && (
+                                        <p style={{ fontSize: '0.8rem', color: 'rgba(34,211,238,0.7)', marginTop: '0.5rem' }}>
+                                            💡 Example: Day 15 → "Receptor Theory MCQs" or "Pharmacokinetics Practice Questions"
+                                        </p>
+                                    )}
                                 </div>
 
                                 {/* 2. YouTube Video (Top) */}
