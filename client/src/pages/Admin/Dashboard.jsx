@@ -513,7 +513,7 @@ const AdminDashboard = () => {
                                         {/* Year Slug */}
                                         <div>
                                             <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                                                B.Pharmacy Year <span style={{ color: '#ef4444' }}>*</span>
+                                                {yearSlug === 'gpat' ? 'GPAT / B.Pharmacy' : 'B.Pharmacy Year'} <span style={{ color: '#ef4444' }}>*</span>
                                             </label>
                                             <select
                                                 value={yearSlug}
@@ -528,22 +528,22 @@ const AdminDashboard = () => {
                                             </select>
                                         </div>
 
-                                        {/* Unit Number */}
+                                        {/* Unit Number / Day Number */}
                                         <div>
                                             <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                                                Unit Number <span style={{ color: '#ef4444' }}>*</span>
+                                                {yearSlug === 'gpat' ? 'Day Number (1-60)' : 'Unit Number'} <span style={{ color: '#ef4444' }}>*</span>
                                             </label>
                                             <input
                                                 type="number"
                                                 min="1"
-                                                max="10"
+                                                max={yearSlug === 'gpat' ? 60 : 10}
                                                 value={unitNumber}
                                                 onChange={e => setUnitNumber(parseInt(e.target.value) || 1)}
-                                                placeholder="1"
+                                                placeholder={yearSlug === 'gpat' ? 'Day 1' : 'Unit 1'}
                                                 style={{ width: '100%', padding: '0.7rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.4)', color: 'white', border: '1px solid var(--border)', fontSize: '0.9rem' }}
                                             />
                                             <p style={{ fontSize: '0.75rem', color: 'rgba(34,211,238,0.7)', marginTop: '0.3rem' }}>
-                                                For prev/next navigation
+                                                {yearSlug === 'gpat' ? '60-day crash course sequencing' : 'For prev/next within subject'}
                                             </p>
                                         </div>
                                     </div>
