@@ -189,6 +189,32 @@ app.get('/test-db', async (req, res) => {
     }
 })();
 
+// AUTO-RUN SEO MIGRATION ON FIRST STARTUP
+(async () => {
+    const migrationLockFile = path.join(__dirname, 'migrations', '.seo-migration-completed');
+
+    // Check if migration already ran
+    if (fs.existsSync(migrationLockFile)) {
+        console.log('ℹ️ SEO migration already completed (lock file exists)');
+        return;
+    }
+
+    console.log('🔄 Running SEO migration automatically (first startup)...');
+
+    try {
+        const migrateSEOFields = require('./migrations/add-seo-fields');
+        await migrateSEOFields();
+
+        // Create lock file to prevent re-running
+        fs.writeFileSync(migrationLockFile, new Date().toISOString());
+        console.log('✅ SEO migration completed successfully!');
+    } catch (error) {
+        console.error('❌ SEO migration failed:', error.message);
+        console.error('⚠️ Site may not function correctly. Check database connection.');
+        // Don't crash server, just log error
+    }
+})();
+
 app.get('/reset-admin', async (req, res) => {
     try {
         const pool = require('./db');
