@@ -520,6 +520,7 @@ const AdminDashboard = () => {
                                                 onChange={e => setYearSlug(e.target.value)}
                                                 style={{ width: '100%', padding: '0.7rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.4)', color: 'white', border: '1px solid var(--border)', fontSize: '0.9rem', cursor: 'pointer' }}
                                             >
+                                                <option value="gpat">GPAT / Competitive</option>
                                                 <option value="1st-year">1st Year</option>
                                                 <option value="2nd-year">2nd Year</option>
                                                 <option value="3rd-year">3rd Year</option>
