@@ -3,6 +3,8 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Download, Play, BookOpen, PenTool, Layout as LayoutIcon, ChevronRight, Clock, X, CheckSquare } from 'lucide-react';
 import SEO from '../components/SEO';
+import Breadcrumbs from '../components/Breadcrumbs';
+import InternalLinks from '../components/InternalLinks';
 import Layout from '../components/Layout';
 import AnimationViewer from '../components/AnimationViewer';
 import Quiz from '../components/Quiz';
@@ -69,6 +71,32 @@ const SubjectView = () => {
                         blogContent: item.blog_content,
                         metaTitle: item.meta_title,
                         metaDescription: item.meta_description,
+                        // NEW: SEO Fields
+                        canonicalUrl: item.canonical_url,
+                        breadcrumbs: (() => {
+                            try {
+                                return typeof item.breadcrumb_path === 'string' ? JSON.parse(item.breadcrumb_path) : (item.breadcrumb_path || []);
+                            } catch (e) {
+                                return [];
+                            }
+                        })(),
+                        primaryKeyword: item.primary_keyword,
+                        targetKeywords: (() => {
+                            try {
+                                return typeof item.target_keywords === 'string' ? JSON.parse(item.target_keywords) : (item.target_keywords || []);
+                            } catch (e) {
+                                return [];
+                            }
+                        })(),
+                        wordCount: item.content_word_count,
+                        readingTime: item.reading_time_minutes,
+                        internalLinks: (() => {
+                            try {
+                                return typeof item.internal_links === 'string' ? JSON.parse(item.internal_links) : (item.internal_links || {});
+                            } catch (e) {
+                                return {};
+                            }
+                        })(),
                         createdAt: item.created_at
                     }));
                 }
@@ -138,9 +166,19 @@ const SubjectView = () => {
             <SEO
                 title={selectedTopic?.metaTitle || selectedTopic?.title || subjectStatic.title}
                 description={selectedTopic?.metaDescription || `Learn ${subjectStatic.title} - Notes, Animations, and Quizzes.`}
+                keywords={selectedTopic?.targetKeywords?.join(', ') || ''}
+                canonicalUrl={selectedTopic?.canonicalUrl || ''}
+                breadcrumbs={selectedTopic?.breadcrumbs || []}
             />
 
             <main className="container" style={{ paddingBottom: '4rem' }}>
+                {/* Breadcrumbs */}
+                {selectedTopic?.breadcrumbs && selectedTopic.breadcrumbs.length > 0 && (
+                    <div style={{ marginTop: '2rem', marginBottom: '1rem' }}>
+                        <Breadcrumbs items={selectedTopic.breadcrumbs} />
+                    </div>
+                )}
+
                 {/* Download Modal */}
                 <AnimatePresence>
                     {downloadTimer.show && (
