@@ -15,7 +15,8 @@ ADD COLUMN IF NOT EXISTS breadcrumb_path JSON DEFAULT NULL,
 ADD COLUMN IF NOT EXISTS content_word_count INT DEFAULT 0,
 ADD COLUMN IF NOT EXISTS reading_time_minutes INT DEFAULT 0;
 
--- Add indexes for performance (Skip if they already exist)
-CREATE INDEX idx_slug ON content(slug);
-CREATE INDEX idx_year_unit ON content(year_slug, unit_number);
-CREATE INDEX idx_primary_keyword ON content(primary_keyword);
+-- Add indexes for performance
+-- NOTE: If you get "Duplicate key name" errors, it means these indexes already exist. You can ignore those errors.
+-- CREATE INDEX idx_slug ON content(slug);
+-- CREATE INDEX idx_year_unit ON content(year_slug, unit_number);
+-- CREATE INDEX idx_primary_keyword ON content(primary_keyword);
