@@ -2,6 +2,9 @@
 RewriteEngine On
 RewriteBase /
 
+# Force index.php to handle the root request instead of index.html
+DirectoryIndex index.php index.html
+
 # API requests fall through to /api directory
 RewriteRule ^api/ - [L]
 
