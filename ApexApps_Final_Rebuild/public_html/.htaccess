@@ -1,0 +1,15 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+
+# API requests fall through to /api directory
+RewriteRule ^api/ - [L]
+
+# Allow access to assets
+RewriteRule ^assets/ - [L]
+
+# Rewrite everything else to index.php for React Router handling
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . index.php [L]
+</IfModule>

@@ -1,0 +1,40 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /api/
+
+# Handle Options method for CORS preflight
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ config.php [L,QSA]
+
+# --- Auth ---
+RewriteRule ^auth/login$ login.php [L,QSA]
+RewriteRule ^health$ config.php [L,QSA]
+
+# --- Content ---
+# Search first (more specific)
+RewriteRule ^content/search$ search.php [L,QSA]
+
+# REST Content Methods
+RewriteCond %{REQUEST_METHOD} GET
+RewriteRule ^content$ get_content.php [L,QSA]
+
+RewriteCond %{REQUEST_METHOD} POST
+RewriteRule ^content$ save_topic.php [L,QSA]
+
+RewriteCond %{REQUEST_METHOD} PUT
+RewriteRule ^content$ update_topic.php [L,QSA]
+
+RewriteCond %{REQUEST_METHOD} DELETE
+RewriteRule ^content/(.*)$ delete_topic.php?id=$1 [L,QSA]
+
+# --- Settings ---
+RewriteRule ^settings$ get_settings.php [L,QSA]
+RewriteRule ^settings/public$ get_settings.php [L,QSA]
+
+RewriteCond %{REQUEST_METHOD} POST
+RewriteRule ^settings$ save_settings.php [L,QSA]
+
+# --- Upload ---
+RewriteRule ^upload$ upload.php [L,QSA]
+
+</IfModule>
