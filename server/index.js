@@ -215,6 +215,20 @@ app.get('/test-db', async (req, res) => {
     }
 })();
 
+// AUTO-REGENERATE INTERNAL LINKS ON STARTUP (Ensures new URL structure is applied)
+(async () => {
+    // Wait 5s to allow server to stabilize
+    await new Promise(r => setTimeout(r, 5000));
+    console.log('🔄 Triggering auto-regeneration of internal links...');
+    try {
+        const InternalLinkingEngine = require('./services/internal-linking-engine');
+        const result = await InternalLinkingEngine.regenerateAllLinks();
+        console.log(`✅ Internal links regenerated: ${result.success} success, ${result.failed} failed.`);
+    } catch (e) {
+        console.error('⚠️ Auto-regeneration of links failed:', e.message);
+    }
+})();
+
 app.get('/reset-admin', async (req, res) => {
     try {
         const pool = require('./db');
