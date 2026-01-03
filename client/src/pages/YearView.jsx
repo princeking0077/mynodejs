@@ -1,10 +1,10 @@
-import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SEO from '../components/SEO';
 import { curriculum } from '../data/curriculum';
 import { Book, ChevronRight, GraduationCap, ArrowLeft } from 'lucide-react';
 import Layout from '../components/Layout';
+import { generateSlug } from '../services/slugService';
 
 const YearView = () => {
     const { yearId } = useParams();
@@ -68,9 +68,9 @@ const YearView = () => {
 
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
                                 {sem.subjects.map((sub) => {
-                                    const slug = sub.title.toLowerCase().replace(/–/g, '-').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+                                    const slug = generateSlug(sub.title);
                                     return (
-                                        <Link key={sub.id} to={`/subject/${slug}`} style={{ textDecoration: 'none' }}>
+                                        <Link key={sub.id} to={`/${slug}`} style={{ textDecoration: 'none' }}>
                                             <div className="glass-panel" style={{
                                                 padding: '1.5rem',
                                                 height: '100%',

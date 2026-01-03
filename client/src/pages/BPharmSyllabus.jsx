@@ -6,6 +6,7 @@ import SEO from '../components/SEO';
 import PharmaBackground from '../components/PharmaBackground';
 import { curriculum } from '../data/curriculum';
 import { Link } from 'react-router-dom';
+import { generateSlug } from '../services/slugService';
 
 const BPharmSyllabus = () => {
     // Flatten curriculum to get year/sem structure
@@ -106,7 +107,7 @@ const BPharmSyllabus = () => {
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                             {sem.subjects.map(subject => (
                                                 <Link
-                                                    to={`/subject/${subject.id}`}
+                                                    to={`/${generateSlug(subject.title)}`}
                                                     key={subject.id}
                                                     style={{ textDecoration: 'none' }}
                                                 >

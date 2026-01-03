@@ -11,8 +11,9 @@ import Quiz from '../components/Quiz';
 import { curriculum } from '../data/curriculum';
 import { api } from '../services/api';
 
-const SubjectView = () => {
-    const { subjectSlug, topicSlug } = useParams();
+const SubjectView = ({ data, context }) => {
+    // We expect 'slug' if coming from dispatcher, or 'subjectSlug' if legacy (though we are removing legacy)
+    const { slug, subjectSlug, topicSlug } = useParams();
     const navigate = useNavigate();
     const [selectedTopic, setSelectedTopic] = useState(null);
     const [topics, setTopics] = useState([]);
@@ -21,21 +22,28 @@ const SubjectView = () => {
     // Download Timer State
     const [downloadTimer, setDownloadTimer] = useState({ show: false, count: 30, url: null });
 
-    // 1. Resolve Subject from Slug
+    // 1. Resolve Subject
     const findSubjectBySlug = () => {
+        // Fallback or Legacy Logic
+        const targetSlug = slug || subjectSlug;
+        if (!targetSlug) return null;
+
         for (const year of curriculum) {
             for (const sem of year.semesters) {
                 const normalize = (str) => str.toLowerCase().replace(/–/g, '-').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
                 const sub = sem.subjects.find(s =>
-                    normalize(s.title) === subjectSlug ||
-                    s.id === subjectSlug
+                    normalize(s.title) === targetSlug ||
+                    s.id === targetSlug
                 );
                 if (sub) return { ...sub, yearId: year.id, yearTitle: year.title, semTitle: sem.title };
             }
         }
         return null;
     };
-    const subjectStatic = findSubjectBySlug();
+
+    const subjectStatic = data
+        ? { ...data, yearId: context?.year?.id, yearTitle: context?.year?.title, semTitle: context?.semester?.title }
+        : findSubjectBySlug();
 
     useEffect(() => {
         const fetchTopics = async () => {
@@ -147,8 +155,15 @@ const SubjectView = () => {
 
     const handleTopicSelect = (topic) => {
         setSelectedTopic(topic);
-        if (topic.slug && subjectSlug) {
-            navigate(`/subject/${subjectSlug}/${topic.slug}`);
+        const activeSlug = slug || subjectSlug;
+        if (topic.slug && activeSlug) {
+            // Check if we are in legacy mode (starting with /subject) or new mode
+            // Easy check: if subjectSlug exists, we are likely in /subject route (unless parameter name overlap)
+            // But we know we are moving to top level.
+            // Safest: Use window.location.pathname base or simply constructs top level if that's the mandate.
+            // User requested "top level seo friendly url".
+            // So we force top level.
+            navigate(`/${activeSlug}/${topic.slug}`);
         }
     };
 
