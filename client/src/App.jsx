@@ -20,6 +20,10 @@ const Privacy = lazy(() => import('./pages/Privacy'));
 const Terms = lazy(() => import('./pages/Terms'));
 const Disclaimer = lazy(() => import('./pages/Disclaimer'));
 
+const GpatSyllabus = lazy(() => import('./pages/GpatSyllabus'));
+const BPharmSyllabus = lazy(() => import('./pages/BPharmSyllabus'));
+const GpatModuleView = lazy(() => import('./pages/GpatModuleView'));
+
 function App() {
   return (
     <Router>
@@ -32,6 +36,13 @@ function App() {
               <Route path="/year/:yearId" element={<YearView />} />
               <Route path="/subject/:subjectSlug/:topicSlug?" element={<SubjectView />} />
               <Route path="/search" element={<SearchPage />} />
+
+              {/* Syllabus Routes */}
+              <Route path="/gpat-syllabus" element={<GpatSyllabus />} />
+              <Route path="/bpharm-syllabus" element={<BPharmSyllabus />} />
+              {/* Dynamic route for GPAT modules (e.g. /gpat-pharmacology) */}
+              <Route path="/:moduleUrl" element={<GpatModuleView />} />
+
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/privacy" element={<Privacy />} />

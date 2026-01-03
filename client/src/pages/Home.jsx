@@ -117,12 +117,12 @@ const Home = () => {
                     </motion.form>
                 </section>
 
-                {/* Browse Curriculum Section (Moved Up) */}
+                {/* Browse Curriculum Section */}
                 <section style={{ marginBottom: '8rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', marginBottom: '3rem' }}>
                         <div>
                             <h2 style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Browse Curriculum</h2>
-                            <p style={{ color: 'var(--text-muted)' }}>Everything you need for your B.Pharm journey</p>
+                            <p style={{ color: 'var(--text-muted)' }}>Structured B.Pharm learning path</p>
                         </div>
                     </div>
 
@@ -132,12 +132,11 @@ const Home = () => {
                         gap: '2rem'
                     }}>
                         {[
-                            { year: 'GPAT / Competitive', desc: '60 Days Crash Course', color: '#ef4444', id: 'gpat-module' },
                             { year: '1st Year', desc: 'Semesters 1 & 2', color: '#3b82f6', id: 'year-1' },
                             { year: '2nd Year', desc: 'Semesters 3 & 4', color: '#10b981', id: 'year-2' },
                             { year: '3rd Year', desc: 'Semesters 5 & 6', color: '#f59e0b', id: 'year-3' },
                             { year: '4th Year', desc: 'Semesters 7 & 8', color: '#8b5cf6', id: 'year-4' }
-                        ].map((item, index) => (
+                        ].map((item) => (
                             <Link to={`/year/${item.id}`} key={item.id} style={{ textDecoration: 'none' }}>
                                 <motion.div
                                     whileHover={{ y: -10 }}
@@ -182,6 +181,54 @@ const Home = () => {
                                 </motion.div>
                             </Link>
                         ))}
+                    </div>
+
+                    {/* New Syllabus Quick Links Section */}
+                    <div style={{ marginTop: '4rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+                        <Link to="/gpat-syllabus" style={{ textDecoration: 'none' }}>
+                            <motion.div
+                                whileHover={{ scale: 1.02 }}
+                                style={{
+                                    background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(185, 28, 28, 0.05))',
+                                    border: '1px solid rgba(239, 68, 68, 0.2)',
+                                    borderRadius: '24px',
+                                    padding: '2rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between'
+                                }}
+                            >
+                                <div>
+                                    <h3 style={{ fontSize: '1.5rem', color: '#ef4444', marginBottom: '0.5rem' }}>GPAT Syllabus</h3>
+                                    <p style={{ color: 'var(--text-muted)' }}>15 Modules • Complete Breakdown</p>
+                                </div>
+                                <div style={{ background: '#ef4444', borderRadius: '50%', padding: '0.8rem', color: 'white' }}>
+                                    <ArrowRight size={24} />
+                                </div>
+                            </motion.div>
+                        </Link>
+                        <Link to="/bpharm-syllabus" style={{ textDecoration: 'none' }}>
+                            <motion.div
+                                whileHover={{ scale: 1.02 }}
+                                style={{
+                                    background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(30, 64, 175, 0.05))',
+                                    border: '1px solid rgba(59, 130, 246, 0.2)',
+                                    borderRadius: '24px',
+                                    padding: '2rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between'
+                                }}
+                            >
+                                <div>
+                                    <h3 style={{ fontSize: '1.5rem', color: '#3b82f6', marginBottom: '0.5rem' }}>B.Pharm Syllabus</h3>
+                                    <p style={{ color: 'var(--text-muted)' }}>All 8 Semesters • Subject List</p>
+                                </div>
+                                <div style={{ background: '#3b82f6', borderRadius: '50%', padding: '0.8rem', color: 'white' }}>
+                                    <ArrowRight size={24} />
+                                </div>
+                            </motion.div>
+                        </Link>
                     </div>
                 </section>
 

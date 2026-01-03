@@ -60,18 +60,22 @@ const Navbar = () => {
 
                 {/* Desktop Links - Hidden on Mobile via CSS */}
                 <div className="desktop-nav-links hidden-mobile" style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-                    {['Home', 'About', 'Contact'].map(item => {
-                        const path = item === 'Home' ? '/' : `/${item.toLowerCase()}`;
-                        const isActive = location.pathname === path;
+                    {[
+                        { label: 'Home', path: '/' },
+                        { label: 'B.Pharm Syllabus', path: '/bpharm-syllabus' },
+                        { label: 'GPAT Syllabus', path: '/gpat-syllabus' }
+                    ].map(item => {
+                        const isActive = location.pathname === item.path;
                         return (
-                            <Link key={item} to={path} style={{
+                            <Link key={item.label} to={item.path} style={{
                                 color: isActive ? 'white' : 'var(--text-muted)',
                                 fontSize: '0.95rem',
                                 fontWeight: isActive ? '600' : '500',
                                 position: 'relative',
-                                transition: 'color 0.3s'
+                                transition: 'color 0.3s',
+                                textDecoration: 'none'
                             }}>
-                                {item}
+                                {item.label}
                                 {isActive && <motion.div layoutId="nav-pill" style={{ position: 'absolute', bottom: '-22px', left: 0, right: 0, height: '3px', background: 'var(--primary)', borderRadius: '2px 2px 0 0' }} />}
                             </Link>
                         )
@@ -84,7 +88,8 @@ const Navbar = () => {
                         borderRadius: '2rem',
                         fontSize: '0.85rem',
                         fontWeight: '600',
-                        border: '1px solid rgba(255,255,255,0.05)'
+                        border: '1px solid rgba(255,255,255,0.05)',
+                        textDecoration: 'none'
                     }}>
                         {isAdmin ? 'Dashboard' : 'Admin'}
                     </Link>
@@ -116,14 +121,19 @@ const Navbar = () => {
                             <X size={32} />
                         </button>
 
-                        {['Home', 'About', 'Contact', 'Admin'].map(item => (
+                        {[
+                            { label: 'Home', path: '/' },
+                            { label: 'B.Pharm Syllabus', path: '/bpharm-syllabus' },
+                            { label: 'GPAT Syllabus', path: '/gpat-syllabus' },
+                            { label: 'Admin', path: '/admin' }
+                        ].map(item => (
                             <Link
-                                key={item}
-                                to={item === 'Home' ? '/' : `/${item.toLowerCase()}`}
+                                key={item.label}
+                                to={item.path}
                                 onClick={() => setMobileMenuOpen(false)}
-                                style={{ fontSize: '1.8rem', fontWeight: '700', color: 'white', letterSpacing: '-0.02em' }}
+                                style={{ fontSize: '1.8rem', fontWeight: '700', color: 'white', letterSpacing: '-0.02em', textDecoration: 'none' }}
                             >
-                                {item}
+                                {item.label}
                             </Link>
                         ))}
                     </motion.div>
