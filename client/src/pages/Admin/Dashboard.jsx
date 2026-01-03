@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/Layout';
-import { Lock, Upload, FileText, CheckSquare, LogOut, Plus, Save, Trash, Youtube, PenTool } from 'lucide-react';
+import { Lock, Upload, FileText, CheckSquare, LogOut, Plus, Save, Trash, Youtube, PenTool, ExternalLink } from 'lucide-react';
 import { curriculum } from '../../data/curriculum';
 import { api } from '../../services/api';
 import SEO from '../../components/SEO';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { generateSlug } from '../../services/slugService';
 
 const AdminDashboard = () => {
     const { currentUser, login, logout } = useAuth();
@@ -414,12 +415,25 @@ const AdminDashboard = () => {
                                                 }}
                                             >
                                                 <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '180px' }}>{t.title}</span>
-                                                <button
-                                                    onClick={(e) => handleDeleteTopic(t.id, e)}
-                                                    style={{ background: 'none', border: 'none', color: topicId === t.id ? 'black' : '#ef4444', cursor: 'pointer', padding: '2px' }}
-                                                >
-                                                    <Trash size={14} />
-                                                </button>
+                                                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                                    <a
+                                                        href={`/${generateSlug(currentSubjectTitle)}/${t.slug}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        onClick={(e) => e.stopPropagation()}
+                                                        title="View on Live Site"
+                                                        style={{ color: '#3b82f6', display: 'flex', alignItems: 'center' }}
+                                                    >
+                                                        <ExternalLink size={14} />
+                                                    </a>
+                                                    <button
+                                                        onClick={(e) => handleDeleteTopic(t.id, e)}
+                                                        style={{ background: 'none', border: 'none', color: topicId === t.id ? 'black' : '#ef4444', cursor: 'pointer', padding: '2px' }}
+                                                        title="Delete Topic"
+                                                    >
+                                                        <Trash size={14} />
+                                                    </button>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
