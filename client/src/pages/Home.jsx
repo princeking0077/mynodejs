@@ -164,7 +164,7 @@ const Home = () => {
                                     </div>
                                     <div>
                                         <h3 style={{ fontSize: '1.8rem', marginBottom: '0.5rem', color: 'white' }}>{item.year}</h3>
-                                        <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>{item.desc}</p>
+                                        <p style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '1.1rem' }}>{item.desc}</p>
                                     </div>
                                     <div style={{
                                         marginTop: 'auto',
@@ -189,8 +189,8 @@ const Home = () => {
                             <motion.div
                                 whileHover={{ scale: 1.02 }}
                                 style={{
-                                    background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(185, 28, 28, 0.05))',
-                                    border: '1px solid rgba(239, 68, 68, 0.2)',
+                                    background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.2), rgba(153, 27, 27, 0.1))',
+                                    border: '1px solid rgba(239, 68, 68, 0.3)',
                                     borderRadius: '24px',
                                     padding: '2rem',
                                     display: 'flex',
@@ -199,8 +199,8 @@ const Home = () => {
                                 }}
                             >
                                 <div>
-                                    <h3 style={{ fontSize: '1.5rem', color: '#ef4444', marginBottom: '0.5rem' }}>GPAT Syllabus</h3>
-                                    <p style={{ color: 'var(--text-muted)' }}>15 Modules • Complete Breakdown</p>
+                                    <h3 style={{ fontSize: '1.5rem', color: '#fca5a5', marginBottom: '0.5rem' }}>GPAT Syllabus</h3>
+                                    <p style={{ color: 'rgba(255,255,255,0.8)' }}>15 Modules • Complete Breakdown</p>
                                 </div>
                                 <div style={{ background: '#ef4444', borderRadius: '50%', padding: '0.8rem', color: 'white' }}>
                                     <ArrowRight size={24} />
@@ -211,8 +211,8 @@ const Home = () => {
                             <motion.div
                                 whileHover={{ scale: 1.02 }}
                                 style={{
-                                    background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(30, 64, 175, 0.05))',
-                                    border: '1px solid rgba(59, 130, 246, 0.2)',
+                                    background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(30, 58, 138, 0.1))',
+                                    border: '1px solid rgba(59, 130, 246, 0.3)',
                                     borderRadius: '24px',
                                     padding: '2rem',
                                     display: 'flex',
@@ -221,8 +221,8 @@ const Home = () => {
                                 }}
                             >
                                 <div>
-                                    <h3 style={{ fontSize: '1.5rem', color: '#3b82f6', marginBottom: '0.5rem' }}>B.Pharm Syllabus</h3>
-                                    <p style={{ color: 'var(--text-muted)' }}>All 8 Semesters • Subject List</p>
+                                    <h3 style={{ fontSize: '1.5rem', color: '#93c5fd', marginBottom: '0.5rem' }}>B.Pharm Syllabus</h3>
+                                    <p style={{ color: 'rgba(255,255,255,0.8)' }}>All 8 Semesters • Subject List</p>
                                 </div>
                                 <div style={{ background: '#3b82f6', borderRadius: '50%', padding: '0.8rem', color: 'white' }}>
                                     <ArrowRight size={24} />

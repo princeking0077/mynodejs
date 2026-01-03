@@ -2,16 +2,18 @@
   /* Core Palette - Deep Space & Biopharma Emerald */
   --bg-dark: #05050a;
   --bg-card: rgba(22, 22, 30, 0.6);
-  --primary: #10b981; /* Emerald 500 */
+  --primary: #10b981;
+  /* Emerald 500 */
   --primary-glow: rgba(16, 185, 129, 0.4);
-  --accent: #3b82f6; /* Blue 500 */
+  --accent: #3b82f6;
+  /* Blue 500 */
   --text-main: #ffffff;
   --text-muted: #94a3b8;
-  
+
   /* Gradients */
   --grad-primary: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
   --grad-text: linear-gradient(to right, #ffffff, #a7f3d0);
-  --grad-glass: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.0) 100%);
+  --grad-glass: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.0) 100%);
 
   /* Spacing & Layout */
   --container-width: 1200px;
@@ -25,7 +27,8 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  -webkit-tap-highlight-color: transparent; /* Mobile friendly */
+  -webkit-tap-highlight-color: transparent;
+  /* Mobile friendly */
 }
 
 body {
@@ -38,21 +41,46 @@ body {
 }
 
 /* Typography */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   line-height: 1.2;
   font-weight: 700;
   letter-spacing: -0.02em;
+  color: var(--text-main);
 }
 
-h1 { font-size: clamp(2.5rem, 8vw, 4.5rem); } /* Responsive Hero Text */
-h2 { font-size: clamp(1.8rem, 5vw, 3rem); }
-h3 { font-size: clamp(1.5rem, 4vw, 2rem); }
+h1 {
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+}
 
-.gradient-text {
+/* Responsive Hero Text */
+h2 {
+  font-size: clamp(1.8rem, 5vw, 3rem);
+}
+
+h3 {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+}
+
+.gradient-text,
+.text-gradient {
   background: var(--grad-text);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  color: transparent;
+  /* Fallback */
+  display: inline-block;
+  /* Helps with gradient rendering */
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
 /* Utilities */
@@ -63,11 +91,12 @@ h3 { font-size: clamp(1.5rem, 4vw, 2rem); }
 }
 
 .glass-panel {
-  background: var(--bg-card);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  background: rgba(30, 30, 40, 0.7);
+  /* Lighter, more opaque for contrast */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .flex-center {
@@ -89,6 +118,7 @@ h3 { font-size: clamp(1.5rem, 4vw, 2rem); }
   cursor: pointer;
   border: none;
   font-size: 1rem;
+  color: var(--text-main);
 }
 
 .btn-primary {
@@ -102,25 +132,33 @@ h3 { font-size: clamp(1.5rem, 4vw, 2rem); }
 }
 
 .btn-glass {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
   color: white;
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /* Mobile Optimizations */
 @media (max-width: 768px) {
-  .logo-text { display: none; } /* Hide text on small mobile if requested, or keep it */
-  .container { width: 94%; }
+  .logo-text {
+    display: none;
+  }
+
+  /* Hide text on small mobile if requested, or keep it */
+  .container {
+    width: 94%;
+  }
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: var(--bg-dark);
 }
+
 ::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 4px;
 }

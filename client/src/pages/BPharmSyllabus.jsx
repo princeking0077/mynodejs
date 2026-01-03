@@ -111,7 +111,7 @@ const BPharmSyllabus = () => {
                                                     style={{ textDecoration: 'none' }}
                                                 >
                                                     <motion.div
-                                                        whileHover={{ x: 5, backgroundColor: 'rgba(255,255,255,0.05)' }}
+                                                        whileHover={{ x: 5, backgroundColor: 'rgba(255,255,255,0.1)' }}
                                                         style={{
                                                             display: 'flex',
                                                             alignItems: 'center',
@@ -119,16 +119,17 @@ const BPharmSyllabus = () => {
                                                             padding: '0.8rem 1rem',
                                                             borderRadius: '12px',
                                                             transition: 'all 0.2s',
-                                                            border: '1px solid rgba(255,255,255,0.02)'
+                                                            border: '1px solid rgba(255,255,255,0.05)',
+                                                            backgroundColor: 'rgba(255,255,255,0.02)'
                                                         }}
                                                     >
                                                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                                                            <Book size={18} style={{ color: 'var(--text-muted)' }} />
-                                                            <span style={{ color: 'var(--text-main)', fontSize: '0.95rem' }}>
+                                                            <Book size={18} style={{ color: '#a7f3d0' }} />
+                                                            <span style={{ color: 'white', fontSize: '1rem', fontWeight: '500' }}>
                                                                 {subject.title}
                                                             </span>
                                                         </div>
-                                                        <ArrowUpRight size={16} style={{ color: 'var(--text-muted)', opacity: 0.5 }} />
+                                                        <ArrowUpRight size={16} style={{ color: 'white', opacity: 0.7 }} />
                                                     </motion.div>
                                                 </Link>
                                             ))}
