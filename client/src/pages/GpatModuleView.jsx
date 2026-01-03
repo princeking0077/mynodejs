@@ -71,18 +71,35 @@ const GpatModuleView = ({ data }) => {
                             </h2>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
                                 {topics.map((topic, i) => (
-                                    <div key={i} style={{
-                                        display: 'flex', alignItems: 'start', gap: '0.8rem',
-                                        padding: '1rem',
-                                        background: 'rgba(255,255,255,0.02)',
-                                        borderRadius: '12px',
-                                        border: '1px solid rgba(255,255,255,0.02)'
-                                    }}>
-                                        <CheckCircle2 size={18} style={{ color: '#10b981', marginTop: '0.2rem', flexShrink: 0 }} />
-                                        <span style={{ color: 'var(--text-main)', fontSize: '1rem', lineHeight: '1.5' }}>
-                                            {topic}
-                                        </span>
-                                    </div>
+                                    <Link
+                                        key={i}
+                                        to={`/search?q=${encodeURIComponent(topic)}`}
+                                        style={{ textDecoration: 'none' }}
+                                    >
+                                        <div style={{
+                                            display: 'flex', alignItems: 'start', gap: '0.8rem',
+                                            padding: '1rem',
+                                            background: 'rgba(255,255,255,0.02)',
+                                            borderRadius: '12px',
+                                            border: '1px solid rgba(255,255,255,0.02)',
+                                            transition: 'background 0.2s, border-color 0.2s',
+                                            height: '100%'
+                                        }}
+                                            onMouseEnter={(e) => {
+                                                e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                                                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
+                                                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.02)';
+                                            }}
+                                        >
+                                            <CheckCircle2 size={18} style={{ color: '#10b981', marginTop: '0.2rem', flexShrink: 0 }} />
+                                            <span style={{ color: 'var(--text-main)', fontSize: '1rem', lineHeight: '1.5' }}>
+                                                {topic}
+                                            </span>
+                                        </div>
+                                    </Link>
                                 ))}
                             </div>
                         </motion.section>
