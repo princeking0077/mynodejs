@@ -7,11 +7,12 @@ import SEO from '../components/SEO';
 import PharmaBackground from '../components/PharmaBackground';
 import { gpatSyllabus } from '../data/gpatSyllabusData';
 import { curriculum } from '../data/curriculum';
+import { generateSlug } from '../services/slugService';
 
-const GpatModuleView = () => {
+const GpatModuleView = ({ data }) => {
     const { moduleUrl } = useParams();
     // Find the module where url ends with the moduleUrl param or matches exact path
-    const module = gpatSyllabus.find(m => m.url === `/${moduleUrl}`);
+    const module = data || gpatSyllabus.find(m => m.url === `/${moduleUrl}`);
 
     if (!module) {
         return <Navigate to="/gpat-syllabus" replace />;
@@ -94,7 +95,7 @@ const GpatModuleView = () => {
                         <h2 style={{ fontSize: '2rem', marginBottom: '2rem' }}>Related B.Pharm Subjects</h2>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
                             {allSubjects.map(subject => (
-                                <Link to={`/subject/${subject.id}`} key={subject.id} style={{ textDecoration: 'none' }}>
+                                <Link to={`/${generateSlug(subject.title)}`} key={subject.id} style={{ textDecoration: 'none' }}>
                                     <motion.div
                                         whileHover={{ y: -5 }}
                                         className="glass-panel"

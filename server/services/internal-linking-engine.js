@@ -3,6 +3,10 @@
  * Automatically generates contextual internal links for SEO and user experience
  */
 const pool = require('../db');
+const subjectSlugMap = require('../utils/subjectSlugMap');
+
+// Helper to get subject slug
+const getSubjectSlug = (id) => subjectSlugMap[id] || id;
 
 class InternalLinkingEngine {
     /**
@@ -43,23 +47,24 @@ class InternalLinkingEngine {
         // If this is a unit page, parent is the subject page
         // Otherwise, parent is the year page or home
 
-        const { year_slug, subject_id, slug } = content;
+        const { year_slug, subject_id } = content;
 
-        if (!year_slug) return { title: 'B.Pharm Hub', url: '/bpharm' };
+        // If no year, fallback to home (or bpharm root if exists)
+        if (!year_slug) return { title: 'Home', url: '/' };
 
         // Find subject if available
         if (subject_id) {
             return {
-                title: `Back to ${subject_id}`,
-                url: `/bpharm/${year_slug}/${subject_id}`,
-                anchor: `Back to ${subject_id}`
+                title: `Back to Subject`,
+                url: `/${getSubjectSlug(subject_id)}`,
+                anchor: `Back to Subject`
             };
         }
 
-        // Otherwise year page
+        // Otherwise year page (e.g. /year/year-1)
         return {
             title: `Back to ${year_slug}`,
-            url: `/bpharm/${year_slug}`,
+            url: `/year/${year_slug}`,
             anchor: `Back to ${year_slug}`
         };
     }
@@ -81,9 +86,11 @@ class InternalLinkingEngine {
             [subject_id, excludeId, year_slug]
         );
 
+        const subjectSlug = getSubjectSlug(subject_id);
+
         return siblings.map(s => ({
             title: s.title,
-            url: `/bpharm/${year_slug}/${subject_id}/${s.slug}`,
+            url: `/${subjectSlug}/${s.slug}`,
             anchor: s.title,
             unitNumber: s.unit_number
         }));
@@ -127,7 +134,7 @@ class InternalLinkingEngine {
 
         return related.map(r => ({
             title: r.title,
-            url: `/bpharm/${r.year_slug}/${r.subject_id}/${r.slug}`,
+            url: `/${getSubjectSlug(r.subject_id)}/${r.slug}`,
             anchor: `Learn about ${r.primary_keyword || r.title}`,
             keyword: r.primary_keyword
         }));
@@ -140,6 +147,8 @@ class InternalLinkingEngine {
         const { subject_id, unit_number, year_slug } = content;
 
         if (!subject_id || !unit_number) return { prev: null, next: null };
+
+        const subjectSlug = getSubjectSlug(subject_id);
 
         // Get previous unit
         const [prevResult] = await pool.query(
@@ -164,13 +173,13 @@ class InternalLinkingEngine {
         return {
             prev: prevResult[0] ? {
                 title: prevResult[0].title,
-                url: `/bpharm/${year_slug}/${subject_id}/${prevResult[0].slug}`,
+                url: `/${subjectSlug}/${prevResult[0].slug}`,
                 anchor: `← Previous: ${prevResult[0].title}`,
                 unitNumber: prevResult[0].unit_number
             } : null,
             next: nextResult[0] ? {
                 title: nextResult[0].title,
-                url: `/bpharm/${year_slug}/${subject_id}/${nextResult[0].slug}`,
+                url: `/${subjectSlug}/${nextResult[0].slug}`,
                 anchor: `Next: ${nextResult[0].title} →`,
                 unitNumber: nextResult[0].unit_number
             } : null
