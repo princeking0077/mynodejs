@@ -296,20 +296,20 @@ const AdminDashboard = () => {
 
                 {/* Background glow orbs */}
                 <div className="pointer-events-none absolute inset-0">
-                    <div className="absolute top-16 left-10 md:top-20 md:left-20 w-80 h-80 md:w-96 md:h-96 rounded-full blur-3xl opacity-20 bg-accent-400 glow-accent" />
-                    <div className="absolute bottom-12 right-8 md:bottom-20 md:right-20 w-80 h-80 md:w-96 md:h-96 rounded-full blur-3xl opacity-20 bg-primary-400 glow-primary" />
+                    <div className="absolute top-16 left-10 md:top-20 md:left-20 w-80 h-80 md:w-96 md:h-96 rounded-full blur-3xl opacity-20 bg-[var(--accent)] glow-accent" />
+                    <div className="absolute bottom-12 right-8 md:bottom-20 md:right-20 w-80 h-80 md:w-96 md:h-96 rounded-full blur-3xl opacity-20 bg-[var(--primary)] glow-primary" />
                 </div>
 
                 <div className="relative z-10 w-full max-w-lg animate-fade-in-up">
                     <div className="glass-panel rounded-3xl shadow-2xl p-8 md:p-12">
                         <div className="flex flex-col items-center text-center mb-7">
                             <div className="flex justify-center mb-5">
-                                <div className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg text-white bg-gradient-to-br from-primary-500 to-accent-500">
+                                <div className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg text-white" style={{ backgroundImage: 'var(--grad-primary)' }}>
                                     <Lock size={28} />
                                 </div>
                             </div>
-                            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent mb-2">Welcome back</h1>
-                            <p className="text-slate-600">Sign in to access your dashboard</p>
+                            <h1 className="text-3xl font-bold gradient-text mb-2">Welcome back</h1>
+                            <p className="text-slate-300">Sign in to access your dashboard</p>
                         </div>
                         {authError && (
                             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex gap-3">
@@ -322,14 +322,14 @@ const AdminDashboard = () => {
                         )}
                         <form onSubmit={handleLogin} className="space-y-6">
                             <div className="flex flex-col gap-2">
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Email address</label>
+                                <label className="block text-sm font-medium text-slate-200 mb-2">Email address</label>
                                 <div className="relative">
                                     <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                                     <input
                                         type="email"
                                         value={email}
                                         onChange={e => setEmail(e.target.value)}
-                                        className="w-full pl-12 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl focus:outline-none input-glow focus:border-primary-500 text-slate-900 placeholder-slate-400"
+                                        className="w-full pl-12 pr-4 py-3.5 bg-white/95 border border-white/10 rounded-xl focus:outline-none input-glow text-slate-900 placeholder-slate-400"
                                         placeholder="admin@learnpharmacy.in"
                                         autoComplete="email"
                                         required
@@ -337,14 +337,14 @@ const AdminDashboard = () => {
                                 </div>
                             </div>
                             <div className="flex flex-col gap-2">
-                                <label className="block text-sm font-medium text-slate-700 mb-2">Password</label>
+                                <label className="block text-sm font-medium text-slate-200 mb-2">Password</label>
                                 <div className="relative">
                                     <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                                     <input
                                         type="password"
                                         value={password}
                                         onChange={e => setPassword(e.target.value)}
-                                        className="w-full pl-12 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl focus:outline-none input-glow focus:border-primary-500 text-slate-900 placeholder-slate-400"
+                                        className="w-full pl-12 pr-4 py-3.5 bg-white/95 border border-white/10 rounded-xl focus:outline-none input-glow text-slate-900 placeholder-slate-400"
                                         placeholder="••••••••"
                                         autoComplete="current-password"
                                         required
@@ -353,13 +353,14 @@ const AdminDashboard = () => {
                             </div>
                             <button
                                 type="submit"
-                                className="w-full py-3.5 bg-gradient-to-r from-primary-500 to-accent-500 hover:from-primary-600 hover:to-accent-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all"
+                                className="w-full py-3.5 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all hover:brightness-110"
+                                style={{ backgroundImage: 'var(--grad-primary)' }}
                             >
                                 Sign In
                             </button>
                         </form>
 
-                        <div className="mt-8 text-center text-sm text-slate-500">
+                        <div className="mt-8 text-center text-sm text-slate-400">
                             © {new Date().getFullYear()} LearnPharmacy. All rights reserved.
                         </div>
                     </div>
