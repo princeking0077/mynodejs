@@ -69,14 +69,14 @@ const Settings = () => {
 
             <div className="max-w-4xl mx-auto">
                 <div className="mb-6 border-b border-white/10 pb-4">
-                    <h1 className="text-2xl font-bold text-white">Global Settings</h1>
+                    <div className="text-2xl font-bold text-white">Global Settings</div>
                     <p className="text-gray-400 mt-1">Manage SEO, Analytics, and Monetization scripts.</p>
                 </div>
 
                 <div className="glass-panel p-8 rounded-2xl">
                     <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10 text-cyan-400">
                         <Globe size={24} />
-                        <h2 className="text-xl font-semibold text-white">SEO & Integrations</h2>
+                        <div className="text-xl font-semibold text-white">SEO & Integrations</div>
                     </div>
 
                     {msg.text && (
