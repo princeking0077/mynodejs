@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import AdminLayout from './AdminLayout';
+import Layout from '../../components/Layout';
 import SEO from '../../components/SEO';
-import { Save, Globe, Terminal } from 'lucide-react';
+import { Save, Lock, ArrowLeft, Globe, Terminal, FileCode } from 'lucide-react';
 import { api } from '../../services/api';
 
 const Settings = () => {
@@ -18,14 +18,6 @@ const Settings = () => {
         adsense_code: '',
         ads_txt: ''
     });
-
-    // If needed to clear context when leaving settings or handle shared context logic
-    const handleContextSelect = (ctx) => {
-        // If user selects a subject from sidebar while in settings, navigate to dashboard
-        if (ctx) {
-            navigate('/admin');
-        }
-    };
 
     useEffect(() => {
         if (!currentUser) {
@@ -64,93 +56,104 @@ const Settings = () => {
     };
 
     return (
-        <AdminLayout onSelectContext={handleContextSelect}>
+        <Layout>
             <SEO title="Global Settings | Admin" />
-
-            <div className="max-w-4xl mx-auto">
-                <div className="mb-6 border-b border-white/10 pb-4">
-                    <div className="text-2xl font-bold text-white">Global Settings</div>
-                    <p className="text-gray-400 mt-1">Manage SEO, Analytics, and Monetization scripts.</p>
+            <div className="container">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
+                    <button onClick={() => navigate('/admin')} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
+                        <ArrowLeft size={24} />
+                    </button>
+                    <h1 style={{ margin: 0 }}>Global Settings</h1>
                 </div>
 
-                <div className="glass-panel p-8 rounded-2xl">
-                    <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10 text-cyan-400">
-                        <Globe size={24} />
-                        <div className="text-xl font-semibold text-white">SEO & Integrations</div>
+                <div className="glass-panel" style={{ padding: '2.5rem', maxWidth: '800px', margin: '0 auto' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '2rem', paddingBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                        <Globe size={24} color="var(--primary)" />
+                        <h2 style={{ fontSize: '1.4rem', margin: 0 }}>SEO & Monetization</h2>
                     </div>
 
                     {msg.text && (
-                        <div className={`p-4 rounded-xl mb-6 ${msg.type === 'success' ? 'bg-green-500/10 border border-green-500/50 text-green-400' : 'bg-red-500/10 border border-red-500/50 text-red-400'}`}>
+                        <div style={{
+                            padding: '1rem', borderRadius: '0.5rem', marginBottom: '1.5rem',
+                            background: msg.type === 'success' ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)',
+                            border: `1px solid ${msg.type === 'success' ? '#22c55e' : '#ef4444'}`,
+                            color: msg.type === 'success' ? '#22c55e' : '#ef4444'
+                        }}>
                             {msg.text}
                         </div>
                     )}
 
-                    <div className="space-y-6">
+                    <div style={{ display: 'grid', gap: '2rem' }}>
 
                         {/* Google Analytics */}
                         <div>
-                            <label className="block text-sm font-semibold text-gray-300 mb-2">Google Analytics Measurement ID</label>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Google Analytics Measurement ID</label>
                             <input
                                 type="text"
                                 name="google_analytics_id"
                                 value={settings.google_analytics_id}
                                 onChange={handleChange}
                                 placeholder="G-XXXXXXXXXX"
-                                className="w-full p-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-cyan-500 outline-none"
+                                style={{ width: '100%', padding: '0.8rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)' }}
                             />
-                            <p className="text-xs text-gray-500 mt-1">Injected into the &lt;head&gt; of every page.</p>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>This ID will be injected into the head of every page.</p>
                         </div>
 
                         {/* Search Console */}
                         <div>
-                            <label className="block text-sm font-semibold text-gray-300 mb-2">Google Search Console HTML Code</label>
-                            <div className="relative">
-                                <Terminal size={16} className="absolute top-3.5 left-3 text-gray-500" />
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Google Search Console HTML Code</label>
+                            <div style={{ position: 'relative' }}>
+                                <Terminal size={16} style={{ position: 'absolute', top: '12px', left: '12px', color: 'var(--text-muted)' }} />
                                 <input
                                     type="text"
                                     name="google_search_console"
                                     value={settings.google_search_console}
                                     onChange={handleChange}
                                     placeholder='<meta name="google-site-verification" content="..." />'
-                                    className="w-full p-3 pl-10 bg-black/40 border border-white/10 rounded-xl text-white font-mono text-sm focus:border-cyan-500 outline-none"
+                                    style={{ width: '100%', padding: '0.8rem 0.8rem 0.8rem 2.5rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)', fontFamily: 'monospace' }}
                                 />
                             </div>
                         </div>
 
                         {/* AdSense */}
                         <div>
-                            <label className="block text-sm font-semibold text-gray-300 mb-2">Google AdSense Script</label>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Google AdSense Script</label>
                             <textarea
                                 name="adsense_code"
                                 value={settings.adsense_code}
                                 onChange={handleChange}
-                                placeholder='<script async src="..."></script>'
+                                placeholder='<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-..." crossorigin="anonymous"></script>'
                                 rows={4}
-                                className="w-full p-3 bg-black/40 border border-white/10 rounded-xl text-blue-300 font-mono text-xs focus:border-cyan-500 outline-none"
+                                style={{ width: '100%', padding: '0.8rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.3)', color: '#a5b4fc', border: '1px solid var(--border)', fontFamily: 'monospace' }}
                             />
                         </div>
 
                         {/* Ads.txt */}
                         <div>
-                            <label className="block text-sm font-semibold text-gray-300 mb-2">Ads.txt Content</label>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600' }}>Ads.txt Content</label>
                             <textarea
                                 name="ads_txt"
                                 value={settings.ads_txt}
                                 onChange={handleChange}
                                 placeholder="google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0"
                                 rows={4}
-                                className="w-full p-3 bg-black/40 border border-white/10 rounded-xl text-white font-mono text-xs focus:border-cyan-500 outline-none"
+                                style={{ width: '100%', padding: '0.8rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)', fontFamily: 'monospace' }}
                             />
-                            <p className="text-xs text-gray-500 mt-1">Serves at /ads.txt. Validates ownership for AdSense.</p>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>This content will be served at /ads.txt (requires server setup).</p>
                         </div>
 
                     </div>
 
-                    <div className="mt-8 pt-6 border-t border-white/10">
+                    <div style={{ marginTop: '3rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '2rem' }}>
                         <button
                             onClick={handleSave}
                             disabled={loading}
-                            className="w-full py-4 bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold rounded-xl hover:shadow-lg hover:shadow-cyan-500/20 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                            style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                                width: '100%', padding: '1rem', borderRadius: '0.5rem', border: 'none',
+                                background: 'var(--primary)', color: 'black', fontWeight: 'bold', fontSize: '1rem',
+                                cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1
+                            }}
                         >
                             <Save size={20} />
                             {loading ? 'Saving Changes...' : 'Save Settings'}
@@ -159,7 +162,7 @@ const Settings = () => {
 
                 </div>
             </div>
-        </AdminLayout>
+        </Layout>
     );
 };
 

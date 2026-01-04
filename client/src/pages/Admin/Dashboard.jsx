@@ -1,82 +1,66 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import AdminLayout from './AdminLayout';
-import { Lock, Mail, Upload, FileText, CheckSquare, LogOut, Plus, Save, Trash, Youtube, PenTool, ExternalLink, Activity, BookOpen, Clock, Users, GraduationCap, User, ArrowRight, ChevronRight, ChevronLeft, AlertTriangle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import Layout from '../../components/Layout';
+import { Lock, Upload, FileText, CheckSquare, LogOut, Plus, Save, Trash, Youtube, PenTool } from 'lucide-react';
+import { curriculum } from '../../data/curriculum';
 import { api } from '../../services/api';
 import SEO from '../../components/SEO';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { generateSlug } from '../../services/slugService';
-import { curriculum } from '../../data/curriculum';
 
 const AdminDashboard = () => {
-    const { currentUser, login } = useAuth();
+    const { currentUser, login, logout } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [authError, setAuthError] = useState('');
+    const [error, setError] = useState('');
 
-    // Global State managed by Sidebar
-    const [context, setContext] = useState(null); // { type, yearId, semId, subjectId, subjectTitle }
-    const [stats, setStats] = useState({ users: '-', content: '-', courses: '-', quizzes: '-' });
-
-    // Navigation State
-    const [viewMode, setViewMode] = useState('overview'); // 'overview' | 'year' | 'editor'
-    const [selectedYearData, setSelectedYearData] = useState(null);
-
-    // Editor State
-    const [existingTopics, setExistingTopics] = useState([]);
-    const [fetchingTopics, setFetchingTopics] = useState(false);
+    // Selection State
+    const [selectedYear, setSelectedYear] = useState('');
+    const [selectedSem, setSelectedSem] = useState('');
+    const [selectedSubject, setSelectedSubject] = useState('');
 
     // Form State
-    const [topicId, setTopicId] = useState(null);
+    const [topicId, setTopicId] = useState(null); // For Edit Mode
     const [topicTitle, setTopicTitle] = useState('');
-    const [youtubeId, setYoutubeId] = useState('');
-    const [blogContent, setBlogContent] = useState('');
-    const [metaTitle, setMetaTitle] = useState('');
-    const [metaDescription, setMetaDescription] = useState('');
-    const [animationCode, setAnimationCode] = useState('');
+    const [youtubeId, setYoutubeId] = useState(''); // YouTube Video ID
+    const [blogContent, setBlogContent] = useState(''); // Rich Text Content
+    const [metaTitle, setMetaTitle] = useState(''); // SEO
+    const [metaDescription, setMetaDescription] = useState(''); // SEO
+    const [animationCode, setAnimationCode] = useState(''); // HTML/JS Code
     const [quizQuestions, setQuizQuestions] = useState([]);
-    const [faqs, setFaqs] = useState([]);
+    const [faqs, setFaqs] = useState([]); // FAQs State
     const [notesFile, setNotesFile] = useState(null);
     const [loading, setLoading] = useState(false);
     const [successMsg, setSuccessMsg] = useState('');
-    const [error, setError] = useState('');
 
-    const [yearSlug, setYearSlug] = useState('1st-year');
+    // NEW: SEO Fields for Ranking & Internal Linking
+    const [yearSlug, setYearSlug] = useState('1st-year'); // Default to 1st year
     const [unitNumber, setUnitNumber] = useState(1);
     const [primaryKeyword, setPrimaryKeyword] = useState('');
-    const [targetKeywords, setTargetKeywords] = useState('');
+    const [targetKeywords, setTargetKeywords] = useState(''); // Comma-separated input
 
-    useEffect(() => {
-        fetch('/api/debug-status')
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === 'OK') {
-                    setStats({
-                        users: data.users || 0,
-                        content: data.content || 0,
-                        courses: data.courses || 0,
-                        quizzes: data.quizzes || 0
-                    });
-                }
-            })
-            .catch(err => console.error(err));
-    }, []);
+    // Existing Topics List
+    const [existingTopics, setExistingTopics] = useState([]);
+    const [fetchingTopics, setFetchingTopics] = useState(false);
 
-    useEffect(() => {
-        if (context?.subjectId) {
-            fetchTopics(context.subjectId);
-            resetForm();
-            if (context.type === 'gpat') {
-                setYearSlug('gpat');
-            } else if (context.yearId) {
-                const map = { 'year-1': '1st-year', 'year-2': '2nd-year', 'year-3': '3rd-year', 'year-4': '4th-year' };
-                setYearSlug(map[context.yearId] || '1st-year');
-            }
+    const navigate = useNavigate();
+
+    // Helper to get lists based on selection
+    const years = curriculum;
+    const semesters = selectedYear ? curriculum.find(y => y.id === selectedYear)?.semesters || [] : [];
+    const subjects = selectedSem ? semesters.find(s => s.id === selectedSem)?.subjects || [] : [];
+
+    const currentSubjectTitle = subjects.find(s => s.id === selectedSubject)?.title;
+
+    // Fetch existing topics when subject changes
+    React.useEffect(() => {
+        if (selectedSubject) {
+            fetchTopics(selectedSubject);
         } else {
             setExistingTopics([]);
         }
-    }, [context]);
+    }, [selectedSubject]);
 
     const fetchTopics = async (subId) => {
         setFetchingTopics(true);
@@ -84,7 +68,7 @@ const AdminDashboard = () => {
             const data = await api.getContent(subId);
             setExistingTopics(Array.isArray(data) ? data : []);
         } catch (e) {
-            setFetchingTopics(false);
+            console.error(e);
         } finally {
             setFetchingTopics(false);
         }
@@ -93,47 +77,83 @@ const AdminDashboard = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            setAuthError('');
+            setError('');
             await login(email, password);
         } catch (err) {
-            setAuthError(err.message || 'Failed to login.');
+            setError(err.message || 'Failed to login. Please check connection.');
+            console.error(err);
         }
     };
 
-    const handleContextSelect = (ctx) => {
-        setContext(ctx);
-        if (ctx) {
-            setViewMode('editor');
-            // Try to find year data for breadcrumbs
-            const yearData = curriculum.find(c => c.id === ctx.yearId);
-            if (yearData) setSelectedYearData(yearData);
-        } else {
-            setViewMode('overview');
-        }
+    const handleLogout = async () => {
+        await logout();
+        navigate('/');
     };
 
-    const handleYearClick = (yearId) => {
-        const yearData = curriculum.find(c => c.id === yearId);
-        if (yearData) {
-            setSelectedYearData(yearData);
-            setViewMode('year');
-            // Clear context so editor isn't shown
-            setContext(null);
-        }
+    // Quiz Builder Helpers
+    const addQuestion = () => {
+        setQuizQuestions([...quizQuestions, { id: Date.now(), question: '', options: ['', '', '', ''], correct: 0 }]);
     };
 
-    const handleSubjectClick = (subject, yearId, semId, type) => {
-        const newContext = {
-            type,
-            yearId,
-            semId,
-            subjectId: subject.id,
-            subjectTitle: subject.title
-        };
-        setContext(newContext);
-        setViewMode('editor');
+    const updateQuestion = (id, field, value) => {
+        setQuizQuestions(quizQuestions.map(q => q.id === id ? { ...q, [field]: value } : q));
     };
 
+    const updateOption = (qId, oIdx, value) => {
+        setQuizQuestions(quizQuestions.map(q => {
+            if (q.id === qId) {
+                const newOptions = [...q.options];
+                newOptions[oIdx] = value;
+                return { ...q, options: newOptions };
+            }
+            return q;
+        }));
+    };
+
+    // Populate Form for Editing
+    const handleEditTopic = (topic) => {
+        setTopicId(topic.id);
+        setTopicTitle(topic.title);
+        // Auto-extract ID if full URL was stored conventionally
+        const ytVal = topic.youtube_id || '';
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+        const ytMatch = ytVal.match(regExp);
+        setYoutubeId((ytMatch && ytMatch[2].length === 11) ? ytMatch[2] : ytVal);
+        setBlogContent(topic.blog_content || '');
+        setMetaTitle(topic.meta_title || '');
+        setMetaDescription(topic.meta_description || '');
+        setAnimationCode(topic.description); // We stored code in description
+        // Safely parse JSON fields
+        let parsedQuiz = [];
+        try {
+            parsedQuiz = typeof topic.quiz_data === 'string' ? JSON.parse(topic.quiz_data) : (topic.quiz_data || []);
+        } catch (e) { console.warn("Quiz parse error", e); }
+        setQuizQuestions(Array.isArray(parsedQuiz) ? parsedQuiz : []);
+
+        let parsedFaqs = [];
+        try {
+            parsedFaqs = typeof topic.faqs === 'string' ? JSON.parse(topic.faqs) : (topic.faqs || []);
+        } catch (e) { console.warn("FAQ parse error", e); }
+        setFaqs(Array.isArray(parsedFaqs) ? parsedFaqs : []);
+
+        // NEW: Populate SEO Fields
+        setYearSlug(topic.year_slug || '1st-year');
+        setUnitNumber(topic.unit_number || 1);
+        setPrimaryKeyword(topic.primary_keyword || '');
+        // Convert array back to comma-separated string
+        let targetKw = '';
+        try {
+            const parsedKw = typeof topic.target_keywords === 'string' ? JSON.parse(topic.target_keywords) : (topic.target_keywords || []);
+            targetKw = Array.isArray(parsedKw) ? parsedKw.join(', ') : '';
+        } catch (e) { console.warn("Target keywords parse error", e); }
+        setTargetKeywords(targetKw);
+
+        setNotesFile(null); // Reset file input
+        setError('');
+        setSuccessMsg('');
+    };
+
+    // Reset Form
     const resetForm = () => {
         setTopicId(null);
         setTopicTitle('');
@@ -145,6 +165,8 @@ const AdminDashboard = () => {
         setQuizQuestions([]);
         setFaqs([]);
         setNotesFile(null);
+        // Reset SEO fields to defaults
+        setYearSlug('1st-year');
         setUnitNumber(1);
         setPrimaryKeyword('');
         setTargetKeywords('');
@@ -152,34 +174,22 @@ const AdminDashboard = () => {
         setError('');
     };
 
-    const handleEditTopic = (topic) => {
-        setTopicId(topic.id);
-        setTopicTitle(topic.title);
-        const ytVal = topic.youtube_id || '';
-        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-        const ytMatch = ytVal.match(regExp);
-        setYoutubeId((ytMatch && ytMatch[2].length === 11) ? ytMatch[2] : ytVal);
-        setBlogContent(topic.blog_content || '');
-        setMetaTitle(topic.meta_title || '');
-        setMetaDescription(topic.meta_description || '');
-        setAnimationCode(topic.description);
-        try { setQuizQuestions(JSON.parse(topic.quiz_data || '[]')); } catch (e) { setQuizQuestions([]); }
-        try { setFaqs(JSON.parse(topic.faqs || '[]')); } catch (e) { setFaqs([]); }
+    const handleDeleteTopic = async (id, e) => {
+        e.stopPropagation();
+        if (!window.confirm("Are you sure you want to delete this topic?")) return;
 
-        setYearSlug(topic.year_slug || '1st-year');
-        setUnitNumber(topic.unit_number || 1);
-        setPrimaryKeyword(topic.primary_keyword || '');
-        setTargetKeywords(topic.target_keywords || '');
-
-        setNotesFile(null);
-        setError('');
-        setSuccessMsg('');
-
+        try {
+            await api.deleteTopic(id);
+            setExistingTopics(existingTopics.filter(t => t.id !== id));
+            if (topicId === id) resetForm(); // Clear form if we deleted the currently edited topic
+        } catch (e) {
+            alert("Failed to delete topic");
+        }
     };
 
     const saveTopic = async () => {
-        if (!context?.subjectId || !topicTitle) {
-            setError('Missing Subject or Title.');
+        if (!selectedSubject || !topicTitle) {
+            setError('Please select a subject and enter a topic title.');
             return;
         }
         setLoading(true);
@@ -188,78 +198,71 @@ const AdminDashboard = () => {
 
         try {
             let notesUrl = '';
+
+            // 1. Upload Notes if exists
             if (notesFile) {
                 const formData = new FormData();
                 formData.append('file', notesFile);
+
                 try {
                     const uploadRes = await api.uploadContent(formData);
-                    if (uploadRes.url) notesUrl = uploadRes.url;
+                    if (uploadRes.url) {
+                        notesUrl = uploadRes.url;
+                    }
                 } catch (e) {
+                    console.warn("Upload failed", e);
                     setError("Failed to upload file");
                     setLoading(false);
                     return;
                 }
             }
 
+            // 2. Prepare Data 
             const topicData = {
-                subjectId: context.subjectId,
+                subjectId: selectedSubject,
                 title: topicTitle,
                 youtubeId,
-                blogContent,
+                blogContent, // New Rich Text Content
                 metaTitle,
                 metaDescription,
-                type: 'topic',
+                type: 'animation',
                 description: animationCode,
                 quiz: quizQuestions,
                 faqs: faqs,
+                // NEW: SEO Fields
                 yearSlug,
                 unitNumber,
                 primaryKeyword,
-                targetKeywords: typeof targetKeywords === 'string' ? targetKeywords.split(',').map(k => k.trim()).filter(k => k) : targetKeywords
+                targetKeywords: targetKeywords.split(',').map(k => k.trim()).filter(k => k) // Convert to array
             };
 
             if (notesUrl) topicData.fileUrl = notesUrl;
 
+            // 3. Save vs Update
             if (topicId) {
+                // UPDATE
                 topicData.id = topicId;
                 await api.updateTopic(topicData);
-                setSuccessMsg('Topic Updated!');
+                setSuccessMsg(`Successfully updated "${topicTitle}"!`);
             } else {
+                // CREATE new
                 await api.saveTopic(topicData);
-                setSuccessMsg('Topic Created!');
+                setSuccessMsg(`Successfully added "${topicTitle}" to ${currentSubjectTitle}!`);
             }
+
+            // Refresh List & Reset
             resetForm();
-            fetchTopics(context.subjectId);
+            fetchTopics(selectedSubject);
+
         } catch (err) {
-            setError('Error: ' + err.message);
+            console.error(err);
+            setError('Error saving topic: ' + err.message);
         } finally {
             setLoading(false);
         }
     };
 
-    const handleDeleteTopic = async (id, e) => {
-        e.stopPropagation();
-        if (!window.confirm("Delete this topic?")) return;
-        try {
-            await api.deleteTopic(id);
-            setExistingTopics(existingTopics.filter(t => t.id !== id));
-            if (topicId === id) resetForm();
-        } catch (e) { alert("Delete failed"); }
-    };
-
-    const addQuestion = () => setQuizQuestions([...quizQuestions, { id: Date.now(), question: '', options: ['', '', '', ''], correct: 0 }]);
-    const updateQuestion = (id, field, value) => setQuizQuestions(quizQuestions.map(q => q.id === id ? { ...q, [field]: value } : q));
-    const updateOption = (qId, oIdx, value) => {
-        setQuizQuestions(quizQuestions.map(q => {
-            if (q.id === qId) {
-                const newOpts = [...q.options];
-                newOpts[oIdx] = value;
-                return { ...q, options: newOpts };
-            }
-            return q;
-        }));
-    };
-
+    // Quill Modules for Toolbar
     const modules = {
         toolbar: [
             [{ 'header': [1, 2, 3, false] }],
@@ -270,586 +273,489 @@ const AdminDashboard = () => {
         ],
     };
 
-    const dashboardYearIds = ['year-1', 'year-2', 'year-3', 'year-4'];
-    const getYearSubjectCount = (yearId) => {
-        const yearData = curriculum.find(c => c.id === yearId);
-        if (!yearData?.semesters?.length) return 0;
-        return yearData.semesters.reduce((acc, sem) => acc + (sem.subjects?.length || 0), 0);
-    };
-    const maxYearSubjects = Math.max(1, ...dashboardYearIds.map(getYearSubjectCount));
+    const formats = [
+        'header',
+        'bold', 'italic', 'underline', 'strike', 'blockquote',
+        'list', 'bullet', 'indent',
+        'link', 'image'
+    ];
 
-    const breadcrumb = (() => {
-        if (!context) return null;
-        const yearData = curriculum.find(c => c.id === context.yearId);
-        const semData = yearData?.semesters?.find(s => s.id === context.semId);
-        return {
-            yearTitle: yearData?.title || (context.yearId === 'gpat-module' ? 'GPAT / NIPER' : ''),
-            semTitle: semData?.title || '',
-            subjectTitle: context.subjectTitle || ''
-        };
-    })();
 
     if (!currentUser) {
+        // ... (Keep existing Login UI) ...
         return (
-            <div className="admin-scope min-h-screen flex items-center justify-center p-4 font-sans relative overflow-hidden bg-gradient-animated">
+            <Layout>
                 <SEO title="Admin Login" />
-
-                {/* Background glow orbs */}
-                <div className="pointer-events-none absolute inset-0">
-                    <div className="absolute top-16 left-10 md:top-20 md:left-20 w-80 h-80 md:w-96 md:h-96 rounded-full blur-3xl opacity-20 bg-[var(--accent)] glow-accent" />
-                    <div className="absolute bottom-12 right-8 md:bottom-20 md:right-20 w-80 h-80 md:w-96 md:h-96 rounded-full blur-3xl opacity-20 bg-[var(--primary)] glow-primary" />
-                </div>
-
-                <div className="relative z-10 w-full max-w-lg animate-fade-in-up">
-                    <div className="glass-panel rounded-3xl shadow-2xl p-8 md:p-12">
-                        <div className="flex flex-col items-center text-center mb-7">
-                            <div className="flex justify-center mb-5">
-                                <div className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg text-white" style={{ backgroundImage: 'var(--grad-primary)' }}>
-                                    <Lock size={28} />
-                                </div>
-                            </div>
-                            <h1 className="text-3xl font-bold gradient-text mb-2">Welcome back</h1>
-                            <p className="text-slate-300">Sign in to access your dashboard</p>
+                <div className="container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+                    <div className="glass-panel" style={{ padding: '3rem', width: '100%', maxWidth: '400px', textAlign: 'center' }}>
+                        <div style={{ background: 'rgba(34, 211, 238, 0.1)', padding: '1rem', borderRadius: '50%', display: 'inline-flex', marginBottom: '1.5rem', color: '#22d3ee' }}>
+                            <Lock size={32} />
                         </div>
-                        {authError && (
-                            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex gap-3">
-                                <AlertTriangle size={18} className="mt-0.5 shrink-0 text-red-500" />
-                                <div className="min-w-0">
-                                    <div className="font-semibold">Login failed</div>
-                                    <div className="text-red-600 mt-0.5 break-words">{authError}</div>
-                                </div>
-                            </div>
-                        )}
-                        <form onSubmit={handleLogin} className="space-y-6">
-                            <div className="flex flex-col gap-2">
-                                <label className="block text-sm font-medium text-slate-200 mb-2">Email address</label>
-                                <div className="relative">
-                                    <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-                                    <input
-                                        type="email"
-                                        value={email}
-                                        onChange={e => setEmail(e.target.value)}
-                                        className="w-full pl-12 pr-4 py-3.5 bg-white/95 border border-white/10 rounded-xl focus:outline-none input-glow text-slate-900 placeholder-slate-400"
-                                        placeholder="admin@learnpharmacy.in"
-                                        autoComplete="email"
-                                        required
-                                    />
-                                </div>
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                <label className="block text-sm font-medium text-slate-200 mb-2">Password</label>
-                                <div className="relative">
-                                    <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-                                    <input
-                                        type="password"
-                                        value={password}
-                                        onChange={e => setPassword(e.target.value)}
-                                        className="w-full pl-12 pr-4 py-3.5 bg-white/95 border border-white/10 rounded-xl focus:outline-none input-glow text-slate-900 placeholder-slate-400"
-                                        placeholder="••••••••"
-                                        autoComplete="current-password"
-                                        required
-                                    />
-                                </div>
-                            </div>
+                        <h2 style={{ marginBottom: '2rem' }}>Admin Access</h2>
+                        {error && <div style={{ background: 'rgba(239,68,68,0.2)', padding: '0.5rem', borderRadius: '0.5rem', marginBottom: '1rem', border: '1px solid #ef4444' }}>{error}</div>}
+
+                        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            <input
+                                type="email"
+                                placeholder="Admin Email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                style={{ padding: '0.8rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'rgba(0,0,0,0.3)', color: 'white' }}
+                                required
+                            />
+                            <input
+                                type="password"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                style={{ padding: '0.8rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'rgba(0,0,0,0.3)', color: 'white' }}
+                                required
+                            />
                             <button
                                 type="submit"
-                                className="w-full py-3.5 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all hover:brightness-110"
-                                style={{ backgroundImage: 'var(--grad-primary)' }}
+                                style={{ padding: '0.8rem', borderRadius: '0.5rem', border: 'none', background: 'var(--primary)', color: 'black', fontWeight: 'bold', cursor: 'pointer' }}
                             >
-                                Sign In
+                                Login to Dashboard
                             </button>
                         </form>
-
-                        <div className="mt-8 text-center text-sm text-slate-400">
-                            © {new Date().getFullYear()} LearnPharmacy. All rights reserved.
-                        </div>
                     </div>
                 </div>
-            </div>
+            </Layout>
         );
     }
 
     return (
-        <AdminLayout
-            onSelectContext={handleContextSelect}
-            title={
-                viewMode === 'editor' ? `Editor > ${context?.subjectTitle}` :
-                    viewMode === 'year' ? `Management > ${selectedYearData?.title}` :
-                        'Dashboard Overview'
-            }
-            user={currentUser}
-        >
-            <SEO title="Content Manager" />
-
-            {/* VIEW: OVERVIEW */}
-            {viewMode === 'overview' && (
-                <div className="max-w-7xl mx-auto space-y-6 animate-fade-in custom-scrollbar">
-                    {/* Header */}
-                    <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                        <div className="min-w-0">
-                            <div className="text-2xl md:text-[28px] font-bold text-slate-900 leading-tight">Dashboard Overview</div>
-                            <p className="text-slate-600 text-sm mt-1">Monitor your content and system status.</p>
-                        </div>
-                        <div className="flex gap-3">
-                            <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-white font-semibold text-sm shadow-lg hover:shadow-xl transition-transform hover:-translate-y-0.5" style={{ backgroundImage: 'var(--grad-primary)' }}>
-                                <Plus size={16} /> New Notice
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Stats */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div className="glass-panel-light p-5 rounded-2xl relative overflow-hidden group hover:border-emerald-300 transition-all">
-                            <div className="flex items-center justify-between">
-                                <div className="p-2.5 bg-emerald-50 rounded-xl text-emerald-700"><Users size={20} /></div>
-                                <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-full">Users</span>
-                            </div>
-                            <div className="text-2xl md:text-[28px] font-bold text-slate-900 leading-none mt-4">{stats.users}</div>
-                            <div className="mt-4 h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
-                                <div className="h-full bg-emerald-500" style={{ width: `${Math.min(100, Math.max(4, Number(stats.users) ? (Number(stats.users) / 50) * 100 : 8))}%` }} />
-                            </div>
-                        </div>
-
-                        <div className="glass-panel-light p-5 rounded-2xl relative overflow-hidden group hover:border-sky-300 transition-all">
-                            <div className="flex items-center justify-between">
-                                <div className="p-2.5 bg-sky-50 rounded-xl text-sky-700"><Activity size={20} /></div>
-                                <span className="text-[10px] font-semibold text-sky-700 bg-sky-50 border border-sky-200 px-2 py-1 rounded-full">Status</span>
-                            </div>
-                            <div className="text-2xl md:text-[28px] font-bold text-slate-900 leading-none mt-4">Healthy</div>
-                            <div className="mt-4 h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
-                                <div className="h-full bg-sky-500" style={{ width: '72%' }} />
-                            </div>
-                        </div>
-
-                        <div className="glass-panel-light p-5 rounded-2xl relative overflow-hidden group hover:border-violet-300 transition-all">
-                            <div className="flex items-center justify-between">
-                                <div className="p-2.5 bg-violet-50 rounded-xl text-violet-700"><BookOpen size={20} /></div>
-                                <span className="text-[10px] font-semibold text-violet-700 bg-violet-50 border border-violet-200 px-2 py-1 rounded-full">Content</span>
-                            </div>
-                            <div className="text-2xl md:text-[28px] font-bold text-slate-900 leading-none mt-4">{stats.content}</div>
-                            <div className="mt-4 h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
-                                <div className="h-full bg-violet-500" style={{ width: `${Math.min(100, Math.max(6, Number(stats.content) ? (Number(stats.content) / 200) * 100 : 10))}%` }} />
-                            </div>
-                        </div>
-
-                        <div className="glass-panel-light p-5 rounded-2xl relative overflow-hidden group hover:border-orange-300 transition-all">
-                            <div className="flex items-center justify-between">
-                                <div className="p-2.5 bg-orange-50 rounded-xl text-orange-700"><CheckSquare size={20} /></div>
-                                <span className="text-[10px] font-semibold text-orange-700 bg-orange-50 border border-orange-200 px-2 py-1 rounded-full">Quizzes</span>
-                            </div>
-                            <div className="text-2xl md:text-[28px] font-bold text-slate-900 leading-none mt-4">{stats.quizzes}</div>
-                            <div className="mt-4 h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
-                                <div className="h-full bg-orange-500" style={{ width: `${Math.min(100, Math.max(6, Number(stats.quizzes) ? (Number(stats.quizzes) / 50) * 100 : 10))}%` }} />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* ACADEMIC MANAGEMENT GRID */}
-                    <div>
-                        <div className="text-lg md:text-xl font-bold text-slate-900 mb-4 flex items-center gap-3">
-                            <div className="p-2 bg-emerald-50 rounded-lg"><GraduationCap size={20} className="text-emerald-700" /></div>
-                            Academic Management
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {dashboardYearIds.map((yearId) => {
-                                const yearNumber = yearId.replace('year-', '');
-                                const subjectsCount = getYearSubjectCount(yearId);
-                                const subjectsRatio = subjectsCount / maxYearSubjects;
-                                return (
-                                    <div
-                                        key={yearId}
-                                        onClick={() => handleYearClick(yearId)}
-                                        className="glass-panel-light p-6 rounded-2xl transition-all group cursor-pointer border border-slate-200 hover:border-emerald-200 relative overflow-hidden hover:-translate-y-0.5 hover:shadow-xl"
-                                    >
-                                        <div className="absolute top-0 right-0 w-28 h-28 rounded-bl-full -mr-6 -mt-6 opacity-60" style={{ backgroundImage: 'var(--grad-primary)' }}></div>
-                                        <div className="relative z-10 flex items-start justify-between gap-3">
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold shadow-lg" style={{ backgroundImage: 'var(--grad-primary)' }}>Y{yearNumber}</div>
-                                                <span className="text-[10px] font-semibold text-emerald-700 border border-emerald-200 bg-emerald-50 px-2.5 py-1 rounded-full">ACADEMIC</span>
-                                            </div>
-                                            <ExternalLink size={16} className="text-slate-400 group-hover:text-slate-700 transition-colors mt-1" />
-                                        </div>
-                                        <div className="relative z-10 mt-4">
-                                            <div className="text-xl font-bold text-slate-900 leading-tight">B.Pharm Year {yearNumber}</div>
-                                            <p className="text-xs text-slate-600 mt-1">Manage semesters, subjects and content.</p>
-                                        </div>
-                                        <div className="relative z-10 mt-5">
-                                            <div className="flex items-center justify-between text-[11px] text-slate-600 font-semibold">
-                                                <span>Subjects</span>
-                                                <span className="text-slate-700">{subjectsCount}</span>
-                                            </div>
-                                            <div className="mt-2 h-2 w-full bg-slate-200 rounded-full overflow-hidden">
-                                                <div className="h-full bg-emerald-500" style={{ width: `${Math.max(8, Math.round(subjectsRatio * 100))}%` }} />
-                                            </div>
-                                            <div className="mt-4 w-full px-4 py-3 bg-white border border-slate-200 text-slate-700 text-xs font-semibold rounded-xl group-hover:text-white transition-all flex items-center justify-center gap-2 select-none" style={{ backgroundImage: 'var(--grad-primary)' }}>
-                                                Manage Year <ArrowRight size={14} />
-                                            </div>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* VIEW: YEAR DETAILS */}
-            {viewMode === 'year' && selectedYearData && (
-                <div className="max-w-7xl mx-auto space-y-8 animate-fade-in custom-scrollbar">
-                    <button onClick={() => setViewMode('overview')} className="flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors mb-2 text-sm font-semibold">
-                        <ArrowRight size={16} className="rotate-180" /> Back to Dashboard
-                    </button>
-
-                    <div className="flex items-center justify-between mb-2 pb-6 border-b border-slate-200">
-                        <div className="min-w-0">
-                            <div className="text-2xl md:text-[28px] font-bold text-slate-900 mb-1 truncate">{selectedYearData.title}</div>
-                            <p className="text-slate-600 text-sm">Select a subject to manage topics, content, and quizzes.</p>
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-10">
-                        {selectedYearData.semesters.map(sem => (
-                            <div key={sem.id} className="space-y-4">
-                                <div className="text-sm font-bold text-emerald-700 uppercase tracking-widest border-l-4 border-emerald-500 pl-4 flex items-center gap-2">
-                                    {sem.title}
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    {sem.subjects.map(subject => (
-                                        <div
-                                            key={subject.id}
-                                            onClick={() => handleSubjectClick(subject, selectedYearData.id, sem.id, 'bpharm')}
-                                            className="glass-panel p-5 rounded-xl cursor-pointer hover:bg-slate-50 hover:border-emerald-200 transition-all group border border-slate-200"
-                                        >
-                                            <div className="flex items-start justify-between">
-                                                <h4 className="font-bold text-slate-900 group-hover:text-emerald-700 transition-colors line-clamp-2 pr-4">{subject.title}</h4>
-                                                <ChevronRight size={18} className="text-slate-300 group-hover:text-emerald-600 opacity-0 group-hover:opacity-100 transition-all" />
-                                            </div>
-                                            <p className="text-xs text-slate-500 mt-2 font-medium">Click to manage topics</p>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            )}
-
-            {/* VIEW: EDITOR */}
-            {viewMode === 'editor' && (
-                <div className="animate-fade-in">
-                    {/* Editor Header */}
-                    <div className="mb-6 flex items-start justify-between gap-4">
-                        <div className="min-w-0">
-                            <div className="flex items-center gap-3 mb-2">
-                                <button
-                                    onClick={() => setViewMode(selectedYearData ? 'year' : 'overview')}
-                                    className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
-                                >
-                                    <ArrowRight className="w-5 h-5 text-slate-600 rotate-180" />
-                                </button>
-                                <h2 className="text-2xl font-bold text-slate-900">Content Editor</h2>
-                            </div>
-                            <p className="text-slate-600 ml-14 text-sm break-words">
-                                {breadcrumb?.yearTitle ? `${breadcrumb.yearTitle} → ` : ''}
-                                {breadcrumb?.semTitle ? `${breadcrumb.semTitle} → ` : ''}
-                                {breadcrumb?.subjectTitle || ''}
-                            </p>
-                        </div>
-                        <button
-                            onClick={saveTopic}
-                            disabled={loading}
-                            className="px-6 py-3 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
-                            style={{ backgroundImage: 'var(--grad-primary)' }}
-                        >
-                            <Save className="w-5 h-5" />
-                            {loading ? 'Saving...' : (topicId ? 'Update Topic' : 'Save Topic')}
+        <Layout>
+            <SEO title="Admin Dashboard" description="Manage LearnPharmacy Content" />
+            <div className="container">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                    <h1>Content Manager <span style={{ fontSize: '0.8rem', opacity: 0.5 }}>(v1.1 Fixed)</span></h1>
+                    <div style={{ display: 'flex', gap: '1rem' }}>
+                        <button onClick={() => navigate('/admin/settings')} style={{ padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '0.5rem', cursor: 'pointer' }}>
+                            Global Settings
+                        </button>
+                        <button onClick={handleLogout} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', padding: '0.5rem 1rem', background: 'rgba(239,68,68,0.2)', border: '1px solid #ef4444', color: '#ef4444', borderRadius: '0.5rem', cursor: 'pointer' }}>
+                            <LogOut size={16} /> Logout
                         </button>
                     </div>
+                </div>
 
-                    {/* Alerts */}
-                    {error && (
-                        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex gap-2">
-                            <AlertTriangle size={16} className="text-red-500 mt-0.5" />
-                            <div className="min-w-0">{error}</div>
-                        </div>
-                    )}
-                    {successMsg && (
-                        <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-sm flex gap-2">
-                            <CheckSquare size={16} className="text-emerald-600 mt-0.5" />
-                            <div className="min-w-0">{successMsg}</div>
-                        </div>
-                    )}
+                <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: '2rem', alignItems: 'start' }}>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-                        {/* Left: Existing Topics */}
-                        <div className="lg:col-span-1">
-                            <div className="glass-panel rounded-2xl p-6 sticky top-24">
-                                <div className="flex items-center justify-between gap-3 mb-4">
-                                    <h3 className="text-lg font-semibold text-slate-900">Existing Topics</h3>
-                                    {topicId && (
-                                        <button
-                                            onClick={resetForm}
-                                            className="text-xs font-semibold text-slate-600 hover:text-slate-900 px-3 py-2 rounded-lg hover:bg-slate-100 transition-colors"
-                                        >
-                                            Cancel
-                                        </button>
-                                    )}
-                                </div>
+                    {/* Left Column: Context Selection */}
+                    <div className="glass-panel" style={{ padding: '1.5rem' }}>
+                        <h3 style={{ marginBottom: '1.5rem' }}>1. Select Context</h3>
 
-                                <div className="space-y-2 max-h-[60vh] overflow-y-auto custom-scrollbar">
-                                    {fetchingTopics ? (
-                                        <div className="text-center py-10 text-slate-500">Loading...</div>
-                                    ) : (
-                                        <>
-                                            {existingTopics.length === 0 && (
-                                                <div className="text-center py-10 text-slate-500 text-sm">No topics found.</div>
-                                            )}
-                                            {existingTopics.map(t => (
-                                                <button
-                                                    key={t.id}
-                                                    onClick={() => handleEditTopic(t)}
-                                                    className={`w-full text-left px-4 py-3 border rounded-xl transition-all group ${
-                                                        topicId === t.id
-                                                            ? 'bg-emerald-50 border-emerald-200 hover:bg-emerald-100'
-                                                            : 'bg-white border-slate-200 hover:bg-slate-50'
-                                                    }`}
-                                                >
-                                                    <div className="flex items-start justify-between gap-3">
-                                                        <p
-                                                            className={`font-medium text-sm line-clamp-2 ${
-                                                                topicId === t.id ? 'text-emerald-900' : 'text-slate-900'
-                                                            }`}
-                                                        >
-                                                            {t.title}
-                                                        </p>
-                                                        <button
-                                                            onClick={(e) => handleDeleteTopic(t.id, e)}
-                                                            className="p-1 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-all"
-                                                            title="Delete"
-                                                        >
-                                                            <Trash size={16} />
-                                                        </button>
-                                                    </div>
-                                                </button>
-                                            ))}
-                                        </>
-                                    )}
-                                </div>
-
-                                <button
-                                    onClick={resetForm}
-                                    className="w-full mt-4 px-4 py-2.5 border-2 border-dashed border-slate-300 text-slate-600 rounded-xl hover:border-emerald-400 hover:text-emerald-700 font-medium transition-colors"
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>Year</label>
+                                <select
+                                    value={selectedYear}
+                                    onChange={(e) => { setSelectedYear(e.target.value); setSelectedSem(''); setSelectedSubject(''); }}
+                                    style={{ width: '100%', padding: '0.8rem', borderRadius: '0.5rem', background: 'black', color: 'white', border: '1px solid var(--border)' }}
                                 >
-                                    + New Topic
-                                </button>
+                                    <option value="">Select Year</option>
+                                    {years.map(y => <option key={y.id} value={y.id}>{y.title}</option>)}
+                                </select>
+                            </div>
+
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>Semester</label>
+                                <select
+                                    value={selectedSem}
+                                    onChange={(e) => { setSelectedSem(e.target.value); setSelectedSubject(''); }}
+                                    disabled={!selectedYear}
+                                    style={{ width: '100%', padding: '0.8rem', borderRadius: '0.5rem', background: 'black', color: 'white', border: '1px solid var(--border)', opacity: !selectedYear ? 0.5 : 1 }}
+                                >
+                                    <option value="">Select Semester</option>
+                                    {semesters.map(s => <option key={s.id} value={s.id}>{s.title}</option>)}
+                                </select>
+                            </div>
+
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>Subject</label>
+                                <select
+                                    value={selectedSubject}
+                                    onChange={(e) => setSelectedSubject(e.target.value)}
+                                    disabled={!selectedSem}
+                                    style={{ width: '100%', padding: '0.8rem', borderRadius: '0.5rem', background: 'black', color: 'white', border: '1px solid var(--border)', opacity: !selectedSem ? 0.5 : 1 }}
+                                >
+                                    <option value="">Select Subject</option>
+                                    {subjects.map(s => <option key={s.id} value={s.id}>{s.title}</option>)}
+                                </select>
                             </div>
                         </div>
 
-                        {/* Right: Editor Form */}
-                        <div className="lg:col-span-2">
-                            <div className="space-y-6">
-                                {/* Basic Info */}
-                                <div className="glass-panel rounded-2xl p-6">
-                                    <h3 className="text-lg font-semibold text-slate-900 mb-4">Basic Information</h3>
-                                    <div className="space-y-4">
-                                        <div>
-                                            <label className="block text-sm font-medium text-slate-700 mb-2">Topic Title *</label>
-                                            <input
-                                                type="text"
-                                                placeholder="Enter topic title..."
-                                                value={topicTitle}
-                                                onChange={(e) => setTopicTitle(e.target.value)}
-                                                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none input-glow focus:border-emerald-500 text-slate-900 placeholder-slate-400"
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-sm font-medium text-slate-700 mb-2">YouTube Video ID / URL</label>
-                                            <input
-                                                type="text"
-                                                placeholder="e.g., dQw4w9WgXcQ or full URL"
-                                                value={youtubeId}
-                                                onChange={(e) => setYoutubeId(e.target.value)}
-                                                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none input-glow focus:border-emerald-500 text-slate-900 placeholder-slate-400"
-                                            />
-                                        </div>
-                                    </div>
+                        {/* Topic List for Selected Subject */}
+                        {selectedSubject && (
+                            <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                                    <h4 style={{ margin: 0 }}>Topics</h4>
+                                    <button onClick={resetForm} style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontSize: '0.8rem' }}>+ New</button>
                                 </div>
 
-                                {/* Blog Content */}
-                                <div className="glass-panel rounded-2xl p-6">
-                                    <h3 className="text-lg font-semibold text-slate-900 mb-4">Blog Content</h3>
-                                    <div className="bg-white rounded-xl overflow-hidden border border-slate-200">
+                                {fetchingTopics ? (
+                                    <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Loading...</div>
+                                ) : (
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                        {existingTopics.length === 0 && <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>No topics found.</div>}
+                                        {existingTopics.map(t => (
+                                            <div
+                                                key={t.id}
+                                                onClick={() => handleEditTopic(t)}
+                                                style={{
+                                                    padding: '0.8rem',
+                                                    borderRadius: '0.5rem',
+                                                    background: topicId === t.id ? 'var(--primary)' : 'rgba(255,255,255,0.05)',
+                                                    color: topicId === t.id ? 'black' : 'white',
+                                                    cursor: 'pointer',
+                                                    fontSize: '0.9rem',
+                                                    display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+                                                }}
+                                            >
+                                                <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '180px' }}>{t.title}</span>
+                                                <button
+                                                    onClick={(e) => handleDeleteTopic(t.id, e)}
+                                                    style={{ background: 'none', border: 'none', color: topicId === t.id ? 'black' : '#ef4444', cursor: 'pointer', padding: '2px' }}
+                                                >
+                                                    <Trash size={14} />
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Right Column: Editor */}
+                    <div>
+                        {!selectedSubject ? (
+                            <div className="glass-panel" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+                                Please select a Subject from the left to start adding content.
+                            </div>
+                        ) : (
+                            <div className="glass-panel" style={{ padding: '2rem' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                                    <h2 style={{ margin: 0 }}>{topicId ? 'Edit Topic' : 'Add New Topic'}</h2>
+                                    {topicId && <button onClick={resetForm} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', padding: '0.5rem 1rem', borderRadius: '0.5rem', color: 'white', cursor: 'pointer' }}>Cancel Edit</button>}
+                                </div>
+                                <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Subject: <span className="text-gradient">{currentSubjectTitle}</span></p>
+
+                                {successMsg && <div style={{ background: 'rgba(34,197,94,0.2)', padding: '1rem', borderRadius: '0.5rem', marginBottom: '1.5rem', border: '1px solid #22c55e' }}>{successMsg}</div>}
+                                {error && <div style={{ background: 'rgba(239,68,68,0.2)', padding: '1rem', borderRadius: '0.5rem', marginBottom: '1.5rem', border: '1px solid #ef4444' }}>{error}</div>}
+
+                                {/* 1. Topic Title */}
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem' }}>
+                                        Topic Title {yearSlug === 'gpat' && <span style={{ fontSize: '0.85rem', color: 'rgba(34,211,238,0.7)' }}>(Topic name within the day)</span>}
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={topicTitle}
+                                        onChange={e => setTopicTitle(e.target.value)}
+                                        placeholder={yearSlug === 'gpat' ? 'e.g., Receptor Theory MCQs' : 'e.g., Mechanism of Action'}
+                                        style={{ width: '100%', padding: '0.8rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)' }}
+                                    />
+                                    {yearSlug === 'gpat' && (
+                                        <p style={{ fontSize: '0.8rem', color: 'rgba(34,211,238,0.7)', marginTop: '0.5rem' }}>
+                                            💡 Example: Day 15 → "Receptor Theory MCQs" or "Pharmacokinetics Practice Questions"
+                                        </p>
+                                    )}
+                                </div>
+
+                                {/* 2. YouTube Video (Top) */}
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                                        <Youtube size={16} color="#ef4444" /> YouTube Video ID (Auto-extracted from URL)
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={youtubeId}
+                                        onChange={e => {
+                                            const val = e.target.value;
+                                            // Robust Regex for ID extraction
+                                            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+                                            const match = val.match(regExp);
+                                            setYoutubeId((match && match[2].length === 11) ? match[2] : val);
+                                        }}
+                                        placeholder="Paste full YouTube URL or just the ID"
+                                        style={{ width: '100%', padding: '0.8rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)' }}
+                                    />
+                                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
+                                        Supports Shorts, standard videos, and shortened URLs.
+                                    </p>
+                                </div>
+
+                                {/* 3. Modern Blog Writer */}
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                                        <PenTool size={16} color="#3b82f6" /> Study Notes / Blog Content
+                                    </label>
+                                    <div style={{ background: 'white', borderRadius: '0.5rem', overflow: 'hidden', color: 'black' }}>
                                         <ReactQuill
                                             theme="snow"
                                             value={blogContent}
                                             onChange={setBlogContent}
                                             modules={modules}
-                                            style={{ height: '320px', marginBottom: '44px' }}
+                                            formats={formats}
+                                            style={{ height: '300px', marginBottom: '50px' }}
                                         />
                                     </div>
+                                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
+                                        Write your full explanation here using the rich text editor.
+                                    </p>
                                 </div>
 
-                                {/* SEO */}
-                                <div className="glass-panel rounded-2xl p-6">
-                                    <h3 className="text-lg font-semibold text-slate-900 mb-4">SEO & Metadata</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {/* 4. SEO Section - EXPANDED FOR RANKING */}
+                                <div style={{ marginBottom: '1.5rem', padding: '1.5rem', background: 'linear-gradient(135deg, rgba(34,211,238,0.1), rgba(139,92,246,0.1))', borderRadius: '0.5rem', border: '1px solid rgba(34,211,238,0.3)' }}>
+                                    <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--primary)', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        <FileText size={16} /> SEO & Ranking Settings
+                                    </h4>
+                                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+                                        🚀 These fields enable automatic internal linking, canonical URLs, sitemaps, and breadcrumb generation.
+                                    </p>
+
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                                        {/* Year Slug */}
                                         <div>
-                                            <label className="block text-sm font-medium text-slate-700 mb-2">Meta Title</label>
-                                            <input
-                                                type="text"
-                                                placeholder="SEO-optimized title"
-                                                value={metaTitle}
-                                                onChange={(e) => setMetaTitle(e.target.value)}
-                                                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none input-glow focus:border-emerald-500 text-slate-900 placeholder-slate-400"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-medium text-slate-700 mb-2">Year Slug</label>
+                                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                                                {yearSlug === 'gpat' ? 'GPAT / B.Pharmacy' : 'B.Pharmacy Year'} <span style={{ color: '#ef4444' }}>*</span>
+                                            </label>
                                             <select
                                                 value={yearSlug}
-                                                onChange={(e) => setYearSlug(e.target.value)}
-                                                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none input-glow focus:border-emerald-500 text-slate-900"
+                                                onChange={e => setYearSlug(e.target.value)}
+                                                style={{ width: '100%', padding: '0.7rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.4)', color: 'white', border: '1px solid var(--border)', fontSize: '0.9rem', cursor: 'pointer' }}
                                             >
+                                                <option value="gpat">GPAT / Competitive</option>
                                                 <option value="1st-year">1st Year</option>
                                                 <option value="2nd-year">2nd Year</option>
                                                 <option value="3rd-year">3rd Year</option>
                                                 <option value="4th-year">4th Year</option>
-                                                <option value="gpat">GPAT</option>
                                             </select>
                                         </div>
+
+                                        {/* Unit Number / Day Number */}
                                         <div>
-                                            <label className="block text-sm font-medium text-slate-700 mb-2">Unit Number</label>
+                                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                                                {yearSlug === 'gpat' ? 'Day Number (1-60)' : 'Unit Number'} <span style={{ color: '#ef4444' }}>*</span>
+                                            </label>
                                             <input
                                                 type="number"
-                                                min={1}
+                                                min="1"
+                                                max={yearSlug === 'gpat' ? 60 : 10}
                                                 value={unitNumber}
-                                                onChange={(e) => setUnitNumber(parseInt(e.target.value || '1'))}
-                                                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none input-glow focus:border-emerald-500 text-slate-900"
+                                                onChange={e => setUnitNumber(parseInt(e.target.value) || 1)}
+                                                placeholder={yearSlug === 'gpat' ? 'Day 1' : 'Unit 1'}
+                                                style={{ width: '100%', padding: '0.7rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.4)', color: 'white', border: '1px solid var(--border)', fontSize: '0.9rem' }}
+                                            />
+                                            <p style={{ fontSize: '0.75rem', color: 'rgba(34,211,238,0.7)', marginTop: '0.3rem' }}>
+                                                {yearSlug === 'gpat' ? '60-day crash course sequencing' : 'For prev/next within subject'}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Primary Keyword */}
+                                    <div style={{ marginBottom: '1rem' }}>
+                                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                                            Primary Keyword <span style={{ color: '#ef4444' }}>*</span> <span style={{ color: 'rgba(34,211,238,0.7)', fontSize: '0.75rem' }}>(Google ranking target)</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={primaryKeyword}
+                                            onChange={e => setPrimaryKeyword(e.target.value)}
+                                            placeholder="e.g., pharmaceutics 1 notes"
+                                            style={{ width: '100%', padding: '0.7rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.4)', color: 'white', border: '1px solid var(--primary)', fontSize: '0.9rem' }}
+                                        />
+                                        <p style={{ fontSize: '0.75rem', color: 'rgba(34,211,238,0.7)', marginTop: '0.3rem' }}>
+                                            💡 The MAIN keyword students will search for. Anti-cannibalization system ensures no duplicate keywords.
+                                        </p>
+                                    </div>
+
+                                    {/* Target Keywords */}
+                                    <div style={{ marginBottom: '1rem' }}>
+                                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                                            Target Keywords <span style={{ fontSize: '0.75rem' }}>(comma-separated)</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={targetKeywords}
+                                            onChange={e => setTargetKeywords(e.target.value)}
+                                            placeholder="e.g., drug formulation, dosage forms, pharmaceutical science"
+                                            style={{ width: '100%', padding: '0.7rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.4)', color: 'white', border: '1px solid var(--border)', fontSize: '0.9rem' }}
+                                        />
+                                        <p style={{ fontSize: '0.75rem', color: 'rgba(139,92,246,0.7)', marginTop: '0.3rem' }}>
+                                            🔗 Used for related content linking. Separate with commas.
+                                        </p>
+                                    </div>
+
+                                    <div style={{ display: 'grid', gap: '1rem' }}>
+                                        <div>
+                                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Meta Title</label>
+                                            <input
+                                                type="text"
+                                                value={metaTitle}
+                                                onChange={e => setMetaTitle(e.target.value)}
+                                                placeholder="Custom Page Title (auto-generated if empty)"
+                                                style={{ width: '100%', padding: '0.6rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)', fontSize: '0.9rem' }}
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-medium text-slate-700 mb-2">Primary Keyword</label>
-                                            <input
-                                                type="text"
-                                                placeholder="Main keyword"
-                                                value={primaryKeyword}
-                                                onChange={(e) => setPrimaryKeyword(e.target.value)}
-                                                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none input-glow focus:border-emerald-500 text-slate-900 placeholder-slate-400"
-                                            />
-                                        </div>
-                                        <div className="md:col-span-2">
-                                            <label className="block text-sm font-medium text-slate-700 mb-2">Meta Description</label>
+                                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Meta Description</label>
                                             <textarea
-                                                rows={3}
-                                                placeholder="SEO meta description"
                                                 value={metaDescription}
-                                                onChange={(e) => setMetaDescription(e.target.value)}
-                                                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none input-glow focus:border-emerald-500 text-slate-900 placeholder-slate-400 resize-none"
+                                                onChange={e => setMetaDescription(e.target.value)}
+                                                placeholder="Brief summary for Google search results..."
+                                                rows={2}
+                                                style={{ width: '100%', padding: '0.6rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)', fontSize: '0.9rem', fontFamily: 'inherit' }}
                                             />
                                         </div>
-                                        <div className="md:col-span-2">
-                                            <label className="block text-sm font-medium text-slate-700 mb-2">Target Keywords (comma separated)</label>
-                                            <input
-                                                type="text"
-                                                placeholder="keyword1, keyword2, keyword3"
-                                                value={targetKeywords}
-                                                onChange={(e) => setTargetKeywords(e.target.value)}
-                                                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none input-glow focus:border-emerald-500 text-slate-900 placeholder-slate-400"
-                                            />
-                                        </div>
+                                    </div>
+
+                                    {/* Auto-calculated info box */}
+                                    <div style={{ marginTop: '1rem', padding: '0.8rem', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '0.5rem', fontSize: '0.8rem', color: 'rgba(34,197,94,0.9)' }}>
+                                        ✅ <strong>Auto-calculated on save:</strong> Word count, reading time, canonical URL, breadcrumbs, internal links, sitemap update
                                     </div>
                                 </div>
 
-                                {/* Quiz */}
-                                <div className="glass-panel rounded-2xl p-6">
-                                    <div className="flex items-center justify-between mb-4 gap-3">
-                                        <h3 className="text-lg font-semibold text-slate-900">Quiz Questions</h3>
-                                        <button
-                                            onClick={addQuestion}
-                                            className="px-4 py-2 bg-emerald-100 text-emerald-700 rounded-lg hover:bg-emerald-200 font-medium text-sm flex items-center gap-2 transition-colors"
-                                        >
-                                            <Plus className="w-4 h-4" />
-                                            Add Question
-                                        </button>
-                                    </div>
+                                {/* 5. Animation Code (Bottom) */}
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                                        <span>Animation Code (HTML/CSS/JS)</span>
+                                        <span style={{ fontSize: '0.8rem', color: 'var(--primary)' }}>Advanced</span>
+                                    </label>
+                                    <textarea
+                                        value={animationCode}
+                                        onChange={e => setAnimationCode(e.target.value)}
+                                        placeholder="<div>My Animation</div><style>...</style><script>...</script>"
+                                        rows={10}
+                                        style={{ width: '100%', padding: '0.8rem', borderRadius: '0.5rem', background: '#0f172a', color: '#a5b4fc', border: '1px solid var(--border)', fontFamily: 'monospace' }}
+                                    />
+                                </div>
 
-                                    <div className="space-y-4">
+                                {/* Notes Upload */}
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem' }}>Notes (PDF)</label>
+                                    <input
+                                        type="file"
+                                        accept=".pdf"
+                                        onChange={e => setNotesFile(e.target.files[0])}
+                                        style={{ color: 'white' }}
+                                    />
+                                    {topicId && !notesFile && <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>Leave empty to keep existing file.</p>}
+                                </div>
+
+                                {/* Quiz Builder */}
+                                <div style={{ marginBottom: '2rem' }}>
+                                    <label style={{ display: 'block', marginBottom: '1rem', fontSize: '1.1rem', fontWeight: 'bold' }}>Quiz Questions</label>
+
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                         {quizQuestions.map((q, idx) => (
-                                            <div key={q.id} className="border border-slate-200 rounded-xl p-4 bg-white">
-                                                <div className="flex items-start justify-between mb-3 gap-3">
-                                                    <span className="text-sm font-medium text-slate-700">Question {idx + 1}</span>
-                                                    <button
-                                                        onClick={() => setQuizQuestions(quizQuestions.filter(i => i.id !== q.id))}
-                                                        className="text-red-500 hover:text-red-700 transition-colors"
-                                                        title="Delete"
-                                                    >
-                                                        <Trash className="w-5 h-5" />
-                                                    </button>
+                                            <div key={q.id} style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '0.5rem' }}>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                                                    <span>Question {idx + 1}</span>
+                                                    <button onClick={() => setQuizQuestions(quizQuestions.filter(i => i.id !== q.id))} style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer' }}><Trash size={16} /></button>
                                                 </div>
                                                 <input
                                                     type="text"
-                                                    placeholder="Enter question"
                                                     value={q.question}
-                                                    onChange={(e) => updateQuestion(q.id, 'question', e.target.value)}
-                                                    className="w-full mb-3 px-3 py-2 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-emerald-500 text-sm"
+                                                    onChange={e => updateQuestion(q.id, 'question', e.target.value)}
+                                                    placeholder="Type question here..."
+                                                    style={{ width: '100%', padding: '0.5rem', marginBottom: '0.8rem', borderRadius: '0.3rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)' }}
                                                 />
 
-                                                <div className="space-y-2">
-                                                    {(q.options || []).map((opt, oIdx) => (
-                                                        <div key={oIdx} className="flex items-center gap-2">
+                                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                                                    {q.options.map((opt, oIdx) => (
+                                                        <div key={oIdx} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                                                             <input
                                                                 type="radio"
+                                                                name={`correct-${q.id}`}
                                                                 checked={q.correct === oIdx}
                                                                 onChange={() => updateQuestion(q.id, 'correct', oIdx)}
-                                                                className="accent-emerald-600"
-                                                                name={`correct-${q.id}`}
                                                             />
                                                             <input
                                                                 type="text"
-                                                                placeholder={`Option ${String.fromCharCode(65 + oIdx)}`}
                                                                 value={opt}
-                                                                onChange={(e) => updateOption(q.id, oIdx, e.target.value)}
-                                                                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-emerald-500"
+                                                                onChange={e => updateOption(q.id, oIdx, e.target.value)}
+                                                                placeholder={`Option ${oIdx + 1}`}
+                                                                style={{ width: '100%', padding: '0.4rem', borderRadius: '0.3rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)' }}
                                                             />
                                                         </div>
                                                     ))}
                                                 </div>
                                             </div>
                                         ))}
+                                    </div>
 
-                                        {quizQuestions.length === 0 && (
-                                            <div className="text-center py-8 text-slate-500">
-                                                No questions added yet. Click “Add Question” to get started.
+                                    <button
+                                        onClick={addQuestion}
+                                        style={{ marginTop: '1rem', padding: '0.5rem 1rem', borderRadius: '0.5rem', background: 'transparent', border: '1px dashed var(--text-muted)', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                                    >
+                                        <Plus size={16} /> Add Question
+                                    </button>
+                                </div>
+
+                                {/* FAQ Builder */}
+                                <div style={{ marginBottom: '2rem', padding: '1rem', background: 'rgba(255,255,255,0.02)', borderRadius: '0.5rem' }}>
+                                    <label style={{ display: 'block', marginBottom: '1rem', fontSize: '1.1rem', fontWeight: 'bold' }}>FAQs</label>
+
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                        {faqs.map((faq, idx) => (
+                                            <div key={idx} style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '0.5rem', position: 'relative' }}>
+                                                <button
+                                                    onClick={() => setFaqs(faqs.filter((_, i) => i !== idx))}
+                                                    style={{ position: 'absolute', top: '0.5rem', right: '0.5rem', background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}
+                                                >
+                                                    <Trash size={14} />
+                                                </button>
+                                                <input
+                                                    type="text"
+                                                    placeholder="Question"
+                                                    value={faq.question}
+                                                    onChange={e => {
+                                                        const newFaqs = [...faqs];
+                                                        newFaqs[idx].question = e.target.value;
+                                                        setFaqs(newFaqs);
+                                                    }}
+                                                    style={{ width: '100%', padding: '0.5rem', marginBottom: '0.5rem', borderRadius: '0.3rem', background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid var(--border)' }}
+                                                />
+                                                <textarea
+                                                    placeholder="Answer"
+                                                    value={faq.answer}
+                                                    onChange={e => {
+                                                        const newFaqs = [...faqs];
+                                                        newFaqs[idx].answer = e.target.value;
+                                                        setFaqs(newFaqs);
+                                                    }}
+                                                    rows={2}
+                                                    style={{ width: '100%', padding: '0.5rem', borderRadius: '0.3rem', background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)', border: '1px solid var(--border)' }}
+                                                />
                                             </div>
-                                        )}
+                                        ))}
                                     </div>
+
+                                    <button
+                                        onClick={() => setFaqs([...faqs, { question: '', answer: '' }])}
+                                        style={{ marginTop: '1rem', padding: '0.5rem 1rem', borderRadius: '0.5rem', background: 'transparent', border: '1px dashed var(--text-muted)', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                                    >
+                                        <Plus size={16} /> Add FAQ
+                                    </button>
                                 </div>
 
-                                {/* Attachments */}
-                                <div className="glass-panel rounded-2xl p-6">
-                                    <h3 className="text-lg font-semibold text-slate-900 mb-4">Attachments</h3>
-                                    <div className="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center transition-colors">
-                                        <Upload className="w-10 h-10 text-slate-400 mx-auto mb-3" />
-                                        <p className="text-slate-700 font-medium mb-1">Upload notes file (PDF)</p>
-                                        <p className="text-sm text-slate-500 mb-4">Choose a file to attach to this topic.</p>
-                                        <input
-                                            type="file"
-                                            accept=".pdf"
-                                            onChange={e => setNotesFile(e.target.files[0])}
-                                            className="block w-full text-sm text-slate-600 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-800 hover:file:bg-slate-200"
-                                        />
-                                        {notesFile?.name && (
-                                            <div className="mt-3 text-sm text-slate-600">Selected: <span className="font-semibold">{notesFile.name}</span></div>
-                                        )}
-                                    </div>
-                                </div>
+                                <button
+                                    onClick={saveTopic}
+                                    disabled={loading}
+                                    style={{ width: '100%', padding: '1rem', borderRadius: '0.5rem', border: 'none', background: 'var(--primary)', color: 'black', fontWeight: 'bold', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1 }}
+                                >
+                                    {loading ? 'Saving...' : (topicId ? 'Update Topic' : 'Save Topic')}
+                                </button>
+
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
-            )}
-        </AdminLayout>
+            </div>
+        </Layout>
     );
 };
 
