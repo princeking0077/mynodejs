@@ -9,7 +9,18 @@ import PharmaBackground from '../components/PharmaBackground';
 
 const Home = () => {
     const [searchQuery, setSearchQuery] = useState('');
+    const [stats, setStats] = useState(null); // Dynamic Stats
     const navigate = useNavigate();
+
+    // Fetch Stats on Mount
+    React.useEffect(() => {
+        // Quick fetch for dynamic numbers
+        import('../services/api').then(({ api }) => {
+            api.getStats().then(data => {
+                if (data) setStats(data);
+            });
+        });
+    }, []);
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -132,10 +143,10 @@ const Home = () => {
                         gap: '2rem'
                     }}>
                         {[
-                            { year: '1st Year', desc: 'Semesters 1 & 2', color: '#3b82f6', id: 'year-1' },
-                            { year: '2nd Year', desc: 'Semesters 3 & 4', color: '#10b981', id: 'year-2' },
-                            { year: '3rd Year', desc: 'Semesters 5 & 6', color: '#f59e0b', id: 'year-3' },
-                            { year: '4th Year', desc: 'Semesters 7 & 8', color: '#8b5cf6', id: 'year-4' }
+                            { year: '1st Year', desc: 'Semesters 1 & 2', slug: '1st-year', color: '#3b82f6', id: 'year-1' },
+                            { year: '2nd Year', desc: 'Semesters 3 & 4', slug: '2nd-year', color: '#10b981', id: 'year-2' },
+                            { year: '3rd Year', desc: 'Semesters 5 & 6', slug: '3rd-year', color: '#f59e0b', id: 'year-3' },
+                            { year: '4th Year', desc: 'Semesters 7 & 8', slug: '4th-year', color: '#8b5cf6', id: 'year-4' }
                         ].map((item) => (
                             <Link to={`/year/${item.id}`} key={item.id} style={{ textDecoration: 'none' }}>
                                 <motion.div
@@ -165,6 +176,23 @@ const Home = () => {
                                     <div>
                                         <h3 style={{ fontSize: '1.8rem', marginBottom: '0.5rem', color: 'white' }}>{item.year}</h3>
                                         <p style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '1.1rem' }}>{item.desc}</p>
+
+                                        {/* Dynamic Topic Count Badge */}
+                                        {stats && stats.byYear && stats.byYear[item.slug] > 0 && (
+                                            <div style={{
+                                                marginTop: '0.8rem',
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                                gap: '0.4rem',
+                                                fontSize: '0.85rem',
+                                                color: item.color,
+                                                background: `rgba(255,255,255,0.05)`,
+                                                padding: '0.3rem 0.8rem',
+                                                borderRadius: '20px'
+                                            }}>
+                                                <Layers size={14} /> {stats.byYear[item.slug]} Topics Added
+                                            </div>
+                                        )}
                                     </div>
                                     <div style={{
                                         marginTop: 'auto',
@@ -274,7 +302,7 @@ const Home = () => {
                 }}>
                     {[
                         { label: 'Active Students', value: '10k+', icon: Users, color: '#3b82f6' },
-                        { label: 'Visual Topics', value: '500+', icon: Layers, color: '#10b981' },
+                        { label: 'Visual Topics', value: stats ? `${stats.total}+` : '500+', icon: Layers, color: '#10b981' },
                         { label: 'Quizzes Taken', value: '50k+', icon: Zap, color: '#f59e0b' }
                     ].map((stat, i) => (
                         <motion.div

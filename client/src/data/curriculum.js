@@ -1,131 +1,58 @@
-export const curriculum = [
+import { gpatSyllabus } from './gpatSyllabusData';
+import { bpharmSyllabus } from './BPharmSyllabus';
+
+// Helper to map topics
+const mapTopics = (subjectTitle, sourceData) => {
+    // 1. Try exact match
+    if (sourceData[subjectTitle]) {
+        return sourceData[subjectTitle].map((t, i) => ({ id: `t${i}`, title: t }));
+    }
+    // 2. Try matching by "Subject (All Topics)"
+    const baseTitle = subjectTitle.replace(" (All Topics)", "");
+    if (sourceData[baseTitle]) {
+        return sourceData[baseTitle].map((t, i) => ({ id: `t${i}`, title: t }));
+    }
+    return [];
+};
+
+// Helper for GPAT Mapping
+const getGpatTopics = (subjectId) => {
+    // Find the semester/section in gpatSyllabus that matches the ID logic
+    // We have to iterate gpatSyllabus to find the matching section/subject
+    for (const section of gpatSyllabus) {
+        // e.g. section.id = "pharmacology"
+        // We need to match with our curriculum ID "gpat-pharmacology"
+        if (`gpat-${section.id}` === subjectId) {
+            // Return topics? No, the subjects are nested.
+            // We need to return the SUBJECTS for this section, with their topics attached.
+            return Object.entries(section.topics).map(([subTitle, subTopics], idx) => ({
+                id: `gpat-${section.id}-${idx}`,
+                title: subTitle,
+                type: 'Theory',
+                topics: subTopics.map((t, i) => ({ id: `gt-${i}`, title: t }))
+            }));
+        }
+    }
+    return [];
+};
+
+// Instead of hardcoding GPAT subjects in the array below, we'll generate them dynamically or fill them in.
+// However, the structure below is already defined with IDs. We should just Attach TOPICS.
+
+const baseCurriculum = [
     {
         id: 'gpat-module',
         title: 'GPAT & Competitive Exams',
-        semesters: [
-            {
-                id: 'gpat-pharmacology',
-                title: 'Pharmacology',
-                subjects: [
-                    { id: 'gpat-pharm-gen', title: 'General Pharmacology', type: 'Theory' },
-                    { id: 'gpat-pharm-ans', title: 'Autonomic Nervous System', type: 'Theory' },
-                    { id: 'gpat-pharm-cns', title: 'Central Nervous System', type: 'Theory' },
-                    { id: 'gpat-pharm-cvs', title: 'Cardiovascular Pharmacology', type: 'Theory' },
-                    { id: 'gpat-pharm-respgit', title: 'Respiratory & GIT', type: 'Theory' },
-                    { id: 'gpat-pharm-endo', title: 'Endocrine Pharmacology', type: 'Theory' },
-                    { id: 'gpat-pharm-chemo', title: 'Chemotherapy', type: 'Theory' },
-                    { id: 'gpat-pharm-tox', title: 'Toxicology & Bioassay', type: 'Theory' }
-                ]
-            },
-            {
-                id: 'gpat-pharmaceutics',
-                title: 'Pharmaceutics',
-                subjects: [
-                    { id: 'gpat-ceutics-physical', title: 'Physical Pharmaceutics', type: 'Theory' },
-                    { id: 'gpat-ceutics-calcs', title: 'Pharmaceutical Calculations', type: 'Theory' },
-                    { id: 'gpat-ceutics-conv', title: 'Conventional Dosage Forms', type: 'Theory' },
-                    { id: 'gpat-ceutics-adv', title: 'Advanced Dosage Forms', type: 'Theory' },
-                    { id: 'gpat-ceutics-bio', title: 'Biopharmaceutics & Pharmacokinetics', type: 'Theory' },
-                    { id: 'gpat-ceutics-ndds', title: 'NDDS', type: 'Theory' },
-                    { id: 'gpat-ceutics-ind', title: 'Industrial Pharmacy', type: 'Theory' },
-                    { id: 'gpat-ceutics-pack', title: 'Packaging & Stability', type: 'Theory' }
-                ]
-            },
-            {
-                id: 'gpat-pharm-chem',
-                title: 'Pharmaceutical Chemistry',
-                subjects: [
-                    { id: 'gpat-chem-med', title: 'Medicinal Chemistry', type: 'Theory' },
-                    { id: 'gpat-chem-org', title: 'Organic Chemistry', type: 'Theory' },
-                    { id: 'gpat-chem-inorg', title: 'Inorganic Pharmaceutical Chemistry', type: 'Theory' },
-                    { id: 'gpat-chem-phys', title: 'Physical Chemistry', type: 'Theory' }
-                ]
-            },
-            {
-                id: 'gpat-analysis',
-                title: 'Pharmaceutical Analysis',
-                subjects: [
-                    { id: 'gpat-analysis-main', title: 'Pharmaceutical Analysis (All Topics)', type: 'Theory' }
-                ]
-            },
-            {
-                id: 'gpat-pharmacognosy',
-                title: 'Pharmacognosy',
-                subjects: [
-                    { id: 'gpat-cog-main', title: 'Pharmacognosy (All Topics)', type: 'Theory' }
-                ]
-            },
-            {
-                id: 'gpat-biochem',
-                title: 'Biochemistry',
-                subjects: [
-                    { id: 'gpat-biochem-main', title: 'Biochemistry (All Topics)', type: 'Theory' }
-                ]
-            },
-            {
-                id: 'gpat-micro',
-                title: 'Microbiology',
-                subjects: [
-                    { id: 'gpat-micro-main', title: 'Microbiology (All Topics)', type: 'Theory' }
-                ]
-            },
-            {
-                id: 'gpat-biotech',
-                title: 'Biotechnology',
-                subjects: [
-                    { id: 'gpat-biotech-main', title: 'Biotechnology (All Topics)', type: 'Theory' }
-                ]
-            },
-            {
-                id: 'gpat-patho',
-                title: 'Pathophysiology',
-                subjects: [
-                    { id: 'gpat-patho-main', title: 'Pathophysiology (All Topics)', type: 'Theory' }
-                ]
-            },
-            {
-                id: 'gpat-clinical',
-                title: 'Clinical Pharmacy',
-                subjects: [
-                    { id: 'gpat-clinical-main', title: 'Clinical Pharmacy (All Topics)', type: 'Theory' }
-                ]
-            },
-            {
-                id: 'gpat-hospital',
-                title: 'Hospital & Community Pharmacy',
-                subjects: [
-                    { id: 'gpat-hospital-main', title: 'Hospital & Community Pharmacy', type: 'Theory' }
-                ]
-            },
-            {
-                id: 'gpat-juris',
-                title: 'Pharmaceutical Jurisprudence',
-                subjects: [
-                    { id: 'gpat-juris-main', title: 'Pharmaceutical Jurisprudence', type: 'Theory' }
-                ]
-            },
-            {
-                id: 'gpat-eng',
-                title: 'Pharmaceutical Engineering',
-                subjects: [
-                    { id: 'gpat-eng-main', title: 'Pharmaceutical Engineering', type: 'Theory' }
-                ]
-            },
-            {
-                id: 'gpat-biostat',
-                title: 'Biostatistics & Research',
-                subjects: [
-                    { id: 'gpat-biostat-main', title: 'Biostatistics & Research Methodology', type: 'Theory' }
-                ]
-            },
-            {
-                id: 'gpat-general',
-                title: 'General Awareness',
-                subjects: [
-                    { id: 'gpat-general-main', title: 'General Awareness', type: 'Theory' }
-                ]
-            }
-        ]
+        semesters: gpatSyllabus.map(section => ({
+            id: `gpat-${section.id}`,
+            title: section.title.replace('GPAT ', ''),
+            subjects: Object.entries(section.topics).map(([subTitle, subTopics], idx) => ({
+                id: `gpat-${section.id}-${idx}`,
+                title: subTitle,
+                type: 'Theory',
+                topics: subTopics.map((t, i) => ({ id: `gt-${section.id}-${idx}-${i}`, title: t }))
+            }))
+        }))
     },
     {
         id: 'year-1',
@@ -135,21 +62,12 @@ export const curriculum = [
                 id: 'sem-1',
                 title: 'Semester I',
                 subjects: [
-                    {
-                        id: 'bp101t',
-                        title: 'Human Anatomy and Physiology – I',
-                        type: 'Theory & Practical',
-                        topics: [
-                            { id: 't1', title: 'Introduction to Human Body', animationId: 'anat_intro' },
-                            { id: 't2', title: 'Cellular Level of Organization', animationId: 'cell_structure' },
-                            { id: 't3', title: 'Tissue Level of Organization', animationId: 'tissue_types' }
-                        ]
-                    },
+                    { id: 'bp101t', title: 'Human Anatomy and Physiology – I', type: 'Theory & Practical' },
                     { id: 'bp102t', title: 'Pharmaceutical Analysis – I', type: 'Theory & Practical' },
                     { id: 'bp103t', title: 'Pharmaceutics – I', type: 'Theory & Practical' },
                     { id: 'bp104t', title: 'Pharmaceutical Inorganic Chemistry', type: 'Theory & Practical' },
                     { id: 'bp105t', title: 'Communication Skills', type: 'Theory & Practical' },
-                    { id: 'bp106rbt', title: 'Remedial Biology / Remedial Mathematics', type: 'Theory & Practical' }
+                    { id: 'bp106rbt', title: 'Remedial Biology', type: 'Theory & Practical' }
                 ]
             },
             {
@@ -243,10 +161,26 @@ export const curriculum = [
                 subjects: [
                     { id: 'bp801t', title: 'Biostatistics and Research Methodology', type: 'Theory' },
                     { id: 'bp802t', title: 'Social and Preventive Pharmacy', type: 'Theory' },
-                    { id: 'bp803t', title: 'Elective – I & II (Select Two)', type: 'Elective' },
-                    { id: 'bp804t', title: 'Project Work', type: 'Practical' }
+                    { id: 'bp803t', title: 'Elective – I & II', type: 'Elective' }
                 ]
             }
         ]
     }
 ];
+
+// Enrich with BPharm Topics
+export const curriculum = baseCurriculum.map(year => {
+    // Skip GPAT as it is already built dynamically above
+    if (year.id === 'gpat-module') return year;
+
+    return {
+        ...year,
+        semesters: year.semesters.map(sem => ({
+            ...sem,
+            subjects: sem.subjects.map(sub => ({
+                ...sub,
+                topics: mapTopics(sub.title, bpharmSyllabus)
+            }))
+        }))
+    };
+});

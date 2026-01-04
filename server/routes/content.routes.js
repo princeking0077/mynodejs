@@ -19,6 +19,35 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Get Global Content Stats
+router.get('/stats', async (req, res) => {
+    try {
+        // Group by year_slug to identify what belongs to which year
+        const [rows] = await pool.query(`
+            SELECT year_slug, COUNT(*) as count 
+            FROM content 
+            GROUP BY year_slug
+        `);
+
+        // Also get total count
+        const total = rows.reduce((acc, curr) => acc + curr.count, 0);
+
+        // Map rows to friendly object
+        const stats = {
+            total,
+            byYear: rows.reduce((acc, curr) => {
+                if (curr.year_slug) acc[curr.year_slug] = curr.count;
+                return acc;
+            }, {})
+        };
+
+        res.json(stats);
+    } catch (error) {
+        console.error("Stats Error:", error);
+        res.status(500).json({ message: "Stats Error" });
+    }
+});
+
 // Search Topics Global (Matches search.php logic)
 router.get('/search', async (req, res) => {
     const { q } = req.query;

@@ -45,6 +45,18 @@ export const api = {
         }
     },
 
+    // Get Global Stats
+    getStats: async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/content/stats`);
+            if (!response.ok) return null;
+            return await response.json();
+        } catch (error) {
+            console.error("Fetch Stats Error", error);
+            return null;
+        }
+    },
+
     // Upload Content (for Admin) 
     uploadContent: async (formData) => {
         try {
