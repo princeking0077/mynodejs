@@ -182,6 +182,17 @@ app.get('/test-db', async (req, res) => {
         await addCol("meta_title VARCHAR(255)");
         await addCol("meta_description TEXT");
         await addCol("faqs JSON");
+        await addCol("year_slug VARCHAR(50)");
+        await addCol("unit_number INT");
+        await addCol("primary_keyword VARCHAR(255)");
+        await addCol("target_keywords JSON");
+        await addCol("canonical_url VARCHAR(500)");
+        await addCol("breadcrumb_path JSON");
+        await addCol("content_word_count INT DEFAULT 0");
+        await addCol("reading_time_minutes INT DEFAULT 0");
+        await addCol("slug VARCHAR(255) UNIQUE");
+        await addCol("youtube_id VARCHAR(50)");
+        await addCol("quiz_data JSON");
 
         connection.release();
     } catch (e) {

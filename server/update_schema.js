@@ -76,9 +76,22 @@ const updateSchema = async () => {
         };
 
         await addColumn("slug VARCHAR(255) UNIQUE");
-        await addColumn("blog_content TEXT");
+        await addColumn("blog_content LONGTEXT"); // Changed to LONGTEXT to match CREATE TABLE
         await addColumn("youtube_id VARCHAR(50)");
         await addColumn("quiz_data JSON");
+
+        // SEO & New Fields
+        await addColumn("meta_title VARCHAR(255)");
+        await addColumn("meta_description TEXT");
+        await addColumn("faqs JSON");
+        await addColumn("year_slug VARCHAR(50)");
+        await addColumn("unit_number INT");
+        await addColumn("primary_keyword VARCHAR(255)");
+        await addColumn("target_keywords JSON");
+        await addColumn("canonical_url VARCHAR(500)");
+        await addColumn("breadcrumb_path JSON");
+        await addColumn("content_word_count INT DEFAULT 0");
+        await addColumn("reading_time_minutes INT DEFAULT 0");
 
         // Fix type column
         try {
@@ -98,4 +111,8 @@ const updateSchema = async () => {
     }
 };
 
-updateSchema();
+if (require.main === module) {
+    updateSchema();
+}
+
+module.exports = { updateSchema };
