@@ -204,15 +204,17 @@ const AdminSidebar = ({ onLogout, onSelectContext }) => {
 
     return (
         <>
-            {/* Desktop Sidebar */}
-            <div className="hidden md:block w-72 fixed inset-y-0 left-0 z-50">
+            {/* Desktop Sidebar (Sticky) */}
+            <aside className="hidden md:flex w-72 flex-col sticky top-0 h-screen z-50 bg-[#0f172a]/95 backdrop-blur-xl border-r border-white/10 shrink-0 overflow-hidden transition-all duration-300">
                 <SidebarContent />
-            </div>
+            </aside>
 
-            {/* Mobile Toggle */}
-            <div className="md:hidden fixed top-0 left-0 w-full bg-[#0f172a] p-4 z-40 flex justify-between items-center border-b border-white/10">
-                <span className="font-bold text-white">Admin Panel</span>
-                <button onClick={() => setMobileOpen(true)} className="text-white">
+            {/* Mobile Header & Toggle */}
+            <div className="md:hidden fixed top-0 left-0 w-full bg-[#0f172a]/90 backdrop-blur-md p-4 z-40 flex justify-between items-center border-b border-white/10">
+                <span className="font-bold text-lg text-white tracking-wide">
+                    Admin<span className="text-cyan-400">Panel</span>
+                </span>
+                <button onClick={() => setMobileOpen(true)} className="text-white p-2 rounded-lg hover:bg-white/10 transition-colors">
                     <Menu size={24} />
                 </button>
             </div>
@@ -233,7 +235,7 @@ const AdminSidebar = ({ onLogout, onSelectContext }) => {
                             animate={{ x: 0 }}
                             exit={{ x: '-100%' }}
                             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                            className="fixed inset-y-0 left-0 w-80 max-w-[85vw] z-50 md:hidden"
+                            className="fixed inset-y-0 left-0 w-80 max-w-[85vw] z-50 md:hidden bg-[#0f172a] shadow-2xl"
                         >
                             <SidebarContent />
                         </motion.div>

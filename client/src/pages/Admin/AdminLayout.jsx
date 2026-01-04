@@ -26,10 +26,10 @@ const AdminLayout = ({ children, onSelectContext, title = 'Dashboard', user }) =
             />
 
             {/* Main Content Wrapper */}
-            <div className="flex-1 md:ml-72 flex flex-col min-h-screen transition-all duration-300 relative">
+            <div className="flex-1 flex flex-col min-h-screen transition-all duration-300 relative bg-gradient-to-br from-[#0f172a] via-[#111827] to-[#0f172a]">
 
                 {/* Top Navbar */}
-                <header className="h-16 bg-[#0f172a]/80 backdrop-blur-md border-b border-white/10 sticky top-0 z-30 px-8 flex items-center justify-between">
+                <header className="h-16 bg-[#0f172a]/80 backdrop-blur-md border-b border-white/5 sticky top-0 z-30 px-8 flex items-center justify-between shadow-sm">
                     {/* Breadcrumbs / Page Title */}
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                         <span className="hover:text-white cursor-pointer transition-colors">Admin</span>
