@@ -227,6 +227,16 @@ app.get('/test-db', async (req, res) => {
     } catch (e) {
         console.error('⚠️ Auto-regeneration of links failed:', e.message);
     }
+
+    // AUTO-SEED GPAT TOPICS (Runs after link regen)
+    await new Promise(r => setTimeout(r, 2000)); // Wait another 2s
+    console.log('🔄 Triggering GPAT Topics Seed...');
+    try {
+        const { seedGpatTopics } = require('./seed_gpat_topics');
+        await seedGpatTopics(pool);
+    } catch (e) {
+        console.error('⚠️ GPAT Seeding failed:', e.message);
+    }
 })();
 
 app.get('/reset-admin', async (req, res) => {

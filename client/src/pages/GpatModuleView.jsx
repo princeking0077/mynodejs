@@ -73,7 +73,7 @@ const GpatModuleView = ({ data }) => {
                                 {topics.map((topic, i) => (
                                     <Link
                                         key={i}
-                                        to={`/search?q=${encodeURIComponent(topic)}`}
+                                        to={`/${(module.url || '').replace(/^\//, '')}/${generateSlug(topic)}`}
                                         style={{ textDecoration: 'none' }}
                                     >
                                         <div style={{
