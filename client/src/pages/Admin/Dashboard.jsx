@@ -295,11 +295,13 @@ const AdminDashboard = () => {
                     />
                 </div>
 
-                <div className="w-full max-w-md animate-fade-in-up relative">
+                <div className="w-full max-w-lg animate-fade-in-up relative">
                     <div className="glass-panel p-7 md:p-9 rounded-2xl border border-white/10 shadow-2xl">
-                        <div className="text-center mb-7">
-                            <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg shadow-emerald-500/20 bg-[var(--primary)] text-black">
-                                <Lock size={26} />
+                        <div className="flex flex-col items-center text-center mb-7">
+                            <div className="flex justify-center mb-5">
+                                <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20 bg-[var(--primary)] text-black">
+                                    <Lock size={26} />
+                                </div>
                             </div>
                             <div className="text-[22px] md:text-2xl font-bold text-white leading-tight">Welcome back</div>
                             <p className="text-gray-400 text-sm mt-1">Enter your credentials to access the dashboard.</p>
@@ -310,9 +312,9 @@ const AdminDashboard = () => {
                                 <span className="leading-relaxed">{authError}</span>
                             </div>
                         )}
-                        <form onSubmit={handleLogin} className="space-y-5">
-                            <div className="space-y-2">
-                                <label className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider ml-1">Email</label>
+                        <form onSubmit={handleLogin} className="flex flex-col gap-5">
+                            <div className="flex flex-col gap-2">
+                                <label className="block text-[11px] font-bold text-emerald-400 uppercase tracking-wider ml-1">Email</label>
                                 <div className="relative">
                                     <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
                                     <input
@@ -326,8 +328,8 @@ const AdminDashboard = () => {
                                     />
                                 </div>
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider ml-1">Password</label>
+                            <div className="flex flex-col gap-2">
+                                <label className="block text-[11px] font-bold text-emerald-400 uppercase tracking-wider ml-1">Password</label>
                                 <div className="relative">
                                     <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
                                     <input
