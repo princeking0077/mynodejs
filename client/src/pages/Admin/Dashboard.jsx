@@ -255,21 +255,83 @@ const AdminDashboard = () => {
 
     if (!currentUser) {
         return (
-            <div className="min-h-screen bg-black flex items-center justify-center p-4">
+            <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-[#0f172a]">
+                {/* Background Blobs */}
+                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/20 rounded-full blur-[100px] animate-pulse"></div>
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-cyan-600/20 rounded-full blur-[100px] animate-pulse delay-1000"></div>
+
                 <SEO title="Admin Login" />
-                <div className="w-full max-w-md bg-[#0f172a] p-8 rounded-2xl border border-white/10">
-                    <div className="text-center mb-8">
-                        <div className="w-16 h-16 bg-cyan-500/10 rounded-full flex items-center justify-center mx-auto mb-4 text-cyan-500">
-                            <Lock size={32} />
+
+                <div className="w-full max-w-md relative z-10 animate-fade-in-up">
+                    <div className="glass-panel p-8 md:p-10 rounded-3xl border border-white/10 shadow-2xl backdrop-blur-xl bg-black/40">
+                        <div className="text-center mb-8">
+                            <div className="w-20 h-20 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-white/10 shadow-inner">
+                                <Lock size={32} className="text-cyan-400" />
+                            </div>
+                            <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
+                            <p className="text-gray-400 text-sm">Enter your credentials to access the dashboard.</p>
                         </div>
-                        <h2 className="text-2xl font-bold text-white">Admin Access</h2>
+
+                        {authError && (
+                            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3 text-red-200 text-sm">
+                                <div className="p-1 bg-red-500/20 rounded-full"><LogOut size={12} /></div>
+                                {authError}
+                            </div>
+                        )}
+
+                        <form onSubmit={handleLogin} className="space-y-5">
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-semibold text-gray-400 ml-1 uppercase tracking-wider">Email Address</label>
+                                <div className="relative group">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500 group-focus-within:text-cyan-400 transition-colors">
+                                        <User size={18} />
+                                    </div>
+                                    <input
+                                        type="email"
+                                        value={email}
+                                        onChange={e => setEmail(e.target.value)}
+                                        className="w-full pl-10 pr-4 py-3 bg-black/20 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:border-cyan-500/50 focus:bg-white/5 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none"
+                                        placeholder="admin@learnpharmacy.in"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-semibold text-gray-400 ml-1 uppercase tracking-wider">Password</label>
+                                <div className="relative group">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500 group-focus-within:text-cyan-400 transition-colors">
+                                        <Lock size={18} />
+                                    </div>
+                                    <input
+                                        type="password"
+                                        value={password}
+                                        onChange={e => setPassword(e.target.value)}
+                                        className="w-full pl-10 pr-4 py-3 bg-black/20 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:border-cyan-500/50 focus:bg-white/5 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none"
+                                        placeholder="••••••••"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="flex items-center justify-between text-sm">
+                                <label className="flex items-center gap-2 text-gray-400 cursor-pointer hover:text-white transition-colors">
+                                    <input type="checkbox" className="rounded border-gray-600 bg-transparent text-cyan-500 focus:ring-offset-0 focus:ring-cyan-500/20" />
+                                    <span>Remember me</span>
+                                </label>
+                                <button type="button" className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors">
+                                    Forgot Password?
+                                </button>
+                            </div>
+
+                            <button
+                                type="submit"
+                                className="w-full py-3.5 bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold rounded-xl shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+                            >
+                                Sign In
+                            </button>
+                        </form>
                     </div>
-                    {authError && <div className="mb-4 p-3 bg-red-500/20 border border-red-500 rounded text-red-200 text-sm">{authError}</div>}
-                    <form onSubmit={handleLogin} className="space-y-4">
-                        <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} className="w-full p-3 bg-black/50 border border-white/10 rounded text-white focus:border-cyan-500 outline-none" required />
-                        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} className="w-full p-3 bg-black/50 border border-white/10 rounded text-white focus:border-cyan-500 outline-none" required />
-                        <button type="submit" className="w-full py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded transition-colors">Login</button>
-                    </form>
                 </div>
             </div>
         );
