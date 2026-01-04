@@ -280,7 +280,7 @@ const AdminDashboard = () => {
 
     if (!currentUser) {
         return (
-            <div className="min-h-screen flex items-center justify-center px-4 py-10 bg-[var(--bg-dark)] font-sans relative overflow-hidden">
+            <div className="admin-scope min-h-screen flex items-center justify-center px-4 py-10 bg-[var(--bg-dark)] font-sans relative overflow-hidden">
                 <SEO title="Admin Login" />
 
                 {/* Background glow */}

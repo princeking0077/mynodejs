@@ -18,7 +18,7 @@ const AdminLayout = ({ children, onSelectContext, title = 'Dashboard', user }) =
     };
 
     return (
-        <div className="min-h-screen text-white flex font-sans custom-scrollbar bg-[var(--bg-dark)]">
+        <div className="admin-scope min-h-screen text-white flex font-sans custom-scrollbar bg-[var(--bg-dark)]">
             {/* Sidebar */}
             <AdminSidebar
                 onLogout={handleLogout}

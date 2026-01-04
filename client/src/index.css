@@ -68,6 +68,19 @@ h3 {
   font-size: clamp(1.5rem, 4vw, 2rem);
 }
 
+/* Admin UI: prevent global hero typography from breaking dashboard/editor layouts */
+.admin-scope h1 { font-size: 1.75rem; }
+.admin-scope h2 { font-size: 1.5rem; }
+.admin-scope h3 { font-size: 1.25rem; }
+.admin-scope h4 { font-size: 1.125rem; }
+.admin-scope h5 { font-size: 1rem; }
+.admin-scope h6 { font-size: 0.95rem; }
+
+/* ReactQuill content lives inside .ql-editor; ensure headings are sane there too */
+.admin-scope .ql-editor h1 { font-size: 1.75rem; }
+.admin-scope .ql-editor h2 { font-size: 1.5rem; }
+.admin-scope .ql-editor h3 { font-size: 1.25rem; }
+
 .gradient-text,
 .text-gradient {
   background: var(--grad-text);
