@@ -1,0 +1,1406 @@
+## YEAR 2 - SEMESTER III
+
+---
+
+### 13. PHARMACEUTICAL ORGANIC CHEMISTRY – II
+
+**Unit I: Benzene & Derivatives**
+* Benzene structure
+* Aromaticity
+* Huckel's rule
+* Resonance in benzene
+* Electrophilic aromatic substitution
+* Mechanism of EAS
+* Halogenation
+* Nitration
+* Sulfonation
+* Friedel-Crafts alkylation
+* Friedel-Crafts acylation
+* Orientation effects
+* Activating and deactivating groups
+* Ortho-para and meta directors
+
+**Unit II: Phenols, Aromatic Amines & Acids**
+* Phenols
+* Acidity of phenols
+* Factors affecting acidity
+* Preparation methods
+* Reactions of phenols
+* Kolbe reaction
+* Reimer-Tiemann reaction
+* Fries rearrangement
+* Aromatic amines
+* Basicity and factors affecting
+* Preparation methods
+* Reactions of aromatic amines
+* Aromatic carboxylic acids
+* Preparation and reactions
+* Aromatic sulphonic acids
+
+**Unit III: Fats & Oils**
+* Introduction to lipids
+* Fatty acids
+* Saturated and unsaturated
+* Essential fatty acids
+* Triglycerides
+* Physical properties of fats
+* Chemical properties
+* Saponification
+* Hydrogenation
+* Rancidity
+* Analytical constants
+* Acid value
+* Saponification value
+* Iodine value
+* Waxes
+* Phospholipids
+
+**Unit IV: Polynuclear Hydrocarbons**
+* Naphthalene
+* Structure and properties
+* Electrophilic substitution reactions
+* Orientation in naphthalene
+* Anthracene
+* Structure and properties
+* Reactions
+* Phenanthrene
+* Structure and properties
+* Reactions
+* Carcinogenicity of polynuclear hydrocarbons
+
+**Unit V: Cycloalkanes**
+* Nomenclature
+* Preparation methods
+* Baeyer strain theory
+* Ring strain
+* Stability of cycloalkanes
+* Conformations of cyclopropane
+* Conformations of cyclobutane
+* Conformations of cyclopentane
+* Conformations of cyclohexane
+* Chair and boat forms
+* Axial and equatorial bonds
+* Substituted cyclohexanes
+* Decalin - cis and trans
+
+---
+
+### 14. PHYSICAL PHARMACEUTICS – I
+
+**Unit I: Solubility**
+* Solubility definitions
+* Expressions of solubility
+* Factors affecting solubility
+* Solubility of gases in liquids
+* Solubility of liquids in liquids
+* Miscibility
+* Solubility of solids in liquids
+* Ideal and non-ideal solutions
+* Raoult's law
+* Distribution law
+* Applications of distribution law
+* Solubilization
+* Micellar solubilization
+* Factors affecting solubilization
+
+**Unit II: States of Matter**
+* Gaseous state
+* Kinetic theory of gases
+* Ideal gas equation
+* Real gases
+* Liquefaction of gases
+* Liquid state
+* Vapor pressure
+* Surface tension
+* Viscosity
+* Solid state
+* Crystalline and amorphous solids
+* Polymorphism
+* Crystal habits
+* Phase diagrams
+* Phase rule
+* One and two component systems
+
+**Unit III: Surface & Interfacial Phenomena**
+* Surface and interfacial tension
+* Measurement methods
+* Surfactants
+* Classification of surfactants
+* HLB system
+* Applications of surfactants
+* Adsorption
+* Adsorption isotherms
+* Langmuir isotherm
+* Freundlich isotherm
+* BET isotherm
+* Applications of adsorption
+* Wetting
+* Contact angle
+* Spreading coefficient
+
+**Unit IV: Complexation & Protein Binding**
+* Complexation
+* Types of complexes
+* Metal ion complexes
+* Organic molecular complexes
+* Inclusion complexes
+* Cyclodextrins
+* Methods of analysis
+* Stability constants
+* Protein binding
+* Nature of binding
+* Factors affecting binding
+* Methods of studying binding
+* Thermodynamic treatment
+* Clinical significance
+
+**Unit V: pH, Buffers & Isotonic Solutions**
+* Sorensen's pH scale
+* pH measurement
+* Buffers
+* Buffer equation
+* Buffer capacity
+* Factors affecting buffer capacity
+* Pharmaceutical buffers
+* Buffer selection
+* Isotonicity
+* Measurement of tonicity
+* Calculation methods
+* Cryoscopic method
+* Sodium chloride equivalent method
+* White-Vincent method
+* Sprowls method
+* Isotonic solutions preparation
+
+---
+
+### 15. PHARMACEUTICAL MICROBIOLOGY
+
+**Unit I: Introduction & Bacteria**
+* Introduction to microbiology
+* Scope and importance in pharmacy
+* History of microbiology
+* Classification of microorganisms
+* Microscopy
+* Types of microscopes
+* Bright field microscopy
+* Dark field microscopy
+* Phase contrast microscopy
+* Fluorescence microscopy
+* Electron microscopy
+* Bacteria
+* Morphology and structure
+* Classification
+* Nutrition and growth
+* Growth curve
+* Factors affecting growth
+* Cultivation methods
+
+**Unit II: Identification & Sterilization**
+* Identification of bacteria
+* Staining techniques
+* Simple staining
+* Differential staining
+* Gram staining
+* Acid-fast staining
+* Special staining methods
+* Biochemical tests
+* Cultural characteristics
+* Sterilization
+* Physical methods
+* Heat sterilization - dry and moist
+* Radiation sterilization
+* Filtration
+* Chemical methods
+* Gaseous sterilization
+* Indicators of sterilization
+
+**Unit III: Fungi, Viruses & Sterility Testing**
+* Fungi
+* General characteristics
+* Classification
+* Morphology and reproduction
+* Pathogenic fungi
+* Antifungal agents
+* Viruses
+* General properties
+* Structure and classification
+* Replication cycle
+* Bacteriophages
+* Pathogenic viruses
+* Antiviral agents
+* Disinfection and antisepsis
+* Classification of disinfectants
+* Evaluation methods
+* Sterility testing
+* Methods and procedures
+* Sterility test requirements
+
+**Unit IV: Aseptic Area & Microbiological Assay**
+* Aseptic techniques
+* Aseptic area design
+* Clean rooms classification
+* HEPA filters
+* Laminar air flow
+* Environmental monitoring
+* Personnel requirements
+* Gowning procedures
+* Microbiological assay
+* Principles and applications
+* Assay methods
+* Cylinder plate method
+* Turbidimetric method
+* Applications in pharmacy
+* Antibiotic assays
+* Vitamin assays
+
+**Unit V: Spoilage & Cell Culture**
+* Microbial spoilage
+* Sources of contamination
+* Types of spoilage
+* Prevention of spoilage
+* Preservation methods
+* Preservatives
+* Factors affecting preservation
+* Preservation of sterile and non-sterile products
+* Introduction to cell culture
+* Types of cell cultures
+* Primary cultures
+* Cell lines
+* Culture media
+* Applications in pharmacy
+* Vaccine production
+* Monoclonal antibodies
+
+---
+
+### 16. PHARMACEUTICAL ENGINEERING
+
+**Unit I: Flow, Size Reduction & Separation**
+* Fluid flow
+* Types of flow
+* Reynolds number
+* Bernoulli's theorem
+* Flow measurement
+* Size reduction
+* Objectives and importance
+* Mechanisms of size reduction
+* Laws of size reduction
+* Size reduction equipment
+* Ball mill, hammer mill, fluid energy mill
+* Sieving and size separation
+* Sieve analysis
+* Size separation equipment
+* Cyclone separator
+* Bag filter
+* Air separator
+
+**Unit II: Heat Transfer, Evaporation & Distillation**
+* Heat transfer
+* Conduction
+* Convection
+* Radiation
+* Heat exchangers
+* Types and applications
+* Evaporation
+* Principles
+* Evaporator types
+* Single and multiple effect evaporators
+* Distillation
+* Principles
+* Simple distillation
+* Fractional distillation
+* Steam distillation
+* Vacuum distillation
+* Molecular distillation
+
+**Unit III: Drying & Mixing**
+* Drying
+* Principles and mechanisms
+* Equilibrium moisture content
+* Drying curves
+* Drying equipment
+* Tray dryer
+* Fluidized bed dryer
+* Spray dryer
+* Freeze dryer
+* Vacuum dryer
+* Rotary dryer
+* Mixing
+* Principles of mixing
+* Solid-solid mixing
+* Solid-liquid mixing
+* Liquid-liquid mixing
+* Mixing equipment
+* Sigma blade mixer
+* Planetary mixer
+* Ribbon blender
+
+**Unit IV: Filtration & Centrifugation**
+* Filtration
+* Principles
+* Filter media
+* Filter aids
+* Filtration equipment
+* Filter press
+* Rotary drum filter
+* Membrane filters
+* Centrifugation
+* Principles
+* Centrifugal force
+* Sedimentation
+* Types of centrifuges
+* Basket centrifuge
+* Tubular bowl centrifuge
+* Disc centrifuge
+* Ultra centrifuge
+* Applications in pharmacy
+
+**Unit V: Materials of Construction & Corrosion**
+* Materials of construction
+* Metals and alloys
+* Stainless steel
+* Glass
+* Plastics
+* Rubber
+* Selection criteria
+* Corrosion
+* Types of corrosion
+* Electrochemical corrosion
+* Galvanic corrosion
+* Concentration cell corrosion
+* Factors affecting corrosion
+* Corrosion prevention
+* Protective coatings
+* Cathodic protection
+* Material selection
+
+---
+
+## YEAR 2 - SEMESTER IV
+
+---
+
+### 17. PHARMACEUTICAL ORGANIC CHEMISTRY – III
+
+**Unit I: Stereochemistry – Optical Isomerism**
+* Introduction to stereochemistry
+* Optical activity
+* Plane polarized light
+* Specific rotation
+* Chirality
+* Chiral centers
+* Enantiomers
+* Diastereomers
+* Meso compounds
+* Racemic mixture
+* R and S configuration
+* Cahn-Ingold-Prelog rules
+* D and L nomenclature
+* Optical isomerism in compounds with two chiral centers
+* Resolution of racemic mixtures
+
+**Unit II: Geometrical & Conformational Isomerism**
+* Geometrical isomerism
+* Cis-trans isomerism
+* E-Z nomenclature
+* Geometrical isomerism in cyclic compounds
+* Geometrical isomerism in oximes
+* Conformational isomerism
+* Conformations of ethane
+* Newman projections
+* Sawhorse projections
+* Conformations of butane
+* Gauche and anti conformations
+* Energy diagrams
+* Conformations of cyclohexane
+* Chair and boat forms
+
+**Unit III: Heterocyclic Compounds – I**
+* Introduction to heterocyclic compounds
+* Classification
+* Nomenclature
+* Five-membered heterocycles
+* Pyrrole
+* Structure and aromaticity
+* Synthesis
+* Reactions
+* Furan
+* Structure and properties
+* Synthesis
+* Reactions
+* Thiophene
+* Structure and properties
+* Synthesis
+* Reactions
+* Comparison of reactivity
+
+**Unit IV: Heterocyclic Compounds – II**
+* Five-membered with two heteroatoms
+* Pyrazole
+* Imidazole
+* Oxazole
+* Thiazole
+* Structure, synthesis, reactions
+* Six-membered heterocycles
+* Pyridine
+* Structure and basicity
+* Synthesis
+* Reactions
+* Quinoline
+* Structure
+* Synthesis - Skraup synthesis
+* Reactions
+* Isoquinoline
+
+**Unit V: Reactions of Synthetic Importance**
+* Name reactions in organic synthesis
+* Aldol condensation
+* Claisen condensation
+* Perkin reaction
+* Knoevenagel reaction
+* Beckmann rearrangement
+* Pinacol-pinacolone rearrangement
+* Hofmann rearrangement
+* Curtius rearrangement
+* Schmidt rearrangement
+* Baeyer-Villiger oxidation
+* Clemmensen reduction
+* Wolff-Kishner reduction
+* Oppenauer oxidation
+* Birch reduction
+* Applications in drug synthesis
+
+---
+
+### 18. MEDICINAL CHEMISTRY – I
+
+**Unit I: Introduction & Drug Metabolism**
+* Introduction to medicinal chemistry
+* History and development
+* Drug discovery process
+* Lead compound identification
+* Drug development phases
+* Physicochemical properties
+* Partition coefficient
+* Dissociation constant
+* Solubility
+* Drug-receptor interactions
+* Types of bonds
+* Drug metabolism
+* Phase I reactions
+* Oxidation, reduction, hydrolysis
+* Phase II reactions
+* Conjugation reactions
+* Factors affecting metabolism
+* Prodrugs
+* Soft drugs
+
+**Unit II: Adrenergic Agents**
+* Adrenergic neurotransmitters
+* Biosynthesis of catecholamines
+* Storage and release
+* Receptors - alpha and beta
+* Sympathomimetic agents
+* Direct acting
+* Epinephrine
+* Norepinephrine
+* Isoproterenol
+* Phenylephrine
+* Indirect acting
+* Amphetamine
+* Adrenergic antagonists
+* Alpha blockers
+* Prazosin
+* Beta blockers
+* Propranolol
+* Atenolol
+* SAR of adrenergic agents
+
+**Unit III: Cholinergic Agents**
+* Cholinergic neurotransmission
+* Acetylcholine synthesis and metabolism
+* Cholinergic receptors
+* Muscarinic receptors
+* Nicotinic receptors
+* Parasympathomimetics
+* Direct acting
+* Acetylcholine
+* Pilocarpine
+* Bethanechol
+* Indirect acting - Anticholinesterases
+* Physostigmine
+* Neostigmine
+* Pyridostigmine
+* Cholinergic blockers
+* Atropine
+* Scopolamine
+* Synthetic anticholinergics
+* Neuromuscular blockers
+
+**Unit IV: CNS Depressants**
+* Sedatives and hypnotics
+* Barbiturates
+* SAR of barbiturates
+* Phenobarbital
+* Pentobarbital
+* Benzodiazepines
+* SAR of benzodiazepines
+* Diazepam
+* Lorazepam
+* Antipsychotics
+* Phenothiazines
+* Chlorpromazine
+* Butyrophenones
+* Haloperidol
+* Atypical antipsychotics
+* Anticonvulsants
+* Phenytoin
+* Carbamazepine
+* Valproic acid
+
+**Unit V: Analgesics & Anti-inflammatory Agents**
+* General anesthetics
+* Inhalation anesthetics
+* Halothane
+* Isoflurane
+* Intravenous anesthetics
+* Thiopental
+* Propofol
+* Ketamine
+* Opioid analgesics
+* Morphine
+* SAR of opioids
+* Codeine
+* Meperidine
+* Fentanyl
+* Opioid antagonists
+* Naloxone
+* NSAIDs
+* Aspirin
+* Ibuprofen
+* Naproxen
+* COX-2 inhibitors
+
+---
+
+### 19. PHYSICAL PHARMACEUTICS – II
+
+**Unit I: Colloidal Dispersions**
+* Colloidal state
+* Classification of colloids
+* Lyophilic and lyophobic colloids
+* Association colloids
+* Properties of colloids
+* Optical properties
+* Tyndall effect
+* Kinetic properties
+* Brownian motion
+* Diffusion
+* Electrical properties
+* Zeta potential
+* Electrophoresis
+* Stability of colloids
+* DLVO theory
+* Protective colloids
+* Sensitization
+* Applications in pharmacy
+
+**Unit II: Rheology & Solids**
+* Rheology definition
+* Newtonian systems
+* Non-Newtonian systems
+* Plastic flow
+* Pseudoplastic flow
+* Dilatant flow
+* Thixotropy
+* Measurement of viscosity
+* Viscometers
+* Applications in pharmacy
+* Deformation of solids
+* Stress and strain
+* Elastic and plastic deformation
+* Viscoelastic materials
+
+**Unit III: Coarse Dispersions**
+* Suspensions
+* Formulation considerations
+* Wetting agents
+* Flocculating agents
+* Thickening agents
+* Stability of suspensions
+* Stokes law
+* Sedimentation parameters
+* Evaluation of suspensions
+* Emulsions
+* Theory of emulsification
+* Emulsifying agents
+* HLB system
+* Stability of emulsions
+* Phase inversion
+* Creaming and breaking
+* Evaluation of emulsions
+
+**Unit IV: Micromeretics**
+* Particle size and distribution
+* Particle shape
+* Methods of size determination
+* Optical microscopy
+* Sieving
+* Sedimentation methods
+* Coulter counter
+* Laser light scattering
+* Particle size distribution curves
+* Derived properties
+* Porosity
+* Packing
+* Densities - true, bulk, tapped
+* Flow properties
+* Angle of repose
+* Carr's index
+* Hausner ratio
+
+**Unit V: Drug Stability**
+* Importance of stability
+* Reaction kinetics
+* Order of reactions
+* Zero order
+* First order
+* Second order
+* Determination of order
+* Complex reactions
+* Accelerated stability testing
+* Arrhenius equation
+* Q10 method
+* Shelf life determination
+* Degradation pathways
+* Hydrolysis
+* Oxidation
+* Photolysis
+* Factors affecting stability
+* Stabilization strategies
+
+---
+
+### 20. PHARMACOLOGY – I
+
+**Unit I: General Pharmacology**
+* Introduction to pharmacology
+* Scope and branches
+* Drug nomenclature
+* Sources of drugs
+* Pharmacokinetics
+* Absorption
+* Routes of administration
+* Factors affecting absorption
+* Distribution
+* Plasma protein binding
+* Volume of distribution
+* Metabolism
+* Phase I and Phase II reactions
+* Excretion
+* Renal excretion
+* Pharmacokinetic parameters
+* Half-life
+* Clearance
+* Bioavailability
+
+**Unit II: Pharmacodynamics & Drug Discovery**
+* Pharmacodynamics
+* Drug-receptor interactions
+* Receptor types
+* Agonists and antagonists
+* Dose-response relationships
+* Graded and quantal responses
+* Therapeutic index
+* Drug safety and efficacy
+* Factors modifying drug action
+* Drug interactions
+* Adverse drug reactions
+* Drug discovery and development
+* Preclinical studies
+* Clinical trials phases
+* Regulatory requirements
+
+**Unit III: Peripheral Nervous System Drugs**
+* Autonomic nervous system overview
+* Sympathetic and parasympathetic divisions
+* Adrenergic agonists
+* Catecholamines
+* Non-catecholamines
+* Adrenergic antagonists
+* Alpha blockers
+* Beta blockers
+* Cholinergic agonists
+* Direct acting
+* Indirect acting
+* Cholinergic antagonists
+* Muscarinic blockers
+* Ganglionic blockers
+* Neuromuscular blockers
+* Skeletal muscle relaxants
+
+**Unit IV: CNS Pharmacology – I**
+* Introduction to CNS pharmacology
+* Neurotransmission
+* General anesthetics
+* Mechanism of action
+* Stages of anesthesia
+* Inhalation anesthetics
+* Intravenous anesthetics
+* Pre-anesthetic medications
+* Sedatives and hypnotics
+* Barbiturates
+* Benzodiazepines
+* Non-benzodiazepine hypnotics
+* Anticonvulsants
+* Classification
+* Mechanism of action
+* Individual drugs
+
+**Unit V: CNS Pharmacology – II**
+* Psychopharmacological agents
+* Antipsychotics
+* Typical antipsychotics
+* Atypical antipsychotics
+* Antidepressants
+* TCAs
+* SSRIs
+* MAO inhibitors
+* Atypical antidepressants
+* Anxiolytics
+* Anti-manic drugs
+* Lithium
+* Opioid analgesics
+* Mechanism of action
+* Morphine and derivatives
+* Opioid antagonists
+* Drug dependence and addiction
+
+---
+
+### 21. PHARMACOGNOSY & PHYTOCHEMISTRY – I
+
+**Unit I: Introduction to Pharmacognosy**
+* Definition and scope
+* History of pharmacognosy
+* Classification of crude drugs
+* Alphabetical classification
+* Morphological classification
+* Taxonomical classification
+* Chemical classification
+* Pharmacological classification
+* Quality control of crude drugs
+* Evaluation methods
+* Organoleptic evaluation
+* Microscopic evaluation
+* Physical evaluation
+* Chemical evaluation
+* Biological evaluation
+* Adulteration of crude drugs
+* Types of adulterants
+* Detection methods
+
+**Unit II: Cultivation & Processing**
+* Cultivation of medicinal plants
+* Factors affecting cultivation
+* Climate
+* Altitude
+* Soil
+* Collection of crude drugs
+* Time of collection
+* Methods of collection
+* Processing of crude drugs
+* Drying methods
+* Garbling
+* Packaging
+* Storage
+* Factors affecting quality during storage
+
+**Unit III: Plant Tissue Culture**
+* Introduction to plant tissue culture
+* Totipotency
+* Types of cultures
+* Callus culture
+* Cell suspension culture
+* Organ culture
+* Meristem culture
+* Protoplast culture
+* Media components
+* Growth regulators
+* Applications
+* Micropropagation
+* Secondary metabolite production
+* Transgenic plants
+* Germplasm conservation
+
+**Unit IV: Traditional Medicine & Secondary Metabolites**
+* Pharmacognosy in traditional medicine
+* Ayurveda
+* Siddha
+* Unani
+* Homeopathy
+* Introduction to secondary metabolites
+* Biosynthesis pathways
+* Alkaloids - classification and biosynthesis
+* Glycosides - classification
+* Terpenes - classification
+* Flavonoids
+* Tannins
+
+**Unit V: Plant Products & Marine Drugs**
+* Carbohydrates and derived products
+* Starch
+* Cellulose derivatives
+* Gums and mucilages
+* Plant fibers
+* Cotton
+* Animal products
+* Wool
+* Silk
+* Gelatin
+* Beeswax
+* Marine drugs
+* Sources
+* Bioactive compounds
+* Therapeutic applications
+* Lipids
+* Fixed oils
+* Fats and waxes
+
+---
+
+## YEAR 3 - SEMESTER V
+
+---
+
+### 22. MEDICINAL CHEMISTRY – II
+
+**Unit I: Antihistamines & Anticancer Agents**
+* Histamine and receptors
+* H1 receptor antagonists
+* First generation
+* Diphenhydramine
+* Chlorpheniramine
+* Promethazine
+* Second generation
+* Loratadine
+* Cetirizine
+* Fexofenadine
+* H2 receptor antagonists
+* Cimetidine
+* Ranitidine
+* Famotidine
+* Proton pump inhibitors
+* Omeprazole
+* Lansoprazole
+* Pantoprazole
+* Antineoplastic agents
+* Alkylating agents
+* Cyclophosphamide
+* Antimetabolites
+* Methotrexate
+* 5-Fluorouracil
+* Antibiotics
+* Plant products
+
+**Unit II: Cardiovascular Agents**
+* Anti-anginal drugs
+* Nitrates
+* Nitroglycerin
+* Isosorbide dinitrate
+* Calcium channel blockers
+* Verapamil
+* Nifedipine
+* Amlodipine
+* Diuretics
+* Carbonic anhydrase inhibitors
+* Thiazides
+* Loop diuretics - Furosemide
+* Potassium sparing - Spironolactone
+* Osmotic diuretics
+* Antihypertensive agents
+* ACE inhibitors
+* Captopril
+* Enalapril
+* Centrally acting
+* Clonidine
+* Methyldopa
+
+**Unit III: Cardiac & Blood Related Drugs**
+* Anti-arrhythmic drugs
+* Quinidine
+* Procainamide
+* Lidocaine
+* Amiodarone
+* Anti-hyperlipidemic agents
+* Clofibrate
+* Statins - Lovastatin
+* Bile acid sequestrants
+* Coagulants and anticoagulants
+* Vitamin K
+* Warfarin
+* Heparin
+* Antiplatelet drugs - Clopidogrel
+* Drugs for heart failure
+* Cardiac glycosides
+* Digoxin
+
+**Unit IV: Hormones & Steroids**
+* Steroid nomenclature and stereochemistry
+* Steroid metabolism
+* Sex hormones
+* Androgens - Testosterone
+* Anabolic steroids
+* Estrogens - Estradiol
+* Progestins - Progesterone
+* Drugs for erectile dysfunction
+* Sildenafil
+* Tadalafil
+* Oral contraceptives
+* Combination pills
+* Progestin-only pills
+* Corticosteroids
+* Glucocorticoids - Prednisolone
+* Mineralocorticoids
+* Thyroid and antithyroid drugs
+* Levothyroxine
+* Propylthiouracil
+
+**Unit V: Antidiabetics & Local Anesthetics**
+* Diabetes mellitus
+* Insulin and preparations
+* Sulfonylureas
+* Tolbutamide
+* Glipizide
+* Biguanides - Metformin
+* Thiazolidinediones - Pioglitazone
+* Meglitinides
+* Alpha-glucosidase inhibitors
+* Local anesthetics
+* SAR of local anesthetics
+* Ester type
+* Cocaine
+* Procaine
+* Benzocaine
+* Amide type
+* Lidocaine
+* Bupivacaine
+* Mechanism of action
+
+---
+
+### 23. INDUSTRIAL PHARMACY – I
+
+**Unit I: Preformulation Studies**
+* Introduction and objectives
+* Physicochemical properties
+* Physical properties
+* Crystalline and amorphous forms
+* Polymorphism
+* Particle size and shape
+* Flow properties
+* Solubility profile
+* pKa and pH
+* Partition coefficient
+* Chemical properties
+* Hydrolysis
+* Oxidation
+* Photolysis
+* BCS classification
+* Applications in dosage form development
+* Stability considerations
+
+**Unit II: Tablets**
+* Introduction and classification
+* Tablet excipients
+* Diluents
+* Binders
+* Disintegrants
+* Lubricants
+* Glidants
+* Coloring agents
+* Granulation methods
+* Wet granulation
+* Dry granulation
+* Direct compression
+* Tablet compression
+* Compression cycle
+* Processing problems
+* Tablet coating
+* Film coating
+* Sugar coating
+* Enteric coating
+* Quality control tests
+* In-process and finished product tests
+
+**Unit III: Capsules & Pellets**
+* Hard gelatin capsules
+* Shell composition
+* Capsule sizes
+* Formulation
+* Filling methods
+* Finishing operations
+* Quality control
+* Soft gelatin capsules
+* Shell composition
+* Content requirements
+* Manufacturing process
+* Applications
+* Pellets
+* Formulation
+* Pelletization techniques
+* Extrusion-spheronization
+* Evaluation
+
+**Unit IV: Parenterals & Ophthalmics**
+* Parenteral products
+* Types and advantages
+* Formulation considerations
+* Vehicles
+* Additives
+* Isotonicity
+* Production facilities
+* Aseptic processing
+* Container and closure selection
+* Filling and sealing
+* Quality control
+* Pyrogen testing
+* Sterility testing
+* Ophthalmic preparations
+* Formulation considerations
+* Eye drops
+* Eye ointments
+* Evaluation
+
+**Unit V: Cosmetics, Aerosols & Packaging**
+* Cosmetics
+* Lipsticks
+* Shampoos
+* Creams - cold and vanishing
+* Toothpastes
+* Hair dyes
+* Sunscreens
+* Pharmaceutical aerosols
+* Propellants
+* Containers and valves
+* Formulation
+* Manufacturing
+* Evaluation
+* Packaging materials
+* Glass
+* Plastics
+* Metals
+* Rubber
+* Selection criteria
+* Quality control tests
+
+---
+
+### 24. PHARMACOLOGY – II
+
+**Unit I: Cardiovascular Pharmacology – I**
+* Introduction to cardiovascular system
+* Hemodynamics
+* Electrophysiology of heart
+* Drugs for congestive heart failure
+* Cardiac glycosides
+* Inotropic agents
+* Vasodilators
+* Antihypertensive drugs
+* Diuretics
+* Beta blockers
+* ACE inhibitors
+* ARBs
+* Calcium channel blockers
+* Anti-anginal drugs
+* Nitrates
+* Beta blockers
+* Calcium channel blockers
+* Anti-arrhythmic drugs
+* Classification
+* Mechanism of action
+* Anti-hyperlipidemic drugs
+* Statins
+* Fibrates
+
+**Unit II: Cardiovascular Pharmacology – II**
+* Drugs for shock
+* Vasopressors
+* Inotropes
+* Hematinics
+* Iron preparations
+* Vitamin B12
+* Folic acid
+* Coagulants and anticoagulants
+* Vitamin K
+* Heparin
+* Oral anticoagulants
+* Fibrinolytics
+* Streptokinase
+* Tissue plasminogen activator
+* Antiplatelet drugs
+* Aspirin
+* Clopidogrel
+* Plasma volume expanders
+* Drugs acting on urinary system
+* Diuretics - all classes
+* Antidiuretics
+
+**Unit III: Autacoids**
+* Introduction to autacoids
+* Histamine
+* Synthesis and release
+* Receptors and functions
+* H1 antihistamines
+* H2 antihistamines
+* Serotonin (5-HT)
+* Receptors and functions
+* Agonists and antagonists
+* Prostaglandins
+* Synthesis and metabolism
+* Therapeutic uses
+* Leukotrienes
+* Angiotensin and bradykinin
+* NSAIDs
+* Classification
+* Mechanism of action
+* Individual drugs
+* Anti-gout drugs
+* Anti-rheumatic drugs
+
+**Unit IV: Endocrine Pharmacology – I**
+* Introduction to endocrine system
+* Anterior pituitary hormones
+* Growth hormone
+* Thyroid hormones
+* Synthesis and regulation
+* Thyroid preparations
+* Antithyroid drugs
+* Calcium regulating hormones
+* Parathormone
+* Calcitonin
+* Vitamin D
+* Insulin
+* Types and preparations
+* Oral hypoglycemic agents
+* Sulfonylureas
+* Biguanides
+* Other antidiabetics
+* Glucagon
+* ACTH and corticosteroids
+* Glucocorticoids
+* Mineralocorticoids
+
+**Unit V: Endocrine Pharmacology – II**
+* Androgens
+* Testosterone preparations
+* Anabolic steroids
+* Anti-androgens
+* Estrogens
+* Natural and synthetic
+* Therapeutic uses
+* Progesterone
+* Progestins
+* Oral contraceptives
+* Combined pills
+* Progestin-only pills
+* Emergency contraception
+* Drugs acting on uterus
+* Oxytocics
+* Tocolytics
+* Bioassay
+* Principles
+* Types
+* Bioassay of specific drugs
+
+---
+
+### 25. PHARMACOGNOSY & PHYTOCHEMISTRY – II
+
+**Unit I: Metabolic Pathways**
+* Primary and secondary metabolism
+* Shikimic acid pathway
+* Formation of aromatic amino acids
+* Phenylpropanoids
+* Acetate pathway
+* Fatty acids
+* Polyketides
+* Mevalonic acid pathway
+* Terpenoids
+* Amino acid pathway
+* Alkaloid biosynthesis
+* Radioisotope techniques
+* Tracer studies
+* Applications in biosynthetic studies
+
+**Unit II: Secondary Metabolites**
+* Alkaloids
+* Vinca alkaloids
+* Rauwolfia alkaloids
+* Belladonna alkaloids
+* Opium alkaloids
+* Phenylpropanoids and flavonoids
+* Lignans
+* Tea catechins
+* Ruta flavonoids
+* Steroids and cardiac glycosides
+* Liquorice
+* Dioscorea
+* Digitalis glycosides
+* Volatile oils
+* Mentha
+* Clove
+* Cinnamon
+* Fennel
+* Tannins
+* Resins
+* Glycosides
+
+**Unit III: Isolation & Identification**
+* Extraction methods
+* Maceration
+* Percolation
+* Continuous extraction
+* Isolation techniques
+* Terpenoids
+* Menthol
+* Citral
+* Artemisinin
+* Glycosides
+* Glycyrrhizic acid
+* Rutin
+* Alkaloids
+* Atropine
+* Quinine
+* Reserpine
+* Caffeine
+* Resins
+* Podophyllotoxin
+* Curcumin
+
+**Unit IV: Industrial Production**
+* Large scale production
+* Forskolin
+* Sennosides
+* Artemisinin
+* Diosgenin
+* Digoxin
+* Atropine
+* Podophyllotoxin
+* Caffeine
+* Taxol
+* Vincristine
+* Vinblastine
+* Estimation methods
+* Quality specifications
+* Utilization in pharmaceuticals
+
+**Unit V: Modern Phytochemistry**
+* Modern extraction methods
+* Supercritical fluid extraction
+* Microwave assisted extraction
+* Ultrasound assisted extraction
+* Spectroscopic techniques
+* UV-Visible
+* IR spectroscopy
+* NMR spectroscopy
+* Mass spectrometry
+* Chromatographic techniques
+* TLC
+* HPLC
+* GC
+* Electrophoresis
+* Applications in identification
+
+---
+
+### 26. PHARMACEUTICAL JURISPRUDENCE
+
+**Unit I: Drugs & Cosmetics Act – Part I**
+* Introduction to pharmaceutical legislation
+* Drugs and Cosmetics Act, 1940
+* Objectives
+* Definitions
+* Legal definitions of schedules
+* Import of drugs
+* Classes prohibited
+* Import under license
+* Offences and penalties
+* Manufacture of drugs
+* Prohibition of certain drugs
+* Conditions for license
+* Manufacturing license types
+* Manufacture of new drugs
+* Loan license
+* Repacking license
+
+**Unit II: Drugs & Cosmetics Act – Part II**
+* Schedules to D&C Act
+* Schedule G - hormones
+* Schedule H - prescription drugs
+* Schedule M - GMP requirements
+* Schedule N - minimum equipment
+* Schedule P - shelf life
+* Schedule T - ASU drugs GMP
+* Schedule X - narcotic drugs
+* Schedule Y - clinical trials
+* Sale of drugs
+* Wholesale license
+* Retail license
+* Restricted license
+* Labeling and packing
+* General requirements
+* Specimen labels
+* Administration of Act
+* DTAB, CDL, DCC
+* Drug inspectors
+
+**Unit III: Other Pharmaceutical Acts**
+* Pharmacy Act, 1948
+* Objectives
+* Pharmacy Council of India
+* Education regulations
+* State pharmacy councils
+* Registration of pharmacists
+* Medicinal and Toilet Preparations Act, 1955
+* Objectives
+* Licensing
+* Manufacturing provisions
+* Narcotic Drugs and Psychotropic Substances Act, 1985
+* Objectives
+* Definitions
+* Authorities
+* Control and regulation
+* Offences and penalties
+
+**Unit IV: Regulatory Bodies**
+* Drugs and Magic Remedies Act
+* Objectives
+* Prohibition of advertisements
+* Exempted classes
+* Prevention of Cruelty to Animals Act, 1960
+* CPCSEA
+* IAEC
+* Guidelines for experiments
+* National Pharmaceutical Pricing Authority
+* DPCO 2013
+* Price control mechanism
+* NLEM
+* Ceiling prices
+
+**Unit V: Professional & Legal Aspects**
+* Pharmaceutical legislation review
+* Drug enquiry committee
+* Health survey committee
+* Hathi committee
+* Mudaliar committee
+* Code of pharmaceutical ethics
+* Pharmacist's oath
+* Professional conduct
+* Medical Termination of Pregnancy Act
+* Right to Information Act
+* Intellectual Property Rights
+* Patents
+* Trademarks
+* Copyrights

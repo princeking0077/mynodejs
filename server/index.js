@@ -140,7 +140,8 @@ app.get('/api/ping', (req, res) => res.send("PONG - Production Server Alive (v2.
 app.get('/api/debug-status', async (req, res) => {
     try {
         const [rows] = await pool.query("SELECT count(*) as count FROM users");
-        res.json({ status: "OK", db: process.env.DB_NAME, users: rows[0].count });
+        const [content] = await pool.query("SELECT count(*) as count FROM content");
+        res.json({ status: "OK", db: process.env.DB_NAME, users: rows[0].count, content: content[0].count });
     } catch (e) {
         res.status(500).json({ status: "ERROR", error: e.message });
     }
@@ -247,6 +248,16 @@ app.get('/test-db', async (req, res) => {
         await seedGpatTopics(pool);
     } catch (e) {
         console.error('⚠️ GPAT Seeding failed:', e.message);
+    }
+
+    // AUTO-SEED B.PHARM SYLLABUS (Runs after GPAT)
+    await new Promise(r => setTimeout(r, 2000)); // Wait another 2s
+    console.log('🔄 Triggering B.Pharm Syllabus Seed...');
+    try {
+        const seedBPharmSyllabus = require('./seed_bpharm_syllabus');
+        await seedBPharmSyllabus();
+    } catch (e) {
+        console.error('⚠️ B.Pharm Seeding failed:', e.message);
     }
 })();
 
