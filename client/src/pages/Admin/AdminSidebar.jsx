@@ -10,8 +10,7 @@ import {
     ChevronRight,
     LogOut,
     Menu,
-    X,
-    FolderKanban
+    X
 } from 'lucide-react';
 import { curriculum } from '../../data/curriculum';
 
@@ -51,14 +50,14 @@ const AdminSidebar = ({ onLogout, onSelectContext }) => {
     };
 
     const SidebarContent = () => (
-        <div className="h-full flex flex-col bg-[#0F172A] border-r border-gray-800">
+        <div className="h-full flex flex-col bg-[rgba(5,5,10,0.95)] backdrop-blur-xl border-r border-white/10">
             {/* Logo Area */}
-            <div className="p-6 flex items-center justify-between border-b border-gray-800">
+            <div className="p-6 flex items-center justify-between border-b border-white/5">
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-cyan-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20">
-                        <LayoutDashboard size={18} strokeWidth={2.5} />
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
+                        <LayoutDashboard size={20} strokeWidth={2.5} />
                     </div>
-                    <span className="text-xl font-bold text-white tracking-tight">Admin<span className="text-gray-400 font-normal">Panel</span></span>
+                    <span className="text-xl font-bold text-white tracking-tight">Admin<span className="text-emerald-500 font-normal">Panel</span></span>
                 </div>
                 <button className="md:hidden text-gray-400 hover:text-white" onClick={() => setMobileOpen(false)}>
                     <X size={24} />
@@ -72,7 +71,7 @@ const AdminSidebar = ({ onLogout, onSelectContext }) => {
                 <div className="px-4">
                     <Link
                         to="/admin"
-                        className={`flex items-center gap-3 px-4 py-3 rounded-r-full transition-all border-l-4 ${location.pathname === '/admin' && !location.search ? 'border-cyan-500 bg-[#1E293B] text-white shadow-lg shadow-black/20' : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'}`}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all border border-transparent ${location.pathname === '/admin' && !location.search ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400 shadow-lg shadow-emerald-500/5' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
                         onClick={() => { if (onSelectContext) onSelectContext(null); setMobileOpen(false); }}
                     >
                         <LayoutDashboard size={20} />
@@ -82,21 +81,21 @@ const AdminSidebar = ({ onLogout, onSelectContext }) => {
 
                 {/* Section: Content Management */}
                 <div className="px-4">
-                    <div className="px-4 text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">
-                        Content Management
+                    <div className="px-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                        <GraduationCap size={12} /> Content Management
                     </div>
                     <div className="space-y-1">
                         {bpharmYears.map(year => (
                             <div key={year.id}>
                                 <button
                                     onClick={() => toggleYear(year.id)}
-                                    className={`w-full flex items-center justify-between px-4 py-2.5 rounded-r-full text-sm transition-all border-l-4 ${expandedYear === year.id ? 'border-blue-500 bg-[#1E293B] text-white' : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'}`}
+                                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm transition-all border border-transparent ${expandedYear === year.id ? 'bg-white/5 border-white/10 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
                                 >
                                     <div className="flex items-center gap-3">
-                                        <GraduationCap size={18} className={expandedYear === year.id ? 'text-blue-400' : ''} />
-                                        <span>{year.title}</span>
+                                        <div className={`w-1.5 h-1.5 rounded-full ${expandedYear === year.id ? 'bg-emerald-500' : 'bg-gray-600'}`}></div>
+                                        <span className="font-medium">{year.title}</span>
                                     </div>
-                                    {expandedYear === year.id ? <ChevronDown size={14} className="text-blue-400" /> : <ChevronRight size={14} />}
+                                    {expandedYear === year.id ? <ChevronDown size={14} className="text-emerald-400" /> : <ChevronRight size={14} />}
                                 </button>
 
                                 <AnimatePresence>
@@ -105,27 +104,27 @@ const AdminSidebar = ({ onLogout, onSelectContext }) => {
                                             initial={{ height: 0, opacity: 0 }}
                                             animate={{ height: 'auto', opacity: 1 }}
                                             exit={{ height: 0, opacity: 0 }}
-                                            className="overflow-hidden ml-4 pl-4 border-l border-gray-800 mt-1 space-y-1"
+                                            className="overflow-hidden ml-4 pl-4 border-l border-white/10 mt-1 space-y-1"
                                         >
                                             {year.semesters.map(sem => (
                                                 <div key={sem.id}>
                                                     <button
                                                         onClick={(e) => toggleSem(sem.id, e)}
-                                                        className="w-full flex items-center justify-between px-3 py-2 text-xs font-medium text-gray-500 hover:text-blue-400 transition-colors"
+                                                        className="w-full flex items-center justify-between px-3 py-2 text-xs font-bold text-gray-500 hover:text-emerald-400 transition-colors uppercase tracking-wider mt-2"
                                                     >
                                                         <span>{sem.title}</span>
                                                         {expandedSem === sem.id ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
                                                     </button>
                                                     {expandedSem === sem.id && (
-                                                        <div className="pl-3 py-1 space-y-1">
+                                                        <div className="pl-3 py-1 space-y-0.5">
                                                             {sem.subjects.map(subject => (
                                                                 <button
                                                                     key={subject.id}
                                                                     onClick={() => handleSubjectSelect(subject, year.id, sem.id, 'bpharm')}
-                                                                    className="w-full text-left px-3 py-1.5 text-[11px] text-gray-500 hover:text-white hover:bg-white/5 rounded transition-colors truncate relative flex items-center gap-2"
+                                                                    className="w-full text-left px-3 py-2 text-xs text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors truncate relative flex items-center gap-2 group"
                                                                     title={subject.title}
                                                                 >
-                                                                    <div className="w-1 h-1 rounded-full bg-gray-600"></div>
+                                                                    <div className="w-1 h-1 rounded-full bg-gray-600 group-hover:bg-emerald-400 transition-colors"></div>
                                                                     {subject.title}
                                                                 </button>
                                                             ))}
@@ -143,18 +142,18 @@ const AdminSidebar = ({ onLogout, onSelectContext }) => {
 
                 {/* Section: Competitive Exams */}
                 <div className="px-4">
-                    <div className="px-4 text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">
-                        Competitive Exams
+                    <div className="px-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                        <BookOpen size={12} /> Competitive Exams
                     </div>
                     <div className="space-y-1">
                         {gpatModule && (
                             <div key={gpatModule.id}>
                                 <button
                                     onClick={() => toggleYear(gpatModule.id)}
-                                    className={`w-full flex items-center justify-between px-4 py-2.5 rounded-r-full text-sm transition-all border-l-4 ${expandedYear === gpatModule.id ? 'border-orange-500 bg-[#1E293B] text-white' : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'}`}
+                                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm transition-all border border-transparent ${expandedYear === gpatModule.id ? 'bg-white/5 border-white/10 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
                                 >
                                     <div className="flex items-center gap-3">
-                                        <BookOpen size={18} className={expandedYear === gpatModule.id ? 'text-orange-400' : ''} />
+                                        <div className={`w-1.5 h-1.5 rounded-full ${expandedYear === gpatModule.id ? 'bg-orange-500' : 'bg-gray-600'}`}></div>
                                         <span>GPAT / NIPER</span>
                                     </div>
                                     {expandedYear === gpatModule.id ? <ChevronDown size={14} className="text-orange-400" /> : <ChevronRight size={14} />}
@@ -166,18 +165,18 @@ const AdminSidebar = ({ onLogout, onSelectContext }) => {
                                             initial={{ height: 0, opacity: 0 }}
                                             animate={{ height: 'auto', opacity: 1 }}
                                             exit={{ height: 0, opacity: 0 }}
-                                            className="overflow-hidden ml-4 pl-4 border-l border-gray-800 mt-1"
+                                            className="overflow-hidden ml-4 pl-4 border-l border-white/10 mt-1"
                                         >
                                             {gpatModule.semesters.map(module => (
                                                 <div key={module.id} className="mb-1">
-                                                    <div className="px-3 py-1.5 text-xs font-bold text-gray-500 uppercase">{module.title}</div>
+                                                    <div className="px-3 py-1.5 text-[10px] font-bold text-gray-500 uppercase mt-2">{module.title}</div>
                                                     {module.subjects.map(subject => (
                                                         <button
                                                             key={subject.id}
                                                             onClick={() => handleSubjectSelect(subject, 'gpat-module', module.id, 'gpat')}
-                                                            className="w-full text-left px-3 py-1.5 text-[11px] text-gray-500 hover:text-orange-400 rounded transition-colors truncate flex items-center gap-2"
+                                                            className="w-full text-left px-3 py-2 text-xs text-gray-400 hover:text-orange-400 hover:bg-white/5 rounded-lg transition-colors truncate flex items-center gap-2 group"
                                                         >
-                                                            <div className="w-1 h-1 rounded-full bg-gray-600"></div>
+                                                            <div className="w-1 h-1 rounded-full bg-gray-600 group-hover:bg-orange-400 transition-colors"></div>
                                                             {subject.title}
                                                         </button>
                                                     ))}
@@ -193,7 +192,7 @@ const AdminSidebar = ({ onLogout, onSelectContext }) => {
             </nav>
 
             {/* Bottom Actions */}
-            <div className="p-4 border-t border-gray-800 bg-[#0B1120]">
+            <div className="p-4 border-t border-white/10 bg-[rgba(5,5,10,0.5)]">
                 <Link to="/admin/settings" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white transition-colors mb-1 rounded-lg hover:bg-white/5">
                     <Settings size={18} />
                     <span className="text-sm font-medium">Global Settings</span>
@@ -212,14 +211,14 @@ const AdminSidebar = ({ onLogout, onSelectContext }) => {
     return (
         <>
             {/* Desktop Sidebar (Sticky) */}
-            <aside className="hidden md:flex w-72 flex-col sticky top-0 h-screen z-50 bg-[#0f172a]/95 backdrop-blur-xl border-r border-white/10 shrink-0 overflow-hidden transition-all duration-300">
+            <aside className="hidden md:flex w-72 flex-col sticky top-0 h-screen z-50 bg-transparent shrink-0 overflow-hidden">
                 <SidebarContent />
             </aside>
 
             {/* Mobile Header & Toggle */}
-            <div className="md:hidden fixed top-0 left-0 w-full bg-[#0f172a]/90 backdrop-blur-md p-4 z-40 flex justify-between items-center border-b border-white/10">
+            <div className="md:hidden fixed top-0 left-0 w-full bg-[rgba(5,5,10,0.9)] backdrop-blur-md p-4 z-40 flex justify-between items-center border-b border-white/10">
                 <span className="font-bold text-lg text-white tracking-wide">
-                    Admin<span className="text-cyan-400">Panel</span>
+                    Admin<span className="text-emerald-400">Panel</span>
                 </span>
                 <button onClick={() => setMobileOpen(true)} className="text-white p-2 rounded-lg hover:bg-white/10 transition-colors">
                     <Menu size={24} />
@@ -242,7 +241,7 @@ const AdminSidebar = ({ onLogout, onSelectContext }) => {
                             animate={{ x: 0 }}
                             exit={{ x: '-100%' }}
                             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                            className="fixed inset-y-0 left-0 w-80 max-w-[85vw] z-50 md:hidden bg-[#0f172a] shadow-2xl"
+                            className="fixed inset-y-0 left-0 w-80 max-w-[85vw] z-50 md:hidden shadow-2xl"
                         >
                             <SidebarContent />
                         </motion.div>
