@@ -74,7 +74,7 @@ const GpatModuleView = ({ data }) => {
                                     <Link
                                         key={i}
                                         to={`/${(module.url || '').replace(/^\//, '')}/${generateSlug(topic)}`}
-                                        style={{ textDecoration: 'none' }}
+                                        style={{ textDecoration: 'none', display: 'block', height: '100%' }}
                                     >
                                         <div style={{
                                             display: 'flex', alignItems: 'start', gap: '0.8rem',
@@ -112,7 +112,7 @@ const GpatModuleView = ({ data }) => {
                         <h2 style={{ fontSize: '2rem', marginBottom: '2rem' }}>Related B.Pharm Subjects</h2>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
                             {allSubjects.map(subject => (
-                                <Link to={`/${generateSlug(subject.title)}`} key={subject.id} style={{ textDecoration: 'none' }}>
+                                <Link to={`/${generateSlug(subject.title)}`} key={subject.id} style={{ textDecoration: 'none', display: 'block', height: '100%' }}>
                                     <motion.div
                                         whileHover={{ y: -5 }}
                                         className="glass-panel"
