@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/Layout';
@@ -52,6 +52,51 @@ const AdminDashboard = () => {
     const subjects = selectedSem ? semesters.find(s => s.id === selectedSem)?.subjects || [] : [];
 
     const currentSubjectTitle = subjects.find(s => s.id === selectedSubject)?.title;
+
+    // --- AUTO-FILL LOGIC: Year and Semester ---
+    useEffect(() => {
+        if (!selectedYear) return;
+
+        let slug = '1st-year';
+        if (selectedYear === 'year-2') slug = '2nd-year';
+        if (selectedYear === 'year-3') slug = '3rd-year';
+        if (selectedYear === 'year-4') slug = '4th-year';
+        if (selectedYear === 'gpat-module') slug = 'gpat';
+
+        setYearSlug(slug);
+    }, [selectedYear]);
+
+    // --- AUTO-FILL LOGIC: SEO Fields from Topic Title ---
+    useEffect(() => {
+        if (!topicTitle) return;
+
+        // 1. Auto-fill Primary Keyword if empty
+        if (!primaryKeyword) {
+            setPrimaryKeyword(topicTitle);
+        }
+
+        // 2. Auto-fill Meta Title if empty
+        if (!metaTitle && currentSubjectTitle) {
+            setMetaTitle(`${topicTitle} - ${currentSubjectTitle} Notes | LearnPharmacy`);
+        }
+
+        // 3. Auto-fill Meta Description if empty
+        if (!metaDescription && currentSubjectTitle) {
+            setMetaDescription(`Detailed study notes on ${topicTitle} for ${currentSubjectTitle} students. Includes PDF notes, video lectures, and important questions.`);
+        }
+
+        // 4. Try to extract Unit Number from Title (e.g., "Unit I: Intro")
+        const unitMatch = topicTitle.match(/Unit\s+([IVX]+)/i);
+        if (unitMatch) {
+            const roman = unitMatch[1].toUpperCase();
+            const romanMap = { 'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5 };
+            if (romanMap[roman]) setUnitNumber(romanMap[roman]);
+        }
+
+    }, [topicTitle, currentSubjectTitle]);
+    // Intentionally omitting primaryKeyword/metaTitle from deps to avoid overwriting user edits.
+    // Actually, to make it work ONLY when they are empty, I check `if (!primaryKeyword)` inside.
+
 
     // Fetch existing topics when subject changes
     React.useEffect(() => {
@@ -166,7 +211,7 @@ const AdminDashboard = () => {
         setFaqs([]);
         setNotesFile(null);
         // Reset SEO fields to defaults
-        setYearSlug('1st-year');
+        // Keep yearSlug consistent with selection
         setUnitNumber(1);
         setPrimaryKeyword('');
         setTargetKeywords('');
@@ -266,8 +311,11 @@ const AdminDashboard = () => {
     const autoAddTopics = async () => {
         if (!selectedSubject) return;
         const subjectData = subjects.find(s => s.id === selectedSubject);
+
+        console.log("Auto-Add Debug:", { selectedSubject, subjectData });
+
         if (!subjectData?.topics?.length) {
-            alert("No predefined topics found in curriculum for this subject.");
+            alert("No predefined topics found in curriculum for this subject. Please verify the syllabus data.");
             return;
         }
 
@@ -282,11 +330,20 @@ const AdminDashboard = () => {
 
         try {
             for (const topic of subjectData.topics) {
-                // Check if already exists
+                // Check if already exists in FETCHED topics (to avoid dupes in DB)
                 const exists = existingTopics.some(t => t.title === topic.title);
                 if (exists) {
                     skippedCount++;
                     continue;
+                }
+
+                // Extract Unit Number if possible
+                let autoUnit = 1;
+                const unitMatch = topic.title.match(/Unit\s+([IVX]+)/i);
+                if (unitMatch) {
+                    const roman = unitMatch[1].toUpperCase();
+                    const romanMap = { 'I': 1, 'II': 2, 'III': 3, 'IV': 4, 'V': 5 };
+                    if (romanMap[roman]) autoUnit = romanMap[roman];
                 }
 
                 // Prepare Data
@@ -297,14 +354,15 @@ const AdminDashboard = () => {
                     description: topic.description || '',
                     // Default SEO
                     yearSlug: yearSlug || '1st-year',
-                    unitNumber: 1,
+                    unitNumber: autoUnit,
                     primaryKeyword: topic.title,
                     targetKeywords: [],
                     // Defaults
                     youtubeId: '',
                     blogContent: '',
-                    metaTitle: topic.title,
-                    metaDescription: `Learn about ${topic.title}`,
+                    // Auto-fill Meta
+                    metaTitle: `${topic.title} - ${currentSubjectTitle} Notes`,
+                    metaDescription: `Detailed study notes on ${topic.title} for ${currentSubjectTitle}.`,
                     quiz: [],
                     faqs: []
                 };
@@ -315,7 +373,9 @@ const AdminDashboard = () => {
             }
 
             setSuccessMsg(`Batch Operation Complete: Added ${addedCount}, Skipped ${skippedCount} existing.`);
-            fetchTopics(selectedSubject); // Refresh list
+
+            // CRITICAL: Fetch topics anew to show them in the list!
+            await fetchTopics(selectedSubject);
 
         } catch (err) {
             console.error(err);
