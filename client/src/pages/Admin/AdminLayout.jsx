@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import AdminSidebar from './AdminSidebar';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { User, Bell, ChevronRight, Search } from 'lucide-react';
+import { Bell, ChevronRight, Search } from 'lucide-react';
 
 const AdminLayout = ({ children, onSelectContext, title = 'Dashboard', user }) => {
     const { logout } = useAuth();
@@ -18,7 +18,7 @@ const AdminLayout = ({ children, onSelectContext, title = 'Dashboard', user }) =
     };
 
     return (
-        <div className="min-h-screen text-white flex font-sans custom-scrollbar" style={{ background: 'var(--bg-dark)' }}>
+        <div className="min-h-screen text-white flex font-sans custom-scrollbar bg-[var(--bg-dark)]">
             {/* Sidebar */}
             <AdminSidebar
                 onLogout={handleLogout}
@@ -28,8 +28,8 @@ const AdminLayout = ({ children, onSelectContext, title = 'Dashboard', user }) =
             {/* Main Content Wrapper */}
             <div className="flex-1 flex flex-col min-h-screen transition-all duration-300 relative">
 
-                {/* Top Navbar */}
-                <header className="h-16 bg-[rgba(5,5,10,0.8)] backdrop-blur-xl border-b border-white/5 sticky top-0 z-30 px-6 md:px-8 flex items-center justify-between">
+                {/* Top Navbar (desktop/tablet only; mobile uses AdminSidebar header) */}
+                <header className="hidden md:flex h-16 bg-[rgba(5,5,10,0.8)] backdrop-blur-xl border-b border-white/5 sticky top-0 z-30 px-6 md:px-8 items-center justify-between">
                     {/* Breadcrumbs / Page Title */}
                     <div className="flex items-center gap-2 text-sm text-gray-400">
                         <span className="hover:text-white cursor-pointer transition-colors font-semibold">Admin</span>
@@ -65,7 +65,7 @@ const AdminLayout = ({ children, onSelectContext, title = 'Dashboard', user }) =
                 </header>
 
                 {/* Main Scrollable Area */}
-                <main className="flex-1 p-6 md:p-8 overflow-y-auto custom-scrollbar">
+                <main className="flex-1 overflow-y-auto custom-scrollbar px-6 pb-6 pt-24 md:p-8">
                     {children}
                 </main>
             </div>

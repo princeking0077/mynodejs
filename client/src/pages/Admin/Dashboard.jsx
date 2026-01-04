@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import AdminLayout from './AdminLayout';
-import { Lock, Upload, FileText, CheckSquare, LogOut, Plus, Save, Trash, Youtube, PenTool, ExternalLink, Activity, BookOpen, Clock, Users, GraduationCap, User, ArrowRight, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Lock, Upload, FileText, CheckSquare, LogOut, Plus, Save, Trash, Youtube, PenTool, ExternalLink, Activity, BookOpen, Clock, Users, GraduationCap, User, ArrowRight, ChevronRight, ChevronLeft, AlertTriangle } from 'lucide-react';
 import { api } from '../../services/api';
 import SEO from '../../components/SEO';
 import ReactQuill from 'react-quill';
@@ -272,28 +272,51 @@ const AdminDashboard = () => {
 
     if (!currentUser) {
         return (
-            <div className="min-h-screen flex items-center justify-center p-4 bg-[#0B1120] font-sans">
+            <div className="min-h-screen flex items-center justify-center p-4 bg-[var(--bg-dark)] font-sans">
                 <SEO title="Admin Login" />
                 <div className="w-full max-w-md animate-fade-in-up">
-                    <div className="bg-[#0F172A] p-8 md:p-10 rounded-2xl border border-gray-800 shadow-2xl">
+                    <div className="glass-panel p-8 md:p-10 rounded-2xl border border-white/10 shadow-2xl">
                         <div className="text-center mb-8">
-                            <div className="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/30">
-                                <Lock size={32} className="text-black" />
+                            <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/20 bg-[var(--primary)] text-black">
+                                <Lock size={30} />
                             </div>
                             <h2 className="text-2xl font-bold text-white mb-2">Welcome Back</h2>
-                            <p className="text-gray-400 text-sm">Enter your credentials.</p>
+                            <p className="text-gray-400 text-sm">Sign in to manage content and settings.</p>
                         </div>
-                        {authError && <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-200 text-sm flex gap-2"><LogOut size={16} /> {authError}</div>}
+                        {authError && (
+                            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-200 text-sm flex gap-2">
+                                <AlertTriangle size={16} className="mt-0.5 shrink-0" />
+                                <span className="leading-relaxed">{authError}</span>
+                            </div>
+                        )}
                         <form onSubmit={handleLogin} className="space-y-6">
                             <div className="space-y-2">
                                 <label className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Email</label>
-                                <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="w-full pl-4 pr-4 py-3 bg-[#1E293B] border border-gray-700 rounded-lg text-white outline-none focus:border-emerald-500" placeholder="admin@learnpharmacy.in" required />
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={e => setEmail(e.target.value)}
+                                    className="w-full pl-4 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                                    placeholder="admin@learnpharmacy.in"
+                                    autoComplete="email"
+                                    required
+                                />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-bold text-emerald-400 uppercase tracking-wider">Password</label>
-                                <input type="password" value={password} onChange={e => setPassword(e.target.value)} className="w-full pl-4 pr-4 py-3 bg-[#1E293B] border border-gray-700 rounded-lg text-white outline-none focus:border-emerald-500" placeholder="••••••••" required />
+                                <input
+                                    type="password"
+                                    value={password}
+                                    onChange={e => setPassword(e.target.value)}
+                                    className="w-full pl-4 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                                    placeholder="••••••••"
+                                    autoComplete="current-password"
+                                    required
+                                />
                             </div>
-                            <button type="submit" className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-lg shadow-lg">Sign In</button>
+                            <button type="submit" className="w-full py-3.5 bg-[var(--primary)] hover:opacity-90 text-black font-bold rounded-lg shadow-lg shadow-emerald-500/20">
+                                Sign In
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -315,7 +338,7 @@ const AdminDashboard = () => {
 
             {/* VIEW: OVERVIEW */}
             {viewMode === 'overview' && (
-                <div className="space-y-8 animate-fade-in custom-scrollbar">
+                <div className="max-w-7xl mx-auto space-y-8 animate-fade-in custom-scrollbar">
                     {/* Header */}
                     <div className="flex flex-col md:flex-row justify-between gap-4 mb-2">
                         <div>
@@ -386,7 +409,7 @@ const AdminDashboard = () => {
 
             {/* VIEW: YEAR DETAILS */}
             {viewMode === 'year' && selectedYearData && (
-                <div className="space-y-8 animate-fade-in custom-scrollbar">
+                <div className="max-w-7xl mx-auto space-y-8 animate-fade-in custom-scrollbar">
                     <button onClick={() => setViewMode('overview')} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-4 text-sm font-bold">
                         <ArrowRight size={16} className="rotate-180" /> Back to Dashboard
                     </button>
