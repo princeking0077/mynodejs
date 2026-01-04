@@ -280,48 +280,45 @@ const AdminDashboard = () => {
 
     if (!currentUser) {
         return (
-            <div className="admin-scope min-h-screen flex items-center justify-center px-4 py-10 bg-[var(--bg-dark)] font-sans relative overflow-hidden">
+            <div className="admin-scope min-h-screen flex items-center justify-center p-4 font-sans relative overflow-hidden admin-bg-animated">
                 <SEO title="Admin Login" />
 
-                {/* Background glow */}
+                {/* Background glow orbs */}
                 <div className="pointer-events-none absolute inset-0">
-                    <div
-                        className="absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full blur-3xl opacity-25"
-                        style={{ background: 'var(--grad-primary)' }}
-                    />
-                    <div
-                        className="absolute -bottom-56 left-1/2 h-[560px] w-[560px] -translate-x-1/2 rounded-full blur-3xl opacity-15"
-                        style={{ background: 'var(--grad-primary)' }}
-                    />
+                    <div className="absolute top-16 left-10 md:top-20 md:left-20 w-80 h-80 md:w-96 md:h-96 rounded-full blur-3xl opacity-25" style={{ background: 'var(--accent)' }} />
+                    <div className="absolute bottom-12 right-8 md:bottom-20 md:right-20 w-80 h-80 md:w-96 md:h-96 rounded-full blur-3xl opacity-20" style={{ background: 'var(--primary)' }} />
                 </div>
 
-                <div className="w-full max-w-lg animate-fade-in-up relative">
-                    <div className="glass-panel p-7 md:p-9 rounded-2xl border border-white/10 shadow-2xl">
+                <div className="relative z-10 w-full max-w-lg animate-fade-in-up">
+                    <div className="glass-panel-light rounded-3xl shadow-2xl p-8 md:p-12">
                         <div className="flex flex-col items-center text-center mb-7">
                             <div className="flex justify-center mb-5">
-                                <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20 bg-[var(--primary)] text-black">
-                                    <Lock size={26} />
+                                <div className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg text-white" style={{ background: 'var(--grad-primary)' }}>
+                                    <Lock size={28} />
                                 </div>
                             </div>
-                            <div className="text-[22px] md:text-2xl font-bold text-white leading-tight">Welcome back</div>
-                            <p className="text-gray-400 text-sm mt-1">Enter your credentials to access the dashboard.</p>
+                            <div className="text-3xl font-bold bg-clip-text text-transparent" style={{ backgroundImage: 'var(--grad-primary)' }}>Welcome back</div>
+                            <p className="text-slate-600 text-sm mt-2">Sign in to access your dashboard</p>
                         </div>
                         {authError && (
-                            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-200 text-sm flex gap-2">
-                                <AlertTriangle size={16} className="mt-0.5 shrink-0" />
-                                <span className="leading-relaxed">{authError}</span>
+                            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex gap-3">
+                                <AlertTriangle size={18} className="mt-0.5 shrink-0 text-red-500" />
+                                <div className="min-w-0">
+                                    <div className="font-semibold">Login failed</div>
+                                    <div className="text-red-600 mt-0.5 break-words">{authError}</div>
+                                </div>
                             </div>
                         )}
-                        <form onSubmit={handleLogin} className="flex flex-col gap-5">
+                        <form onSubmit={handleLogin} className="space-y-6">
                             <div className="flex flex-col gap-2">
-                                <label className="block text-[11px] font-bold text-emerald-400 uppercase tracking-wider ml-1">Email</label>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">Email address</label>
                                 <div className="relative">
-                                    <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                                    <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                                     <input
                                         type="email"
                                         value={email}
                                         onChange={e => setEmail(e.target.value)}
-                                        className="w-full pl-11 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                                        className="w-full pl-12 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                                         placeholder="admin@learnpharmacy.in"
                                         autoComplete="email"
                                         required
@@ -329,26 +326,30 @@ const AdminDashboard = () => {
                                 </div>
                             </div>
                             <div className="flex flex-col gap-2">
-                                <label className="block text-[11px] font-bold text-emerald-400 uppercase tracking-wider ml-1">Password</label>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
                                 <div className="relative">
-                                    <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                                    <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                                     <input
                                         type="password"
                                         value={password}
                                         onChange={e => setPassword(e.target.value)}
-                                        className="w-full pl-11 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                                        className="w-full pl-12 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                                         placeholder="••••••••"
                                         autoComplete="current-password"
                                         required
                                     />
                                 </div>
                             </div>
-                            <button type="submit" className="w-full py-3.5 bg-[var(--primary)] hover:opacity-90 text-black font-bold rounded-xl shadow-lg shadow-emerald-500/20">
+                            <button
+                                type="submit"
+                                className="w-full py-3.5 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-transform hover:-translate-y-0.5"
+                                style={{ backgroundImage: 'var(--grad-primary)' }}
+                            >
                                 Sign In
                             </button>
                         </form>
 
-                        <div className="mt-6 text-center text-[11px] text-gray-500">
+                        <div className="mt-8 text-center text-sm text-slate-500">
                             © {new Date().getFullYear()} LearnPharmacy. All rights reserved.
                         </div>
                     </div>
@@ -375,11 +376,11 @@ const AdminDashboard = () => {
                     {/* Header */}
                     <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                         <div className="min-w-0">
-                            <div className="text-2xl md:text-[28px] font-bold text-white leading-tight">Dashboard Overview</div>
-                            <p className="text-gray-400 text-sm mt-1">Here’s what’s happening in your academy today.</p>
+                            <div className="text-2xl md:text-[28px] font-bold text-slate-900 leading-tight">Dashboard Overview</div>
+                            <p className="text-slate-600 text-sm mt-1">Monitor your content and system status.</p>
                         </div>
                         <div className="flex gap-3">
-                            <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--primary)] text-black font-bold text-sm shadow-lg shadow-emerald-500/20 hover:opacity-90">
+                            <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-white font-semibold text-sm shadow-lg hover:shadow-xl transition-transform hover:-translate-y-0.5" style={{ backgroundImage: 'var(--grad-primary)' }}>
                                 <Plus size={16} /> New Notice
                             </button>
                         </div>
@@ -387,46 +388,46 @@ const AdminDashboard = () => {
 
                     {/* Stats */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div className="glass-panel p-5 rounded-2xl relative overflow-hidden group hover:border-emerald-500/30 transition-all">
+                        <div className="glass-panel-light p-5 rounded-2xl relative overflow-hidden group hover:border-emerald-300 transition-all">
                             <div className="flex items-center justify-between">
-                                <div className="p-2.5 bg-white/5 rounded-xl text-emerald-400"><Users size={20} /></div>
-                                <span className="text-[10px] font-bold text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-2 py-1 rounded-full">Users</span>
+                                <div className="p-2.5 bg-emerald-50 rounded-xl text-emerald-700"><Users size={20} /></div>
+                                <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded-full">Users</span>
                             </div>
-                            <div className="text-2xl md:text-[28px] font-bold text-white leading-none mt-4">{stats.users}</div>
-                            <div className="mt-4 h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                            <div className="text-2xl md:text-[28px] font-bold text-slate-900 leading-none mt-4">{stats.users}</div>
+                            <div className="mt-4 h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
                                 <div className="h-full bg-emerald-500" style={{ width: `${Math.min(100, Math.max(4, Number(stats.users) ? (Number(stats.users) / 50) * 100 : 8))}%` }} />
                             </div>
                         </div>
 
-                        <div className="glass-panel p-5 rounded-2xl relative overflow-hidden group hover:border-cyan-500/30 transition-all">
+                        <div className="glass-panel-light p-5 rounded-2xl relative overflow-hidden group hover:border-sky-300 transition-all">
                             <div className="flex items-center justify-between">
-                                <div className="p-2.5 bg-white/5 rounded-xl text-cyan-400"><Activity size={20} /></div>
-                                <span className="text-[10px] font-bold text-cyan-300 bg-cyan-500/10 border border-cyan-500/20 px-2 py-1 rounded-full">Status</span>
+                                <div className="p-2.5 bg-sky-50 rounded-xl text-sky-700"><Activity size={20} /></div>
+                                <span className="text-[10px] font-semibold text-sky-700 bg-sky-50 border border-sky-200 px-2 py-1 rounded-full">Status</span>
                             </div>
-                            <div className="text-2xl md:text-[28px] font-bold text-white leading-none mt-4">Healthy</div>
-                            <div className="mt-4 h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                                <div className="h-full bg-cyan-500" style={{ width: '72%' }} />
+                            <div className="text-2xl md:text-[28px] font-bold text-slate-900 leading-none mt-4">Healthy</div>
+                            <div className="mt-4 h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
+                                <div className="h-full bg-sky-500" style={{ width: '72%' }} />
                             </div>
                         </div>
 
-                        <div className="glass-panel p-5 rounded-2xl relative overflow-hidden group hover:border-purple-500/30 transition-all">
+                        <div className="glass-panel-light p-5 rounded-2xl relative overflow-hidden group hover:border-violet-300 transition-all">
                             <div className="flex items-center justify-between">
-                                <div className="p-2.5 bg-white/5 rounded-xl text-purple-400"><BookOpen size={20} /></div>
-                                <span className="text-[10px] font-bold text-purple-300 bg-purple-500/10 border border-purple-500/20 px-2 py-1 rounded-full">Content</span>
+                                <div className="p-2.5 bg-violet-50 rounded-xl text-violet-700"><BookOpen size={20} /></div>
+                                <span className="text-[10px] font-semibold text-violet-700 bg-violet-50 border border-violet-200 px-2 py-1 rounded-full">Content</span>
                             </div>
-                            <div className="text-2xl md:text-[28px] font-bold text-white leading-none mt-4">{stats.content}</div>
-                            <div className="mt-4 h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                                <div className="h-full bg-purple-500" style={{ width: `${Math.min(100, Math.max(6, Number(stats.content) ? (Number(stats.content) / 200) * 100 : 10))}%` }} />
+                            <div className="text-2xl md:text-[28px] font-bold text-slate-900 leading-none mt-4">{stats.content}</div>
+                            <div className="mt-4 h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
+                                <div className="h-full bg-violet-500" style={{ width: `${Math.min(100, Math.max(6, Number(stats.content) ? (Number(stats.content) / 200) * 100 : 10))}%` }} />
                             </div>
                         </div>
 
-                        <div className="glass-panel p-5 rounded-2xl relative overflow-hidden group hover:border-orange-500/30 transition-all">
+                        <div className="glass-panel-light p-5 rounded-2xl relative overflow-hidden group hover:border-orange-300 transition-all">
                             <div className="flex items-center justify-between">
-                                <div className="p-2.5 bg-white/5 rounded-xl text-orange-400"><CheckSquare size={20} /></div>
-                                <span className="text-[10px] font-bold text-orange-300 bg-orange-500/10 border border-orange-500/20 px-2 py-1 rounded-full">Quizzes</span>
+                                <div className="p-2.5 bg-orange-50 rounded-xl text-orange-700"><CheckSquare size={20} /></div>
+                                <span className="text-[10px] font-semibold text-orange-700 bg-orange-50 border border-orange-200 px-2 py-1 rounded-full">Quizzes</span>
                             </div>
-                            <div className="text-2xl md:text-[28px] font-bold text-white leading-none mt-4">{stats.quizzes}</div>
-                            <div className="mt-4 h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                            <div className="text-2xl md:text-[28px] font-bold text-slate-900 leading-none mt-4">{stats.quizzes}</div>
+                            <div className="mt-4 h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
                                 <div className="h-full bg-orange-500" style={{ width: `${Math.min(100, Math.max(6, Number(stats.quizzes) ? (Number(stats.quizzes) / 50) * 100 : 10))}%` }} />
                             </div>
                         </div>
@@ -434,8 +435,8 @@ const AdminDashboard = () => {
 
                     {/* ACADEMIC MANAGEMENT GRID */}
                     <div>
-                        <div className="text-lg md:text-xl font-bold text-white mb-4 flex items-center gap-3">
-                            <div className="p-2 bg-blue-500/10 rounded-lg"><GraduationCap size={20} className="text-blue-400" /></div>
+                        <div className="text-lg md:text-xl font-bold text-slate-900 mb-4 flex items-center gap-3">
+                            <div className="p-2 bg-emerald-50 rounded-lg"><GraduationCap size={20} className="text-emerald-700" /></div>
                             Academic Management
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -447,29 +448,29 @@ const AdminDashboard = () => {
                                     <div
                                         key={yearId}
                                         onClick={() => handleYearClick(yearId)}
-                                        className="glass-panel p-5 rounded-2xl hover:bg-white/5 transition-colors group cursor-pointer border border-white/5 hover:border-emerald-500/30 relative overflow-hidden"
+                                        className="glass-panel-light p-6 rounded-2xl transition-all group cursor-pointer border border-slate-200 hover:border-emerald-200 relative overflow-hidden hover:-translate-y-0.5 hover:shadow-xl"
                                     >
-                                        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-emerald-500/10 to-transparent rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
+                                        <div className="absolute top-0 right-0 w-28 h-28 rounded-bl-full -mr-6 -mt-6 opacity-60" style={{ backgroundImage: 'var(--grad-primary)' }}></div>
                                         <div className="relative z-10 flex items-start justify-between gap-3">
                                             <div className="flex items-center gap-2">
-                                                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white font-bold">Y{yearNumber}</div>
-                                                <span className="text-[10px] font-bold text-emerald-400 border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 rounded-full">ACADEMIC</span>
+                                                <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold shadow-lg" style={{ backgroundImage: 'var(--grad-primary)' }}>Y{yearNumber}</div>
+                                                <span className="text-[10px] font-semibold text-emerald-700 border border-emerald-200 bg-emerald-50 px-2.5 py-1 rounded-full">ACADEMIC</span>
                                             </div>
-                                            <ExternalLink size={16} className="text-gray-600 group-hover:text-white transition-colors mt-1" />
+                                            <ExternalLink size={16} className="text-slate-400 group-hover:text-slate-700 transition-colors mt-1" />
                                         </div>
                                         <div className="relative z-10 mt-4">
-                                            <div className="text-xl font-bold text-white leading-tight">B.Pharm Year {yearNumber}</div>
-                                            <p className="text-xs text-gray-400 mt-1">Manage semesters, subjects and content.</p>
+                                            <div className="text-xl font-bold text-slate-900 leading-tight">B.Pharm Year {yearNumber}</div>
+                                            <p className="text-xs text-slate-600 mt-1">Manage semesters, subjects and content.</p>
                                         </div>
                                         <div className="relative z-10 mt-5">
-                                            <div className="flex items-center justify-between text-[11px] text-gray-400 font-semibold">
+                                            <div className="flex items-center justify-between text-[11px] text-slate-600 font-semibold">
                                                 <span>Subjects</span>
-                                                <span className="text-gray-300">{subjectsCount}</span>
+                                                <span className="text-slate-700">{subjectsCount}</span>
                                             </div>
-                                            <div className="mt-2 h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                                            <div className="mt-2 h-2 w-full bg-slate-200 rounded-full overflow-hidden">
                                                 <div className="h-full bg-emerald-500" style={{ width: `${Math.max(8, Math.round(subjectsRatio * 100))}%` }} />
                                             </div>
-                                            <div className="mt-4 w-full px-4 py-3 bg-white/5 border border-white/10 text-gray-300 text-xs font-bold rounded-xl group-hover:bg-emerald-500 group-hover:text-black group-hover:border-emerald-500 transition-all flex items-center justify-center gap-2 select-none">
+                                            <div className="mt-4 w-full px-4 py-3 bg-white border border-slate-200 text-slate-700 text-xs font-semibold rounded-xl group-hover:text-white transition-all flex items-center justify-center gap-2 select-none" style={{ backgroundImage: 'var(--grad-primary)' }}>
                                                 Manage Year <ArrowRight size={14} />
                                             </div>
                                         </div>

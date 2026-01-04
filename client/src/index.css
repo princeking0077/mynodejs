@@ -81,6 +81,26 @@ h3 {
 .admin-scope .ql-editor h2 { font-size: 1.5rem; }
 .admin-scope .ql-editor h3 { font-size: 1.25rem; }
 
+/* Admin Design System (reference-style) */
+.admin-scope .admin-bg-animated {
+  background: linear-gradient(-45deg, var(--primary), var(--accent), #0284c7, #9333ea);
+  background-size: 400% 400%;
+  animation: adminGradientShift 15s ease infinite;
+}
+
+@keyframes adminGradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.admin-scope .glass-panel-light {
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
 .gradient-text,
 .text-gradient {
   background: var(--grad-text);
