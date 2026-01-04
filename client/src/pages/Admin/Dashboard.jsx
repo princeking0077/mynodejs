@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import Layout from '../../components/Layout';
-import { Lock, Upload, FileText, CheckSquare, LogOut, Plus, Save, Trash, Youtube, PenTool, ExternalLink } from 'lucide-react';
-import { curriculum } from '../../data/curriculum';
+import AdminLayout from './AdminLayout';
+import { Lock, Upload, FileText, CheckSquare, LogOut, Plus, Save, Trash, Youtube, PenTool, ExternalLink, ArrowLeft } from 'lucide-react';
 import { api } from '../../services/api';
 import SEO from '../../components/SEO';
 import ReactQuill from 'react-quill';
@@ -11,57 +10,58 @@ import 'react-quill/dist/quill.snow.css';
 import { generateSlug } from '../../services/slugService';
 
 const AdminDashboard = () => {
-    const { currentUser, login, logout } = useAuth();
+    const { currentUser, login } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const [authError, setAuthError] = useState('');
 
-    // Selection State
-    const [selectedYear, setSelectedYear] = useState('');
-    const [selectedSem, setSelectedSem] = useState('');
-    const [selectedSubject, setSelectedSubject] = useState('');
+    // Global State managed by Sidebar
+    const [context, setContext] = useState(null); // { type, yearId, semId, subjectId, subjectTitle }
+
+    // Editor State
+    const [existingTopics, setExistingTopics] = useState([]);
+    const [fetchingTopics, setFetchingTopics] = useState(false);
 
     // Form State
     const [topicId, setTopicId] = useState(null); // For Edit Mode
     const [topicTitle, setTopicTitle] = useState('');
-    const [youtubeId, setYoutubeId] = useState(''); // YouTube Video ID
-    const [blogContent, setBlogContent] = useState(''); // Rich Text Content
-    const [metaTitle, setMetaTitle] = useState(''); // SEO
-    const [metaDescription, setMetaDescription] = useState(''); // SEO
-    const [animationCode, setAnimationCode] = useState(''); // HTML/JS Code
+    const [youtubeId, setYoutubeId] = useState('');
+    const [blogContent, setBlogContent] = useState('');
+    const [metaTitle, setMetaTitle] = useState('');
+    const [metaDescription, setMetaDescription] = useState('');
+    const [animationCode, setAnimationCode] = useState('');
     const [quizQuestions, setQuizQuestions] = useState([]);
-    const [faqs, setFaqs] = useState([]); // FAQs State
+    const [faqs, setFaqs] = useState([]);
     const [notesFile, setNotesFile] = useState(null);
     const [loading, setLoading] = useState(false);
     const [successMsg, setSuccessMsg] = useState('');
+    const [error, setError] = useState('');
 
-    // NEW: SEO Fields for Ranking & Internal Linking
-    const [yearSlug, setYearSlug] = useState('1st-year'); // Default to 1st year
+    // SEO Fields
+    const [yearSlug, setYearSlug] = useState('1st-year');
     const [unitNumber, setUnitNumber] = useState(1);
     const [primaryKeyword, setPrimaryKeyword] = useState('');
-    const [targetKeywords, setTargetKeywords] = useState(''); // Comma-separated input
-
-    // Existing Topics List
-    const [existingTopics, setExistingTopics] = useState([]);
-    const [fetchingTopics, setFetchingTopics] = useState(false);
+    const [targetKeywords, setTargetKeywords] = useState('');
 
     const navigate = useNavigate();
 
-    // Helper to get lists based on selection
-    const years = curriculum;
-    const semesters = selectedYear ? curriculum.find(y => y.id === selectedYear)?.semesters || [] : [];
-    const subjects = selectedSem ? semesters.find(s => s.id === selectedSem)?.subjects || [] : [];
-
-    const currentSubjectTitle = subjects.find(s => s.id === selectedSubject)?.title;
-
-    // Fetch existing topics when subject changes
-    React.useEffect(() => {
-        if (selectedSubject) {
-            fetchTopics(selectedSubject);
+    // Fetch Topics when Context Changes
+    useEffect(() => {
+        if (context?.subjectId) {
+            fetchTopics(context.subjectId);
+            resetForm();
+            // Auto-set year slug based on context type
+            if (context.type === 'gpat') {
+                setYearSlug('gpat');
+            } else if (context.yearId) {
+                // Map 'year-1' to '1st-year' etc.
+                const map = { 'year-1': '1st-year', 'year-2': '2nd-year', 'year-3': '3rd-year', 'year-4': '4th-year' };
+                setYearSlug(map[context.yearId] || '1st-year');
+            }
         } else {
             setExistingTopics([]);
         }
-    }, [selectedSubject]);
+    }, [context]);
 
     const fetchTopics = async (subId) => {
         setFetchingTopics(true);
@@ -78,83 +78,14 @@ const AdminDashboard = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            setError('');
+            setAuthError('');
             await login(email, password);
         } catch (err) {
-            setError(err.message || 'Failed to login. Please check connection.');
-            console.error(err);
+            setAuthError(err.message || 'Failed to login.');
         }
     };
 
-    const handleLogout = async () => {
-        await logout();
-        navigate('/');
-    };
-
-    // Quiz Builder Helpers
-    const addQuestion = () => {
-        setQuizQuestions([...quizQuestions, { id: Date.now(), question: '', options: ['', '', '', ''], correct: 0 }]);
-    };
-
-    const updateQuestion = (id, field, value) => {
-        setQuizQuestions(quizQuestions.map(q => q.id === id ? { ...q, [field]: value } : q));
-    };
-
-    const updateOption = (qId, oIdx, value) => {
-        setQuizQuestions(quizQuestions.map(q => {
-            if (q.id === qId) {
-                const newOptions = [...q.options];
-                newOptions[oIdx] = value;
-                return { ...q, options: newOptions };
-            }
-            return q;
-        }));
-    };
-
-    // Populate Form for Editing
-    const handleEditTopic = (topic) => {
-        setTopicId(topic.id);
-        setTopicTitle(topic.title);
-        // Auto-extract ID if full URL was stored conventionally
-        const ytVal = topic.youtube_id || '';
-        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-        const ytMatch = ytVal.match(regExp);
-        setYoutubeId((ytMatch && ytMatch[2].length === 11) ? ytMatch[2] : ytVal);
-        setBlogContent(topic.blog_content || '');
-        setMetaTitle(topic.meta_title || '');
-        setMetaDescription(topic.meta_description || '');
-        setAnimationCode(topic.description); // We stored code in description
-        // Safely parse JSON fields
-        let parsedQuiz = [];
-        try {
-            parsedQuiz = typeof topic.quiz_data === 'string' ? JSON.parse(topic.quiz_data) : (topic.quiz_data || []);
-        } catch (e) { console.warn("Quiz parse error", e); }
-        setQuizQuestions(Array.isArray(parsedQuiz) ? parsedQuiz : []);
-
-        let parsedFaqs = [];
-        try {
-            parsedFaqs = typeof topic.faqs === 'string' ? JSON.parse(topic.faqs) : (topic.faqs || []);
-        } catch (e) { console.warn("FAQ parse error", e); }
-        setFaqs(Array.isArray(parsedFaqs) ? parsedFaqs : []);
-
-        // NEW: Populate SEO Fields
-        setYearSlug(topic.year_slug || '1st-year');
-        setUnitNumber(topic.unit_number || 1);
-        setPrimaryKeyword(topic.primary_keyword || '');
-        // Convert array back to comma-separated string
-        let targetKw = '';
-        try {
-            const parsedKw = typeof topic.target_keywords === 'string' ? JSON.parse(topic.target_keywords) : (topic.target_keywords || []);
-            targetKw = Array.isArray(parsedKw) ? parsedKw.join(', ') : '';
-        } catch (e) { console.warn("Target keywords parse error", e); }
-        setTargetKeywords(targetKw);
-
-        setNotesFile(null); // Reset file input
-        setError('');
-        setSuccessMsg('');
-    };
-
-    // Reset Form
+    // --- Form Helpers ---
     const resetForm = () => {
         setTopicId(null);
         setTopicTitle('');
@@ -166,31 +97,56 @@ const AdminDashboard = () => {
         setQuizQuestions([]);
         setFaqs([]);
         setNotesFile(null);
-        // Reset SEO fields to defaults
-        setYearSlug('1st-year');
         setUnitNumber(1);
         setPrimaryKeyword('');
         setTargetKeywords('');
         setSuccessMsg('');
         setError('');
+        // Keep yearSlug as is for convenience in same session
     };
 
-    const handleDeleteTopic = async (id, e) => {
-        e.stopPropagation();
-        if (!window.confirm("Are you sure you want to delete this topic?")) return;
+    const handleEditTopic = (topic) => {
+        setTopicId(topic.id);
+        setTopicTitle(topic.title);
+        const ytVal = topic.youtube_id || '';
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+        const ytMatch = ytVal.match(regExp);
+        setYoutubeId((ytMatch && ytMatch[2].length === 11) ? ytMatch[2] : ytVal);
+        setBlogContent(topic.blog_content || '');
+        setMetaTitle(topic.meta_title || '');
+        setMetaDescription(topic.meta_description || '');
+        setAnimationCode(topic.description);
 
+        let parsedQuiz = [];
+        try { parsedQuiz = typeof topic.quiz_data === 'string' ? JSON.parse(topic.quiz_data) : (topic.quiz_data || []); } catch (e) { }
+        setQuizQuestions(Array.isArray(parsedQuiz) ? parsedQuiz : []);
+
+        let parsedFaqs = [];
+        try { parsedFaqs = typeof topic.faqs === 'string' ? JSON.parse(topic.faqs) : (topic.faqs || []); } catch (e) { }
+        setFaqs(Array.isArray(parsedFaqs) ? parsedFaqs : []);
+
+        setYearSlug(topic.year_slug || (context?.type === 'gpat' ? 'gpat' : '1st-year'));
+        setUnitNumber(topic.unit_number || 1);
+        setPrimaryKeyword(topic.primary_keyword || '');
+
+        let targetKw = '';
         try {
-            await api.deleteTopic(id);
-            setExistingTopics(existingTopics.filter(t => t.id !== id));
-            if (topicId === id) resetForm(); // Clear form if we deleted the currently edited topic
-        } catch (e) {
-            alert("Failed to delete topic");
-        }
+            const parsedKw = typeof topic.target_keywords === 'string' ? JSON.parse(topic.target_keywords) : (topic.target_keywords || []);
+            targetKw = Array.isArray(parsedKw) ? parsedKw.join(', ') : '';
+        } catch (e) { }
+        setTargetKeywords(targetKw);
+
+        setNotesFile(null);
+        setError('');
+        setSuccessMsg('');
+
+        // Scroll to editor
+        document.getElementById('editor-panel')?.scrollIntoView({ behavior: 'smooth' });
     };
 
     const saveTopic = async () => {
-        if (!selectedSubject || !topicTitle) {
-            setError('Please select a subject and enter a topic title.');
+        if (!context?.subjectId || !topicTitle) {
+            setError('Missing Subject or Title.');
             return;
         }
         setLoading(true);
@@ -199,71 +155,81 @@ const AdminDashboard = () => {
 
         try {
             let notesUrl = '';
-
-            // 1. Upload Notes if exists
             if (notesFile) {
                 const formData = new FormData();
                 formData.append('file', notesFile);
-
                 try {
                     const uploadRes = await api.uploadContent(formData);
-                    if (uploadRes.url) {
-                        notesUrl = uploadRes.url;
-                    }
+                    if (uploadRes.url) notesUrl = uploadRes.url;
                 } catch (e) {
-                    console.warn("Upload failed", e);
                     setError("Failed to upload file");
                     setLoading(false);
                     return;
                 }
             }
 
-            // 2. Prepare Data 
             const topicData = {
-                subjectId: selectedSubject,
+                subjectId: context.subjectId,
                 title: topicTitle,
                 youtubeId,
-                blogContent, // New Rich Text Content
+                blogContent,
                 metaTitle,
                 metaDescription,
-                type: 'animation',
+                type: 'topic',
                 description: animationCode,
                 quiz: quizQuestions,
                 faqs: faqs,
-                // NEW: SEO Fields
                 yearSlug,
                 unitNumber,
                 primaryKeyword,
-                targetKeywords: targetKeywords.split(',').map(k => k.trim()).filter(k => k) // Convert to array
+                targetKeywords: targetKeywords.split(',').map(k => k.trim()).filter(k => k)
             };
 
             if (notesUrl) topicData.fileUrl = notesUrl;
 
-            // 3. Save vs Update
             if (topicId) {
-                // UPDATE
                 topicData.id = topicId;
                 await api.updateTopic(topicData);
-                setSuccessMsg(`Successfully updated "${topicTitle}"!`);
+                setSuccessMsg('Topic Updated!');
             } else {
-                // CREATE new
                 await api.saveTopic(topicData);
-                setSuccessMsg(`Successfully added "${topicTitle}" to ${currentSubjectTitle}!`);
+                setSuccessMsg('Topic Created!');
             }
 
-            // Refresh List & Reset
             resetForm();
-            fetchTopics(selectedSubject);
+            fetchTopics(context.subjectId);
 
         } catch (err) {
-            console.error(err);
-            setError('Error saving topic: ' + err.message);
+            setError('Error: ' + err.message);
         } finally {
             setLoading(false);
         }
     };
 
-    // Quill Modules for Toolbar
+    const handleDeleteTopic = async (id, e) => {
+        e.stopPropagation();
+        if (!window.confirm("Delete this topic?")) return;
+        try {
+            await api.deleteTopic(id);
+            setExistingTopics(existingTopics.filter(t => t.id !== id));
+            if (topicId === id) resetForm();
+        } catch (e) { alert("Delete failed"); }
+    };
+
+    // Quiz Helpers
+    const addQuestion = () => setQuizQuestions([...quizQuestions, { id: Date.now(), question: '', options: ['', '', '', ''], correct: 0 }]);
+    const updateQuestion = (id, field, value) => setQuizQuestions(quizQuestions.map(q => q.id === id ? { ...q, [field]: value } : q));
+    const updateOption = (qId, oIdx, value) => {
+        setQuizQuestions(quizQuestions.map(q => {
+            if (q.id === qId) {
+                const newOpts = [...q.options];
+                newOpts[oIdx] = value;
+                return { ...q, options: newOpts };
+            }
+            return q;
+        }));
+    };
+
     const modules = {
         toolbar: [
             [{ 'header': [1, 2, 3, false] }],
@@ -274,502 +240,223 @@ const AdminDashboard = () => {
         ],
     };
 
-    const formats = [
-        'header',
-        'bold', 'italic', 'underline', 'strike', 'blockquote',
-        'list', 'bullet', 'indent',
-        'link', 'image'
-    ];
-
-
     if (!currentUser) {
-        // ... (Keep existing Login UI) ...
         return (
-            <Layout>
+            <div className="min-h-screen bg-black flex items-center justify-center p-4">
                 <SEO title="Admin Login" />
-                <div className="container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
-                    <div className="glass-panel" style={{ padding: '3rem', width: '100%', maxWidth: '400px', textAlign: 'center' }}>
-                        <div style={{ background: 'rgba(34, 211, 238, 0.1)', padding: '1rem', borderRadius: '50%', display: 'inline-flex', marginBottom: '1.5rem', color: '#22d3ee' }}>
+                <div className="w-full max-w-md bg-[#0f172a] p-8 rounded-2xl border border-white/10">
+                    <div className="text-center mb-8">
+                        <div className="w-16 h-16 bg-cyan-500/10 rounded-full flex items-center justify-center mx-auto mb-4 text-cyan-500">
                             <Lock size={32} />
                         </div>
-                        <h2 style={{ marginBottom: '2rem' }}>Admin Access</h2>
-                        {error && <div style={{ background: 'rgba(239,68,68,0.2)', padding: '0.5rem', borderRadius: '0.5rem', marginBottom: '1rem', border: '1px solid #ef4444' }}>{error}</div>}
-
-                        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            <input
-                                type="email"
-                                placeholder="Admin Email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                style={{ padding: '0.8rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'rgba(0,0,0,0.3)', color: 'white' }}
-                                required
-                            />
-                            <input
-                                type="password"
-                                placeholder="Password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                style={{ padding: '0.8rem', borderRadius: '0.5rem', border: '1px solid var(--border)', background: 'rgba(0,0,0,0.3)', color: 'white' }}
-                                required
-                            />
-                            <button
-                                type="submit"
-                                style={{ padding: '0.8rem', borderRadius: '0.5rem', border: 'none', background: 'var(--primary)', color: 'black', fontWeight: 'bold', cursor: 'pointer' }}
-                            >
-                                Login to Dashboard
-                            </button>
-                        </form>
+                        <h2 className="text-2xl font-bold text-white">Admin Access</h2>
                     </div>
+                    {authError && <div className="mb-4 p-3 bg-red-500/20 border border-red-500 rounded text-red-200 text-sm">{authError}</div>}
+                    <form onSubmit={handleLogin} className="space-y-4">
+                        <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} className="w-full p-3 bg-black/50 border border-white/10 rounded text-white focus:border-cyan-500 outline-none" required />
+                        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} className="w-full p-3 bg-black/50 border border-white/10 rounded text-white focus:border-cyan-500 outline-none" required />
+                        <button type="submit" className="w-full py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded transition-colors">Login</button>
+                    </form>
                 </div>
-            </Layout>
+            </div>
         );
     }
 
     return (
-        <Layout>
-            <SEO title="Admin Dashboard" description="Manage LearnPharmacy Content" />
-            <div className="container">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                    <h1>Content Manager <span style={{ fontSize: '0.8rem', opacity: 0.5 }}>(v1.1 Fixed)</span></h1>
-                    <div style={{ display: 'flex', gap: '1rem' }}>
-                        <button onClick={() => navigate('/admin/settings')} style={{ padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '0.5rem', cursor: 'pointer' }}>
-                            Global Settings
-                        </button>
-                        <button onClick={handleLogout} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', padding: '0.5rem 1rem', background: 'rgba(239,68,68,0.2)', border: '1px solid #ef4444', color: '#ef4444', borderRadius: '0.5rem', cursor: 'pointer' }}>
-                            <LogOut size={16} /> Logout
-                        </button>
+        <AdminLayout onSelectContext={setContext}>
+            <SEO title="Content Manager" />
+
+            {!context ? (
+                <div className="h-[80vh] flex flex-col items-center justify-center text-center p-8 glass-panel rounded-3xl">
+                    <div className="w-24 h-24 bg-blue-600/10 rounded-full flex items-center justify-center mb-6 text-blue-500">
+                        <ArrowLeft size={48} />
                     </div>
+                    <h1 className="text-3xl font-bold text-white mb-4">Select a Subject</h1>
+                    <p className="text-gray-400 max-w-md">
+                        Use the sidebar on the left to select a B.Pharm subject or a GPAT module to start managing content.
+                    </p>
                 </div>
+            ) : (
+                <div className="grid lg:grid-cols-[1fr_1.5fr] gap-6 items-start">
 
-                <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: '2rem', alignItems: 'start' }}>
-
-                    {/* Left Column: Context Selection */}
-                    <div className="glass-panel" style={{ padding: '1.5rem' }}>
-                        <h3 style={{ marginBottom: '1.5rem' }}>1. Select Context</h3>
-
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    {/* Left: Topics List */}
+                    <div className="glass-panel p-6 rounded-2xl sticky top-6">
+                        <div className="flex justify-between items-center mb-6">
                             <div>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>Year</label>
-                                <select
-                                    value={selectedYear}
-                                    onChange={(e) => { setSelectedYear(e.target.value); setSelectedSem(''); setSelectedSubject(''); }}
-                                    style={{ width: '100%', padding: '0.8rem', borderRadius: '0.5rem', background: 'black', color: 'white', border: '1px solid var(--border)' }}
-                                >
-                                    <option value="">Select Year</option>
-                                    {years.map(y => <option key={y.id} value={y.id}>{y.title}</option>)}
-                                </select>
+                                <h2 className="text-xl font-bold text-white">{context.subjectTitle}</h2>
+                                <p className="text-xs text-cyan-400 uppercase tracking-widest mt-1">{context.type === 'gpat' ? 'GPAT Module' : 'B.Pharm Subject'}</p>
                             </div>
-
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>Semester</label>
-                                <select
-                                    value={selectedSem}
-                                    onChange={(e) => { setSelectedSem(e.target.value); setSelectedSubject(''); }}
-                                    disabled={!selectedYear}
-                                    style={{ width: '100%', padding: '0.8rem', borderRadius: '0.5rem', background: 'black', color: 'white', border: '1px solid var(--border)', opacity: !selectedYear ? 0.5 : 1 }}
-                                >
-                                    <option value="">Select Semester</option>
-                                    {semesters.map(s => <option key={s.id} value={s.id}>{s.title}</option>)}
-                                </select>
-                            </div>
-
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>Subject</label>
-                                <select
-                                    value={selectedSubject}
-                                    onChange={(e) => setSelectedSubject(e.target.value)}
-                                    disabled={!selectedSem}
-                                    style={{ width: '100%', padding: '0.8rem', borderRadius: '0.5rem', background: 'black', color: 'white', border: '1px solid var(--border)', opacity: !selectedSem ? 0.5 : 1 }}
-                                >
-                                    <option value="">Select Subject</option>
-                                    {subjects.map(s => <option key={s.id} value={s.id}>{s.title}</option>)}
-                                </select>
-                            </div>
+                            <button onClick={resetForm} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg text-sm transition-colors">
+                                <Plus size={16} /> New
+                            </button>
                         </div>
 
-                        {/* Topic List for Selected Subject */}
-                        {selectedSubject && (
-                            <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                                    <h4 style={{ margin: 0 }}>Topics</h4>
-                                    <button onClick={resetForm} style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', fontSize: '0.8rem' }}>+ New</button>
-                                </div>
-
-                                {fetchingTopics ? (
-                                    <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Loading...</div>
-                                ) : (
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                                        {existingTopics.length === 0 && <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>No topics found.</div>}
-                                        {existingTopics.map(t => (
-                                            <div
-                                                key={t.id}
-                                                onClick={() => handleEditTopic(t)}
-                                                style={{
-                                                    padding: '0.8rem',
-                                                    borderRadius: '0.5rem',
-                                                    background: topicId === t.id ? 'var(--primary)' : 'rgba(255,255,255,0.05)',
-                                                    color: topicId === t.id ? 'black' : 'white',
-                                                    cursor: 'pointer',
-                                                    fontSize: '0.9rem',
-                                                    display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-                                                }}
-                                            >
-                                                <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '180px' }}>{t.title}</span>
-                                                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                                    <a
-                                                        href={`/${generateSlug(currentSubjectTitle)}/${t.slug}`}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        onClick={(e) => e.stopPropagation()}
-                                                        title="View on Live Site"
-                                                        style={{ color: '#3b82f6', display: 'flex', alignItems: 'center' }}
-                                                    >
-                                                        <ExternalLink size={14} />
-                                                    </a>
-                                                    <button
-                                                        onClick={(e) => handleDeleteTopic(t.id, e)}
-                                                        style={{ background: 'none', border: 'none', color: topicId === t.id ? 'black' : '#ef4444', cursor: 'pointer', padding: '2px' }}
-                                                        title="Delete Topic"
-                                                    >
-                                                        <Trash size={14} />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Right Column: Editor */}
-                    <div>
-                        {!selectedSubject ? (
-                            <div className="glass-panel" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-                                Please select a Subject from the left to start adding content.
-                            </div>
+                        {fetchingTopics ? (
+                            <div className="text-center py-8 text-gray-500">Loading topics...</div>
                         ) : (
-                            <div className="glass-panel" style={{ padding: '2rem' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                                    <h2 style={{ margin: 0 }}>{topicId ? 'Edit Topic' : 'Add New Topic'}</h2>
-                                    {topicId && <button onClick={resetForm} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', padding: '0.5rem 1rem', borderRadius: '0.5rem', color: 'white', cursor: 'pointer' }}>Cancel Edit</button>}
-                                </div>
-                                <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Subject: <span className="text-gradient">{currentSubjectTitle}</span></p>
-
-                                {successMsg && <div style={{ background: 'rgba(34,197,94,0.2)', padding: '1rem', borderRadius: '0.5rem', marginBottom: '1.5rem', border: '1px solid #22c55e' }}>{successMsg}</div>}
-                                {error && <div style={{ background: 'rgba(239,68,68,0.2)', padding: '1rem', borderRadius: '0.5rem', marginBottom: '1.5rem', border: '1px solid #ef4444' }}>{error}</div>}
-
-                                {/* 1. Topic Title */}
-                                <div style={{ marginBottom: '1.5rem' }}>
-                                    <label style={{ display: 'block', marginBottom: '0.5rem' }}>
-                                        Topic Title {yearSlug === 'gpat' && <span style={{ fontSize: '0.85rem', color: 'rgba(34,211,238,0.7)' }}>(Topic name within the day)</span>}
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={topicTitle}
-                                        onChange={e => setTopicTitle(e.target.value)}
-                                        placeholder={yearSlug === 'gpat' ? 'e.g., Receptor Theory MCQs' : 'e.g., Mechanism of Action'}
-                                        style={{ width: '100%', padding: '0.8rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)' }}
-                                    />
-                                    {yearSlug === 'gpat' && (
-                                        <p style={{ fontSize: '0.8rem', color: 'rgba(34,211,238,0.7)', marginTop: '0.5rem' }}>
-                                            💡 Example: Day 15 → "Receptor Theory MCQs" or "Pharmacokinetics Practice Questions"
-                                        </p>
-                                    )}
-                                </div>
-
-                                {/* 2. YouTube Video (Top) */}
-                                <div style={{ marginBottom: '1.5rem' }}>
-                                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                                        <Youtube size={16} color="#ef4444" /> YouTube Video ID (Auto-extracted from URL)
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={youtubeId}
-                                        onChange={e => {
-                                            const val = e.target.value;
-                                            // Robust Regex for ID extraction
-                                            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-                                            const match = val.match(regExp);
-                                            setYoutubeId((match && match[2].length === 11) ? match[2] : val);
-                                        }}
-                                        placeholder="Paste full YouTube URL or just the ID"
-                                        style={{ width: '100%', padding: '0.8rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)' }}
-                                    />
-                                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
-                                        Supports Shorts, standard videos, and shortened URLs.
-                                    </p>
-                                </div>
-
-                                {/* 3. Modern Blog Writer */}
-                                <div style={{ marginBottom: '1.5rem' }}>
-                                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                                        <PenTool size={16} color="#3b82f6" /> Study Notes / Blog Content
-                                    </label>
-                                    <div style={{ background: 'white', borderRadius: '0.5rem', overflow: 'hidden', color: 'black' }}>
-                                        <ReactQuill
-                                            theme="snow"
-                                            value={blogContent}
-                                            onChange={setBlogContent}
-                                            modules={modules}
-                                            formats={formats}
-                                            style={{ height: '300px', marginBottom: '50px' }}
-                                        />
-                                    </div>
-                                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-                                        Write your full explanation here using the rich text editor.
-                                    </p>
-                                </div>
-
-                                {/* 4. SEO Section - EXPANDED FOR RANKING */}
-                                <div style={{ marginBottom: '1.5rem', padding: '1.5rem', background: 'linear-gradient(135deg, rgba(34,211,238,0.1), rgba(139,92,246,0.1))', borderRadius: '0.5rem', border: '1px solid rgba(34,211,238,0.3)' }}>
-                                    <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--primary)', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                        <FileText size={16} /> SEO & Ranking Settings
-                                    </h4>
-                                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
-                                        🚀 These fields enable automatic internal linking, canonical URLs, sitemaps, and breadcrumb generation.
-                                    </p>
-
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-                                        {/* Year Slug */}
-                                        <div>
-                                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                                                {yearSlug === 'gpat' ? 'GPAT / B.Pharmacy' : 'B.Pharmacy Year'} <span style={{ color: '#ef4444' }}>*</span>
-                                            </label>
-                                            <select
-                                                value={yearSlug}
-                                                onChange={e => setYearSlug(e.target.value)}
-                                                style={{ width: '100%', padding: '0.7rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.4)', color: 'white', border: '1px solid var(--border)', fontSize: '0.9rem', cursor: 'pointer' }}
-                                            >
-                                                <option value="gpat">GPAT / Competitive</option>
-                                                <option value="1st-year">1st Year</option>
-                                                <option value="2nd-year">2nd Year</option>
-                                                <option value="3rd-year">3rd Year</option>
-                                                <option value="4th-year">4th Year</option>
-                                            </select>
-                                        </div>
-
-                                        {/* Unit Number / Day Number */}
-                                        <div>
-                                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                                                {yearSlug === 'gpat' ? 'Day Number (1-60)' : 'Unit Number'} <span style={{ color: '#ef4444' }}>*</span>
-                                            </label>
-                                            <input
-                                                type="number"
-                                                min="1"
-                                                max={yearSlug === 'gpat' ? 60 : 10}
-                                                value={unitNumber}
-                                                onChange={e => setUnitNumber(parseInt(e.target.value) || 1)}
-                                                placeholder={yearSlug === 'gpat' ? 'Day 1' : 'Unit 1'}
-                                                style={{ width: '100%', padding: '0.7rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.4)', color: 'white', border: '1px solid var(--border)', fontSize: '0.9rem' }}
-                                            />
-                                            <p style={{ fontSize: '0.75rem', color: 'rgba(34,211,238,0.7)', marginTop: '0.3rem' }}>
-                                                {yearSlug === 'gpat' ? '60-day crash course sequencing' : 'For prev/next within subject'}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    {/* Primary Keyword */}
-                                    <div style={{ marginBottom: '1rem' }}>
-                                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                                            Primary Keyword <span style={{ color: '#ef4444' }}>*</span> <span style={{ color: 'rgba(34,211,238,0.7)', fontSize: '0.75rem' }}>(Google ranking target)</span>
-                                        </label>
-                                        <input
-                                            type="text"
-                                            value={primaryKeyword}
-                                            onChange={e => setPrimaryKeyword(e.target.value)}
-                                            placeholder="e.g., pharmaceutics 1 notes"
-                                            style={{ width: '100%', padding: '0.7rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.4)', color: 'white', border: '1px solid var(--primary)', fontSize: '0.9rem' }}
-                                        />
-                                        <p style={{ fontSize: '0.75rem', color: 'rgba(34,211,238,0.7)', marginTop: '0.3rem' }}>
-                                            💡 The MAIN keyword students will search for. Anti-cannibalization system ensures no duplicate keywords.
-                                        </p>
-                                    </div>
-
-                                    {/* Target Keywords */}
-                                    <div style={{ marginBottom: '1rem' }}>
-                                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                                            Target Keywords <span style={{ fontSize: '0.75rem' }}>(comma-separated)</span>
-                                        </label>
-                                        <input
-                                            type="text"
-                                            value={targetKeywords}
-                                            onChange={e => setTargetKeywords(e.target.value)}
-                                            placeholder="e.g., drug formulation, dosage forms, pharmaceutical science"
-                                            style={{ width: '100%', padding: '0.7rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.4)', color: 'white', border: '1px solid var(--border)', fontSize: '0.9rem' }}
-                                        />
-                                        <p style={{ fontSize: '0.75rem', color: 'rgba(139,92,246,0.7)', marginTop: '0.3rem' }}>
-                                            🔗 Used for related content linking. Separate with commas.
-                                        </p>
-                                    </div>
-
-                                    <div style={{ display: 'grid', gap: '1rem' }}>
-                                        <div>
-                                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Meta Title</label>
-                                            <input
-                                                type="text"
-                                                value={metaTitle}
-                                                onChange={e => setMetaTitle(e.target.value)}
-                                                placeholder="Custom Page Title (auto-generated if empty)"
-                                                style={{ width: '100%', padding: '0.6rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)', fontSize: '0.9rem' }}
-                                            />
-                                        </div>
-                                        <div>
-                                            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Meta Description</label>
-                                            <textarea
-                                                value={metaDescription}
-                                                onChange={e => setMetaDescription(e.target.value)}
-                                                placeholder="Brief summary for Google search results..."
-                                                rows={2}
-                                                style={{ width: '100%', padding: '0.6rem', borderRadius: '0.5rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)', fontSize: '0.9rem', fontFamily: 'inherit' }}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {/* Auto-calculated info box */}
-                                    <div style={{ marginTop: '1rem', padding: '0.8rem', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '0.5rem', fontSize: '0.8rem', color: 'rgba(34,197,94,0.9)' }}>
-                                        ✅ <strong>Auto-calculated on save:</strong> Word count, reading time, canonical URL, breadcrumbs, internal links, sitemap update
-                                    </div>
-                                </div>
-
-                                {/* 5. Animation Code (Bottom) */}
-                                <div style={{ marginBottom: '1.5rem' }}>
-                                    <label style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                        <span>Animation Code (HTML/CSS/JS)</span>
-                                        <span style={{ fontSize: '0.8rem', color: 'var(--primary)' }}>Advanced</span>
-                                    </label>
-                                    <textarea
-                                        value={animationCode}
-                                        onChange={e => setAnimationCode(e.target.value)}
-                                        placeholder="<div>My Animation</div><style>...</style><script>...</script>"
-                                        rows={10}
-                                        style={{ width: '100%', padding: '0.8rem', borderRadius: '0.5rem', background: '#0f172a', color: '#a5b4fc', border: '1px solid var(--border)', fontFamily: 'monospace' }}
-                                    />
-                                </div>
-
-                                {/* Notes Upload */}
-                                <div style={{ marginBottom: '1.5rem' }}>
-                                    <label style={{ display: 'block', marginBottom: '0.5rem' }}>Notes (PDF)</label>
-                                    <input
-                                        type="file"
-                                        accept=".pdf"
-                                        onChange={e => setNotesFile(e.target.files[0])}
-                                        style={{ color: 'white' }}
-                                    />
-                                    {topicId && !notesFile && <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>Leave empty to keep existing file.</p>}
-                                </div>
-
-                                {/* Quiz Builder */}
-                                <div style={{ marginBottom: '2rem' }}>
-                                    <label style={{ display: 'block', marginBottom: '1rem', fontSize: '1.1rem', fontWeight: 'bold' }}>Quiz Questions</label>
-
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                                        {quizQuestions.map((q, idx) => (
-                                            <div key={q.id} style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '0.5rem' }}>
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                                    <span>Question {idx + 1}</span>
-                                                    <button onClick={() => setQuizQuestions(quizQuestions.filter(i => i.id !== q.id))} style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer' }}><Trash size={16} /></button>
-                                                </div>
-                                                <input
-                                                    type="text"
-                                                    value={q.question}
-                                                    onChange={e => updateQuestion(q.id, 'question', e.target.value)}
-                                                    placeholder="Type question here..."
-                                                    style={{ width: '100%', padding: '0.5rem', marginBottom: '0.8rem', borderRadius: '0.3rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)' }}
-                                                />
-
-                                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-                                                    {q.options.map((opt, oIdx) => (
-                                                        <div key={oIdx} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                                            <input
-                                                                type="radio"
-                                                                name={`correct-${q.id}`}
-                                                                checked={q.correct === oIdx}
-                                                                onChange={() => updateQuestion(q.id, 'correct', oIdx)}
-                                                            />
-                                                            <input
-                                                                type="text"
-                                                                value={opt}
-                                                                onChange={e => updateOption(q.id, oIdx, e.target.value)}
-                                                                placeholder={`Option ${oIdx + 1}`}
-                                                                style={{ width: '100%', padding: '0.4rem', borderRadius: '0.3rem', background: 'rgba(0,0,0,0.3)', color: 'white', border: '1px solid var(--border)' }}
-                                                            />
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-
-                                    <button
-                                        onClick={addQuestion}
-                                        style={{ marginTop: '1rem', padding: '0.5rem 1rem', borderRadius: '0.5rem', background: 'transparent', border: '1px dashed var(--text-muted)', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                            <div className="space-y-2 max-h-[70vh] overflow-y-auto custom-scrollbar pr-2">
+                                {existingTopics.length === 0 && <div className="text-center py-8 text-gray-500">No topics found. Add one!</div>}
+                                {existingTopics.map(t => (
+                                    <div
+                                        key={t.id}
+                                        onClick={() => handleEditTopic(t)}
+                                        className={`p-3 rounded-lg border cursor-pointer transition-all ${topicId === t.id ? 'bg-blue-600/20 border-blue-500/50' : 'bg-white/5 border-transparent hover:bg-white/10'}`}
                                     >
-                                        <Plus size={16} /> Add Question
-                                    </button>
-                                </div>
-
-                                {/* FAQ Builder */}
-                                <div style={{ marginBottom: '2rem', padding: '1rem', background: 'rgba(255,255,255,0.02)', borderRadius: '0.5rem' }}>
-                                    <label style={{ display: 'block', marginBottom: '1rem', fontSize: '1.1rem', fontWeight: 'bold' }}>FAQs</label>
-
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                                        {faqs.map((faq, idx) => (
-                                            <div key={idx} style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '0.5rem', position: 'relative' }}>
-                                                <button
-                                                    onClick={() => setFaqs(faqs.filter((_, i) => i !== idx))}
-                                                    style={{ position: 'absolute', top: '0.5rem', right: '0.5rem', background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}
-                                                >
+                                        <div className="flex justify-between items-start gap-3">
+                                            <h3 className={`font-medium text-sm line-clamp-2 ${topicId === t.id ? 'text-blue-300' : 'text-gray-300'}`}>{t.title}</h3>
+                                            <div className="flex gap-1 shrink-0">
+                                                <a href={`/${generateSlug(context.subjectTitle)}/${t.slug}`} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="p-1 hover:text-blue-400 text-gray-500">
+                                                    <ExternalLink size={14} />
+                                                </a>
+                                                <button onClick={(e) => handleDeleteTopic(t.id, e)} className="p-1 hover:text-red-400 text-gray-500">
                                                     <Trash size={14} />
                                                 </button>
-                                                <input
-                                                    type="text"
-                                                    placeholder="Question"
-                                                    value={faq.question}
-                                                    onChange={e => {
-                                                        const newFaqs = [...faqs];
-                                                        newFaqs[idx].question = e.target.value;
-                                                        setFaqs(newFaqs);
-                                                    }}
-                                                    style={{ width: '100%', padding: '0.5rem', marginBottom: '0.5rem', borderRadius: '0.3rem', background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid var(--border)' }}
-                                                />
-                                                <textarea
-                                                    placeholder="Answer"
-                                                    value={faq.answer}
-                                                    onChange={e => {
-                                                        const newFaqs = [...faqs];
-                                                        newFaqs[idx].answer = e.target.value;
-                                                        setFaqs(newFaqs);
-                                                    }}
-                                                    rows={2}
-                                                    style={{ width: '100%', padding: '0.5rem', borderRadius: '0.3rem', background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)', border: '1px solid var(--border)' }}
-                                                />
                                             </div>
-                                        ))}
+                                        </div>
                                     </div>
-
-                                    <button
-                                        onClick={() => setFaqs([...faqs, { question: '', answer: '' }])}
-                                        style={{ marginTop: '1rem', padding: '0.5rem 1rem', borderRadius: '0.5rem', background: 'transparent', border: '1px dashed var(--text-muted)', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-                                    >
-                                        <Plus size={16} /> Add FAQ
-                                    </button>
-                                </div>
-
-                                <button
-                                    onClick={saveTopic}
-                                    disabled={loading}
-                                    style={{ width: '100%', padding: '1rem', borderRadius: '0.5rem', border: 'none', background: 'var(--primary)', color: 'black', fontWeight: 'bold', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.7 : 1 }}
-                                >
-                                    {loading ? 'Saving...' : (topicId ? 'Update Topic' : 'Save Topic')}
-                                </button>
-
+                                ))}
                             </div>
                         )}
                     </div>
+
+                    {/* Right: Editor */}
+                    <div id="editor-panel" className="glass-panel p-6 rounded-2xl">
+                        <div className="flex justify-between items-center mb-6 pb-4 border-b border-white/10">
+                            <h2 className="text-2xl font-bold text-white">{topicId ? 'Edit Topic' : 'New Topic'}</h2>
+                            {topicId && <button onClick={resetForm} className="text-sm text-gray-400 hover:text-white">Cancel</button>}
+                        </div>
+
+                        {error && <div className="mb-4 p-4 bg-red-500/20 border border-red-500/50 rounded-xl text-red-200">{error}</div>}
+                        {successMsg && <div className="mb-4 p-4 bg-green-500/20 border border-green-500/50 rounded-xl text-green-200">{successMsg}</div>}
+
+                        <div className="space-y-6">
+                            {/* Title */}
+                            <div>
+                                <label className="block text-sm text-gray-400 mb-2">Topic Title</label>
+                                <input
+                                    type="text"
+                                    value={topicTitle}
+                                    onChange={e => setTopicTitle(e.target.value)}
+                                    className="w-full p-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-blue-500 outline-none"
+                                    placeholder="Enter topic title..."
+                                />
+                            </div>
+
+                            {/* SEO Section used for Ranking */}
+                            <div className="p-5 bg-gradient-to-br from-blue-900/10 to-purple-900/10 border border-blue-500/20 rounded-xl">
+                                <div className="flex items-center gap-2 mb-4 text-blue-400 font-semibold">
+                                    <FileText size={18} /> SEO & Ranking
+                                </div>
+                                <div className="grid md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <label className="block text-xs text-gray-400 mb-1">Year / Category</label>
+                                        <select value={yearSlug} onChange={e => setYearSlug(e.target.value)} className="w-full p-2 bg-black/40 border border-white/10 rounded-lg text-white text-sm">
+                                            <option value="gpat">GPAT</option>
+                                            <option value="1st-year">1st Year</option>
+                                            <option value="2nd-year">2nd Year</option>
+                                            <option value="3rd-year">3rd Year</option>
+                                            <option value="4th-year">4th Year</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs text-gray-400 mb-1">Unit / Day Number</label>
+                                        <input type="number" value={unitNumber} onChange={e => setUnitNumber(parseInt(e.target.value))} className="w-full p-2 bg-black/40 border border-white/10 rounded-lg text-white text-sm" />
+                                    </div>
+                                </div>
+                                <div className="space-y-3">
+                                    <div>
+                                        <label className="block text-xs text-gray-400 mb-1">Primary Keyword (Target)</label>
+                                        <input type="text" value={primaryKeyword} onChange={e => setPrimaryKeyword(e.target.value)} className="w-full p-2 bg-black/40 border border-blue-500/30 rounded-lg text-white text-sm" placeholder="Main search term..." />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs text-gray-400 mb-1">Related Keywords (Comma separated)</label>
+                                        <input type="text" value={targetKeywords} onChange={e => setTargetKeywords(e.target.value)} className="w-full p-2 bg-black/40 border border-white/10 rounded-lg text-white text-sm" placeholder="e.g. pharmacology notes, drug mechanism" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* YouTube */}
+                            <div>
+                                <label className="block text-sm text-gray-400 mb-2 flex items-center gap-2"><Youtube size={16} className="text-red-500" /> YouTube Video</label>
+                                <input
+                                    type="text"
+                                    value={youtubeId}
+                                    onChange={e => {
+                                        const val = e.target.value;
+                                        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+                                        const match = val.match(regExp);
+                                        setYoutubeId((match && match[2].length === 11) ? match[2] : val);
+                                    }}
+                                    className="w-full p-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-red-500 outline-none"
+                                    placeholder="Paste YouTube Link or ID"
+                                />
+                            </div>
+
+                            {/* Content */}
+                            <div>
+                                <label className="block text-sm text-gray-400 mb-2 flex items-center gap-2"><PenTool size={16} className="text-blue-500" /> Content</label>
+                                <div className="bg-white rounded-xl overflow-hidden text-black hidden md:block">
+                                    <ReactQuill theme="snow" value={blogContent} onChange={setBlogContent} modules={modules} style={{ height: '300px', marginBottom: '50px' }} />
+                                </div>
+                                <div className="md:hidden">
+                                    <textarea value={blogContent} onChange={e => setBlogContent(e.target.value)} className="w-full h-64 p-3 bg-black/40 border border-white/10 rounded-xl text-white" placeholder="HTML content supported on mobile..." />
+                                </div>
+                            </div>
+
+                            {/* Notes PDF */}
+                            <div>
+                                <label className="block text-sm text-gray-400 mb-2 flex items-center gap-2"><Upload size={16} /> Notes (PDF)</label>
+                                <input type="file" accept=".pdf" onChange={e => setNotesFile(e.target.files[0])} className="text-gray-400" />
+                            </div>
+
+                            {/* Quiz Section */}
+                            <div className="border-t border-white/10 pt-6">
+                                <h3 className="text-lg font-bold text-white mb-4">Quiz Questions</h3>
+                                {quizQuestions.map((q, idx) => (
+                                    <div key={q.id} className="mb-4 p-4 bg-white/5 rounded-xl">
+                                        <div className="flex justify-between mb-2">
+                                            <span>Q{idx + 1}</span>
+                                            <button onClick={() => setQuizQuestions(quizQuestions.filter(i => i.id !== q.id))} className="text-red-400"><Trash size={16} /></button>
+                                        </div>
+                                        <input
+                                            value={q.question}
+                                            onChange={e => updateQuestion(q.id, 'question', e.target.value)}
+                                            className="w-full p-2 mb-2 bg-black/40 border border-white/10 rounded-lg text-white"
+                                            placeholder="Question..."
+                                        />
+                                        <div className="grid grid-cols-2 gap-2">
+                                            {q.options.map((opt, oIdx) => (
+                                                <div key={oIdx} className="flex gap-2">
+                                                    <input type="radio" checked={q.correct === oIdx} onChange={() => updateQuestion(q.id, 'correct', oIdx)} />
+                                                    <input
+                                                        value={opt}
+                                                        onChange={e => updateOption(q.id, oIdx, e.target.value)}
+                                                        className="w-full p-2 bg-black/40 border border-white/10 rounded-lg text-white text-sm"
+                                                        placeholder={`Option ${oIdx + 1}`}
+                                                    />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                                <button onClick={addQuestion} className="w-full py-2 border border-dashed border-gray-600 text-gray-400 rounded-xl hover:text-white hover:border-gray-400 transition-colors">
+                                    + Add Question
+                                </button>
+                            </div>
+
+                            <button
+                                onClick={saveTopic}
+                                disabled={loading}
+                                className="w-full py-4 bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold rounded-xl hover:shadow-lg hover:shadow-cyan-500/20 transition-all disabled:opacity-50"
+                            >
+                                {loading ? 'Saving...' : (topicId ? 'Update Topic' : 'Create Topic')}
+                            </button>
+
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </Layout>
+            )}
+        </AdminLayout>
     );
 };
 
