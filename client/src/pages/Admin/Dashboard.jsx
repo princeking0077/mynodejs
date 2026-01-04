@@ -280,7 +280,7 @@ const AdminDashboard = () => {
                             <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/20 bg-[var(--primary)] text-black">
                                 <Lock size={30} />
                             </div>
-                            <h2 className="text-2xl font-bold text-white mb-2">Welcome Back</h2>
+                            <div className="text-2xl font-bold text-white mb-2">Welcome Back</div>
                             <p className="text-gray-400 text-sm">Sign in to manage content and settings.</p>
                         </div>
                         {authError && (
@@ -342,12 +342,12 @@ const AdminDashboard = () => {
                     {/* Header */}
                     <div className="flex flex-col md:flex-row justify-between gap-4 mb-2">
                         <div>
-                            <h1 className="text-3xl font-bold text-white mb-1">Dashboard Overview</h1>
+                            <div className="text-3xl font-bold text-white mb-1">Dashboard Overview</div>
                             <p className="text-gray-400 text-sm">Welcome back, Administrator.</p>
                         </div>
                         <div className="flex gap-3">
-                            <button className="btn btn-primary text-sm font-bold shadow-lg shadow-emerald-500/20">
-                                <Plus size={18} /> New Notice
+                            <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--primary)] text-black font-bold text-sm shadow-lg shadow-emerald-500/20 hover:opacity-90">
+                                <Plus size={16} /> New Notice
                             </button>
                         </div>
                     </div>
@@ -357,31 +357,31 @@ const AdminDashboard = () => {
                         <div className="glass-panel p-6 rounded-2xl relative overflow-hidden group hover:border-emerald-500/30 transition-all">
                             <div className="flex justify-between mb-4"><div className="p-3 bg-white/5 rounded-xl text-emerald-400"><Users size={24} /></div></div>
                             <p className="text-gray-400 text-xs font-bold uppercase mb-1">Users</p>
-                            <h3 className="text-3xl font-bold text-white">{stats.users}</h3>
+                            <div className="text-3xl font-bold text-white">{stats.users}</div>
                         </div>
                         <div className="glass-panel p-6 rounded-2xl relative overflow-hidden group hover:border-cyan-500/30 transition-all">
                             <div className="flex justify-between mb-4"><div className="p-3 bg-white/5 rounded-xl text-cyan-400"><Activity size={24} /></div></div>
                             <p className="text-gray-400 text-xs font-bold uppercase mb-1">System</p>
-                            <h3 className="text-3xl font-bold text-white">Online</h3>
+                            <div className="text-3xl font-bold text-white">Online</div>
                         </div>
                         <div className="glass-panel p-6 rounded-2xl relative overflow-hidden group hover:border-purple-500/30 transition-all">
                             <div className="flex justify-between mb-4"><div className="p-3 bg-white/5 rounded-xl text-purple-400"><BookOpen size={24} /></div></div>
                             <p className="text-gray-400 text-xs font-bold uppercase mb-1">Content</p>
-                            <h3 className="text-3xl font-bold text-white">{stats.content}</h3>
+                            <div className="text-3xl font-bold text-white">{stats.content}</div>
                         </div>
                         <div className="glass-panel p-6 rounded-2xl relative overflow-hidden group hover:border-orange-500/30 transition-all">
                             <div className="flex justify-between mb-4"><div className="p-3 bg-white/5 rounded-xl text-orange-400"><CheckSquare size={24} /></div></div>
                             <p className="text-gray-400 text-xs font-bold uppercase mb-1">Quizzes</p>
-                            <h3 className="text-3xl font-bold text-white">{stats.quizzes}</h3>
+                            <div className="text-3xl font-bold text-white">{stats.quizzes}</div>
                         </div>
                     </div>
 
                     {/* ACADEMIC MANAGEMENT GRID */}
                     <div>
-                        <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
+                        <div className="text-xl font-bold text-white mb-6 flex items-center gap-3">
                             <div className="p-2 bg-blue-500/10 rounded-lg"><GraduationCap size={22} className="text-blue-400" /></div>
                             Academic Management
-                        </h2>
+                        </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             {['year-1', 'year-2', 'year-3', 'year-4'].map((yearId) => {
                                 const yearTitle = yearId.replace('year-', 'Year ');
@@ -393,7 +393,7 @@ const AdminDashboard = () => {
                                                 <span className="text-[10px] font-bold text-emerald-400 border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 rounded-full z-10">ACADEMIC</span>
                                                 <ExternalLink size={16} className="text-gray-500 group-hover:text-white transition-colors z-10" />
                                             </div>
-                                            <h3 className="text-2xl font-bold text-white mb-1 z-10 relative">{yearTitle}</h3>
+                                            <div className="text-2xl font-bold text-white mb-1 z-10 relative">{yearTitle}</div>
                                             <p className="text-xs text-gray-400 z-10 relative">Manage Subjects & Content</p>
                                         </div>
                                         <button className="w-full py-3 bg-white/5 border border-white/10 text-gray-300 text-xs font-bold rounded-xl group-hover:bg-emerald-500 group-hover:text-black group-hover:border-emerald-500 transition-all flex items-center justify-center gap-2 z-10">
@@ -416,7 +416,7 @@ const AdminDashboard = () => {
 
                     <div className="flex items-center justify-between mb-8 pb-8 border-b border-white/10">
                         <div>
-                            <h1 className="text-3xl font-bold text-white mb-2">{selectedYearData.title}</h1>
+                            <div className="text-3xl font-bold text-white mb-2">{selectedYearData.title}</div>
                             <p className="text-gray-400">Select a subject to manage content, topics, and quizzes.</p>
                         </div>
                     </div>
@@ -424,9 +424,9 @@ const AdminDashboard = () => {
                     <div className="grid grid-cols-1 gap-12">
                         {selectedYearData.semesters.map(sem => (
                             <div key={sem.id} className="space-y-4">
-                                <h3 className="text-lg font-bold text-emerald-400 uppercase tracking-widest border-l-4 border-emerald-500 pl-4 flex items-center gap-2">
+                                <div className="text-lg font-bold text-emerald-400 uppercase tracking-widest border-l-4 border-emerald-500 pl-4 flex items-center gap-2">
                                     {sem.title}
-                                </h3>
+                                </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                     {sem.subjects.map(subject => (
                                         <div
@@ -458,7 +458,7 @@ const AdminDashboard = () => {
                                 <button onClick={() => setViewMode(selectedYearData ? 'year' : 'overview')} className="text-[10px] text-gray-400 hover:text-white flex items-center gap-1 mb-1 transition-colors font-bold uppercase tracking-wider">
                                     <ChevronLeft size={10} /> Back
                                 </button>
-                                <h2 className="text-sm font-bold text-white leading-tight truncate" title={context.subjectTitle}>{context.subjectTitle}</h2>
+                                <div className="text-sm font-bold text-white leading-tight truncate" title={context.subjectTitle}>{context.subjectTitle}</div>
                             </div>
                             <button onClick={resetForm} className="w-8 h-8 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-black flex items-center justify-center transition-all shadow-lg shrink-0">
                                 <Plus size={18} />
@@ -473,7 +473,7 @@ const AdminDashboard = () => {
                                     {existingTopics.map(t => (
                                         <div key={t.id} onClick={() => handleEditTopic(t)} className={`group p-3 rounded-xl cursor-pointer transition-all border ${topicId === t.id ? 'bg-emerald-500/10 border-emerald-500/50' : 'bg-transparent border-transparent hover:bg-white/5'}`}>
                                             <div className="flex justify-between items-start gap-2">
-                                                <h3 className={`font-semibold text-xs line-clamp-2 ${topicId === t.id ? 'text-emerald-400' : 'text-gray-300 group-hover:text-white'}`}>{t.title}</h3>
+                                                <div className={`font-semibold text-xs line-clamp-2 ${topicId === t.id ? 'text-emerald-400' : 'text-gray-300 group-hover:text-white'}`}>{t.title}</div>
                                                 <button onClick={(e) => handleDeleteTopic(t.id, e)} className="p-1 rounded hover:bg-red-500/20 hover:text-red-400 text-gray-600 opacity-0 group-hover:opacity-100 transition-all"><Trash size={12} /></button>
                                             </div>
                                         </div>
@@ -487,10 +487,10 @@ const AdminDashboard = () => {
                     <div id="editor-panel" className="glass-panel p-8 rounded-2xl relative shadow-2xl shadow-black/50 border border-white/10">
                         {/* Header */}
                         <div className="flex justify-between items-center mb-6 pb-6 border-b border-white/10">
-                            <h2 className="text-xl font-bold text-white flex items-center gap-3">
+                            <div className="text-xl font-bold text-white flex items-center gap-3">
                                 <div className="p-2 bg-emerald-500/10 rounded-lg"><PenTool size={20} className="text-emerald-400" /></div>
                                 {topicId ? 'Edit Topic' : 'New Topic'}
-                            </h2>
+                            </div>
                             {topicId && <button onClick={resetForm} className="text-xs font-bold text-gray-400 hover:text-white border border-white/10 px-3 py-1.5 rounded-lg">Cancel</button>}
                         </div>
 
@@ -554,7 +554,7 @@ const AdminDashboard = () => {
 
                             {/* Quiz */}
                             <div className="border-t border-white/10 pt-6">
-                                <h3 className="text-sm font-bold text-white mb-4 uppercase tracking-wider">Quiz Questions</h3>
+                                <div className="text-sm font-bold text-white mb-4 uppercase tracking-wider">Quiz Questions</div>
                                 {quizQuestions.map((q, idx) => (
                                     <div key={q.id} className="mb-4 p-4 bg-black/20 border border-white/10 rounded-xl relative group">
                                         <button onClick={() => setQuizQuestions(quizQuestions.filter(i => i.id !== q.id))} className="absolute top-2 right-2 text-gray-500 hover:text-red-400"><Trash size={14} /></button>
