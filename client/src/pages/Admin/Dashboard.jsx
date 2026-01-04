@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
 import AdminLayout from './AdminLayout';
-import { Lock, Upload, FileText, CheckSquare, LogOut, Plus, Save, Trash, Youtube, PenTool, ExternalLink, ArrowLeft, Users, Activity, ArrowRight, GraduationCap, BookOpen, Database, User } from 'lucide-react';
+import { Lock, Upload, FileText, CheckSquare, LogOut, Plus, Save, Trash, Youtube, PenTool, ExternalLink, Activity, BookOpen, Clock, Users, GraduationCap, User } from 'lucide-react';
 import { api } from '../../services/api';
 import SEO from '../../components/SEO';
 import ReactQuill from 'react-quill';
@@ -17,7 +16,7 @@ const AdminDashboard = () => {
 
     // Global State managed by Sidebar
     const [context, setContext] = useState(null); // { type, yearId, semId, subjectId, subjectTitle }
-    const [stats, setStats] = useState({ users: '-', content: '-' });
+    const [stats, setStats] = useState({ users: '-', content: '-', courses: '-', quizzes: '-' });
 
     // Editor State
     const [existingTopics, setExistingTopics] = useState([]);
@@ -44,15 +43,20 @@ const AdminDashboard = () => {
     const [primaryKeyword, setPrimaryKeyword] = useState('');
     const [targetKeywords, setTargetKeywords] = useState('');
 
-    const navigate = useNavigate();
-
     // Fetch Stats on Mount
     useEffect(() => {
+        // Fetch real stats from server
         fetch('/api/debug-status')
             .then(res => res.json())
             .then(data => {
                 if (data.status === 'OK') {
-                    setStats({ users: data.users || 0, content: data.content || 0 });
+                    // Start with basic 0 if undefined to avoid "mock" look
+                    setStats({
+                        users: data.users || 0,
+                        content: data.content || 0,
+                        courses: data.courses || 0, // Ensure backend provides this or default to 0
+                        quizzes: data.quizzes || 0
+                    });
                 }
             })
             .catch(err => console.error("Failed to fetch stats", err));
@@ -365,61 +369,58 @@ const AdminDashboard = () => {
                     {/* Stats Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {/* Users */}
-                        <div className="bg-[#151e32] p-6 rounded-xl border border-gray-800 relative overflow-hidden group hover:border-purple-500/30 transition-colors">
+                        <div className="bg-[#151e32] p-6 rounded-xl border border-gray-800 relative overflow-hidden transition-colors">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="p-3 bg-[#2d2b42] rounded-lg text-purple-400">
                                     <Users size={20} />
                                 </div>
-                                <span className="px-2 py-1 bg-purple-500/10 text-purple-300 text-xs rounded font-medium">+12 this week</span>
                             </div>
                             <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">Registered Users</p>
                             <h3 className="text-3xl font-bold text-white">{stats.users}</h3>
                             <div className="absolute bottom-0 left-0 w-full h-1 bg-gray-800">
-                                <div className="h-full bg-purple-500 w-[75%]"></div>
+                                <div className="h-full bg-purple-500" style={{ width: '20%' }}></div>
                             </div>
                         </div>
 
                         {/* System Status */}
-                        <div className="bg-[#151e32] p-6 rounded-xl border border-gray-800 relative overflow-hidden group hover:border-emerald-500/30 transition-colors">
+                        <div className="bg-[#151e32] p-6 rounded-xl border border-gray-800 relative overflow-hidden transition-colors">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="p-3 bg-[#1c3329] rounded-lg text-emerald-400">
                                     <Activity size={20} />
                                 </div>
-                                <span className="px-2 py-1 bg-emerald-500/10 text-emerald-300 text-xs rounded font-medium">Online</span>
                             </div>
                             <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">System Status</p>
-                            <h3 className="text-3xl font-bold text-white">Healthy</h3>
+                            <h3 className="text-3xl font-bold text-white">Online</h3>
                             <div className="absolute bottom-0 left-0 w-full h-1 bg-gray-800">
                                 <div className="h-full bg-emerald-500 w-full"></div>
                             </div>
                         </div>
 
-                        {/* Total Courses */}
-                        <div className="bg-[#151e32] p-6 rounded-xl border border-gray-800 relative overflow-hidden group hover:border-blue-500/30 transition-colors">
+                        {/* Total Topics */}
+                        <div className="bg-[#151e32] p-6 rounded-xl border border-gray-800 relative overflow-hidden transition-colors">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="p-3 bg-[#1e2738] rounded-lg text-blue-400">
                                     <BookOpen size={20} />
                                 </div>
                             </div>
-                            <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">Total Courses</p>
-                            <h3 className="text-3xl font-bold text-white flex items-end gap-2">24 <span className="text-sm text-gray-500 font-normal mb-1">across 4 years</span></h3>
+                            <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">Total Topics</p>
+                            <h3 className="text-3xl font-bold text-white">{stats.content}</h3>
                             <div className="absolute bottom-0 left-0 w-full h-1 bg-gray-800">
-                                <div className="h-full bg-blue-500 w-[60%]"></div>
+                                <div className="h-full bg-blue-500" style={{ width: '50%' }}></div>
                             </div>
                         </div>
 
-                        {/* Quiz Submissions */}
-                        <div className="bg-[#151e32] p-6 rounded-xl border border-gray-800 relative overflow-hidden group hover:border-orange-500/30 transition-colors">
+                        {/* Quizzes */}
+                        <div className="bg-[#151e32] p-6 rounded-xl border border-gray-800 relative overflow-hidden transition-colors">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="p-3 bg-[#33261e] rounded-lg text-orange-400">
                                     <CheckSquare size={20} />
                                 </div>
-                                <span className="px-2 py-1 bg-orange-500/10 text-orange-300 text-xs rounded font-medium">Pending</span>
                             </div>
-                            <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">Quiz Submissions</p>
-                            <h3 className="text-3xl font-bold text-white flex items-end gap-2">18 <span className="text-sm text-gray-500 font-normal mb-1">to review</span></h3>
+                            <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">Active Quizzes</p>
+                            <h3 className="text-3xl font-bold text-white">{stats.quizzes || 0}</h3>
                             <div className="absolute bottom-0 left-0 w-full h-1 bg-gray-800">
-                                <div className="h-full bg-orange-500 w-[40%]"></div>
+                                <div className="h-full bg-orange-500" style={{ width: '10%' }}></div>
                             </div>
                         </div>
                     </div>
@@ -429,165 +430,90 @@ const AdminDashboard = () => {
                         <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2"><GraduationCap size={20} className="text-blue-400" /> Academic Management</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             {[1, 2, 3, 4].map((year) => (
-                                <div key={year} className="bg-[#151e32] p-6 rounded-xl border border-gray-800 hover:border-gray-600 transition-colors flex flex-col justify-between h-56">
+                                <div key={year} className="bg-[#151e32] p-6 rounded-xl border border-gray-800 hover:border-gray-600 transition-colors flex flex-col justify-between h-48">
                                     <div>
                                         <div className="flex justify-between items-start mb-4">
                                             <span className="text-xs font-bold text-gray-500 border border-gray-700 px-2 py-1 rounded">Y{year}</span>
-                                            <button className="text-gray-500 hover:text-white"><ExternalLink size={14} /></button>
                                         </div>
                                         <h3 className="text-xl font-bold text-white mb-1">B.Pharm Year {year}</h3>
-                                        <p className="text-xs text-gray-400 leading-relaxed">Manage semesters, subjects, and student enrollment for {year === 4 ? 'Final Year' : `${year}${year === 1 ? 'st' : year === 2 ? 'nd' : 'rd'} Year`}.</p>
+                                        <p className="text-xs text-gray-400">Manage subjects & content.</p>
                                     </div>
-
-                                    <div>
-                                        <div className="flex justify-between text-xs text-gray-400 mb-2">
-                                            <span>Progress</span>
-                                            <span>{year * 22}%</span>
-                                        </div>
-                                        <div className="w-full h-1.5 bg-gray-800 rounded-full mb-4">
-                                            <div className="h-full bg-blue-500 rounded-full" style={{ width: `${year * 22}%` }}></div>
-                                        </div>
-                                        <button className="w-full py-2 bg-[#1E293B] border border-gray-700 text-gray-300 text-xs font-bold rounded hover:bg-[#283548] hover:text-white transition-colors">
-                                            Manage Year
-                                        </button>
-                                    </div>
+                                    <button className="w-full py-2 bg-[#1E293B] border border-gray-700 text-gray-300 text-xs font-bold rounded hover:bg-[#283548] hover:text-white transition-colors">
+                                        View Content
+                                    </button>
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    {/* Bottom Section: Engagement Graph & Recent Activity */}
+                    {/* Bottom Section */}
                     <div className="grid lg:grid-cols-3 gap-6">
-                        {/* Graph */}
+                        {/* Graph Placeholder - Replacing Mock with "Not Enough Data" or minimal real view */}
                         <div className="lg:col-span-2 bg-[#151e32] p-6 rounded-xl border border-gray-800">
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className="font-bold text-white">Student Engagement</h3>
-                                <select className="bg-[#0B1120] border border-gray-700 text-xs text-gray-400 rounded px-2 py-1 outline-none">
-                                    <option>Last 7 Days</option>
-                                    <option>Last 30 Days</option>
-                                </select>
                             </div>
-
-                            {/* Mock SVG Graph */}
-                            <div className="h-64 w-full relative pt-4">
-                                <div className="absolute left-0 top-0 bottom-8 flex flex-col justify-between text-xs text-gray-600">
-                                    <span>110</span><span>100</span><span>90</span><span>80</span><span>70</span><span>60</span><span>50</span>
-                                </div>
-                                <div className="ml-8 h-full relative border-l border-b border-gray-800">
-                                    {/* Grid Lines */}
-                                    {[0, 1, 2, 3, 4, 5, 6].map(i => (
-                                        <div key={i} className="absolute w-full border-t border-gray-800/50" style={{ bottom: `${i * 14}%` }}></div>
-                                    ))}
-
-                                    {/* The Wave Line */}
-                                    <svg className="absolute inset-0 w-full h-full overflow-visible" preserveAspectRatio="none">
-                                        <defs>
-                                            <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.5" />
-                                                <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
-                                            </linearGradient>
-                                        </defs>
-                                        <path
-                                            d="M0,180 C50,190 100,160 150,150 C200,140 250,170 300,150 C350,130 400,190 450,200 C500,210 550,100 600,80 C650,60 700,50 800,40"
-                                            fill="none"
-                                            stroke="#22d3ee"
-                                            strokeWidth="3"
-                                            strokeLinecap="round"
-                                        />
-                                        <path
-                                            d="M0,180 C50,190 100,160 150,150 C200,140 250,170 300,150 C350,130 400,190 450,200 C500,210 550,100 600,80 C650,60 700,50 800,40 V250 H0 Z"
-                                            fill="url(#lineGradient)"
-                                            opacity="0.2"
-                                        />
-                                        {/* Points */}
-                                        <circle cx="0" cy="180" r="4" fill="#0B1120" stroke="#22d3ee" strokeWidth="2" />
-                                        <circle cx="150" cy="150" r="4" fill="#0B1120" stroke="#22d3ee" strokeWidth="2" />
-                                        <circle cx="300" cy="150" r="4" fill="#0B1120" stroke="#22d3ee" strokeWidth="2" />
-                                        <circle cx="450" cy="200" r="4" fill="#0B1120" stroke="#22d3ee" strokeWidth="2" />
-                                        <circle cx="600" cy="80" r="4" fill="#0B1120" stroke="#22d3ee" strokeWidth="2" />
-                                    </svg>
-
-                                    <div className="absolute -bottom-6 w-full flex justify-between text-xs text-gray-500">
-                                        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-                                    </div>
+                            <div className="h-64 w-full flex items-center justify-center border-2 border-dashed border-gray-800 rounded-xl">
+                                <div className="text-center text-gray-500">
+                                    <Activity size={32} className="mx-auto mb-2 opacity-50" />
+                                    <p className="text-sm">Engagement data will appear here once students start interacting.</p>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Recent Activity */}
+                        {/* Recent Activity - Real or Empty */}
                         <div className="bg-[#151e32] p-6 rounded-xl border border-gray-800">
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className="font-bold text-white">Recent Activity</h3>
                             </div>
                             <div className="space-y-6">
-                                <div className="flex gap-4">
-                                    <div className="w-2 h-2 mt-2 rounded-full bg-cyan-500 shrink-0"></div>
-                                    <div>
-                                        <p className="text-sm text-gray-300">New syllabus uploaded for <span className="text-cyan-400 font-medium">Pharmacology</span></p>
-                                        <p className="text-xs text-gray-500 mt-1">2 hours ago</p>
-                                    </div>
-                                </div>
-                                <div className="flex gap-4">
-                                    <div className="w-2 h-2 mt-2 rounded-full bg-purple-500 shrink-0"></div>
-                                    <div>
-                                        <p className="text-sm text-gray-300">User <span className="font-medium text-white">Rahul K.</span> completed registration</p>
-                                        <p className="text-xs text-gray-500 mt-1">4 hours ago</p>
-                                    </div>
-                                </div>
-                                <div className="flex gap-4">
-                                    <div className="w-2 h-2 mt-2 rounded-full bg-orange-500 shrink-0"></div>
-                                    <div>
-                                        <p className="text-sm text-gray-300">System maintenance scheduled</p>
-                                        <p className="text-xs text-gray-500 mt-1">Yesterday</p>
-                                    </div>
-                                </div>
-                                <div className="flex gap-4">
-                                    <div className="w-2 h-2 mt-2 rounded-full bg-emerald-500 shrink-0"></div>
-                                    <div>
-                                        <p className="text-sm text-gray-300">Server health check passed</p>
-                                        <p className="text-xs text-gray-500 mt-1">Yesterday</p>
-                                    </div>
+                                <div className="flex flex-col items-center justify-center py-8 text-gray-500">
+                                    <Clock size={24} className="mb-2 opacity-50" />
+                                    <p className="text-sm">No recent activity logs.</p>
                                 </div>
                             </div>
-                            <button className="w-full mt-8 py-2 border border-white/10 text-gray-400 text-xs rounded hover:bg-white/5 transition-colors">
-                                View All Log
-                            </button>
                         </div>
                     </div>
                 </div>
             ) : (
-                <div className="grid lg:grid-cols-[1fr_1.5fr] gap-6 items-start">
+                <div className="grid lg:grid-cols-[1fr_1.5fr] gap-6 items-start animate-fade-in">
 
                     {/* Left: Topics List */}
-                    <div className="glass-panel p-6 rounded-2xl sticky top-6">
-                        <div className="flex justify-between items-center mb-6">
+                    <div className="bg-[#151e32] border border-gray-800 p-0 rounded-xl overflow-hidden sticky top-24 shadow-xl">
+                        <div className="p-4 border-b border-gray-800 flex justify-between items-center bg-[#1E293B]/50">
                             <div>
-                                <h2 className="text-xl font-bold text-white">{context.subjectTitle}</h2>
-                                <p className="text-xs text-cyan-400 uppercase tracking-widest mt-1">{context.type === 'gpat' ? 'GPAT Module' : 'B.Pharm Subject'}</p>
+                                <h2 className="text-lg font-bold text-white">{context.subjectTitle}</h2>
+                                <p className="text-[10px] text-cyan-400 uppercase tracking-widest font-semibold mt-0.5">{context.type === 'gpat' ? 'GPAT Module' : 'B.Pharm Subject'}</p>
                             </div>
-                            <button onClick={resetForm} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg text-sm transition-colors">
-                                <Plus size={16} /> New
+                            <button onClick={resetForm} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors shadow-lg shadow-blue-500/20">
+                                <Plus size={14} /> New
                             </button>
                         </div>
 
                         {fetchingTopics ? (
-                            <div className="text-center py-8 text-gray-500">Loading topics...</div>
+                            <div className="text-center py-12 text-gray-500">
+                                <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                                Loading...
+                            </div>
                         ) : (
-                            <div className="space-y-2 max-h-[70vh] overflow-y-auto custom-scrollbar pr-2">
-                                {existingTopics.length === 0 && <div className="text-center py-8 text-gray-500">No topics found. Add one!</div>}
+                            <div className="p-2 space-y-1 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                                {existingTopics.length === 0 && (
+                                    <div className="text-center py-12 text-gray-500 border-2 border-dashed border-gray-800 rounded-lg m-2">
+                                        <FileText size={24} className="mx-auto mb-2 opacity-30" />
+                                        <p className="text-sm">No topics found.</p>
+                                        <button onClick={resetForm} className="text-blue-400 text-xs mt-2 hover:underline">Create the first one</button>
+                                    </div>
+                                )}
                                 {existingTopics.map(t => (
                                     <div
                                         key={t.id}
                                         onClick={() => handleEditTopic(t)}
-                                        className={`p-3 rounded-lg border cursor-pointer transition-all ${topicId === t.id ? 'bg-blue-600/20 border-blue-500/50' : 'bg-white/5 border-transparent hover:bg-white/10'}`}
+                                        className={`group p-3 rounded-lg cursor-pointer transition-all border ${topicId === t.id ? 'bg-blue-600/10 border-blue-500/50' : 'bg-transparent border-transparent hover:bg-white/5'}`}
                                     >
                                         <div className="flex justify-between items-start gap-3">
-                                            <h3 className={`font-medium text-sm line-clamp-2 ${topicId === t.id ? 'text-blue-300' : 'text-gray-300'}`}>{t.title}</h3>
-                                            <div className="flex gap-1 shrink-0">
-                                                <a href={`/${generateSlug(context.subjectTitle)}/${t.slug}`} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="p-1 hover:text-blue-400 text-gray-500">
-                                                    <ExternalLink size={14} />
-                                                </a>
-                                                <button onClick={(e) => handleDeleteTopic(t.id, e)} className="p-1 hover:text-red-400 text-gray-500">
+                                            <h3 className={`font-medium text-sm line-clamp-2 ${topicId === t.id ? 'text-blue-400' : 'text-gray-300 group-hover:text-white'}`}>{t.title}</h3>
+                                            <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <button onClick={(e) => handleDeleteTopic(t.id, e)} className="p-1 hover:text-red-400 text-gray-600 transition-colors">
                                                     <Trash size={14} />
                                                 </button>
                                             </div>
@@ -599,37 +525,40 @@ const AdminDashboard = () => {
                     </div>
 
                     {/* Right: Editor */}
-                    <div id="editor-panel" className="glass-panel p-6 rounded-2xl">
-                        <div className="flex justify-between items-center mb-6 pb-4 border-b border-white/10">
-                            <h2 className="text-2xl font-bold text-white">{topicId ? 'Edit Topic' : 'New Topic'}</h2>
-                            {topicId && <button onClick={resetForm} className="text-sm text-gray-400 hover:text-white">Cancel</button>}
+                    <div id="editor-panel" className="bg-[#151e32] border border-gray-800 p-6 rounded-xl shadow-xl">
+                        <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-800">
+                            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                                <PenTool size={20} className="text-cyan-400" />
+                                {topicId ? 'Edit Topic' : 'New Topic'}
+                            </h2>
+                            {topicId && <button onClick={resetForm} className="text-xs font-medium text-gray-500 hover:text-white bg-[#1E293B] px-3 py-1.5 rounded-lg transition-colors">Cancel Edit</button>}
                         </div>
 
-                        {error && <div className="mb-4 p-4 bg-red-500/20 border border-red-500/50 rounded-xl text-red-200">{error}</div>}
-                        {successMsg && <div className="mb-4 p-4 bg-green-500/20 border border-green-500/50 rounded-xl text-green-200">{successMsg}</div>}
+                        {error && <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-200 text-sm flex items-center gap-2"><LogOut size={16} /> {error}</div>}
+                        {successMsg && <div className="mb-6 p-4 bg-green-500/10 border border-green-500/20 rounded-lg text-green-200 text-sm flex items-center gap-2"><CheckSquare size={16} /> {successMsg}</div>}
 
                         <div className="space-y-6">
                             {/* Title */}
                             <div>
-                                <label className="block text-sm text-gray-400 mb-2">Topic Title</label>
+                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Topic Title</label>
                                 <input
                                     type="text"
                                     value={topicTitle}
                                     onChange={e => setTopicTitle(e.target.value)}
-                                    className="w-full p-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-blue-500 outline-none"
+                                    className="w-full p-3.5 bg-[#0F172A] border border-gray-700 rounded-lg text-white placeholder-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all outline-none font-medium"
                                     placeholder="Enter topic title..."
                                 />
                             </div>
 
-                            {/* SEO Section used for Ranking */}
-                            <div className="p-5 bg-gradient-to-br from-blue-900/10 to-purple-900/10 border border-blue-500/20 rounded-xl">
-                                <div className="flex items-center gap-2 mb-4 text-blue-400 font-semibold">
-                                    <FileText size={18} /> SEO & Ranking
+                            {/* SEO Section */}
+                            <div className="p-5 bg-[#0F172A] border border-gray-700 rounded-xl">
+                                <div className="flex items-center gap-2 mb-4 text-gray-300 font-semibold text-sm border-b border-gray-800 pb-2">
+                                    <FileText size={16} className="text-blue-500" /> SEO & Ranking
                                 </div>
                                 <div className="grid md:grid-cols-2 gap-4 mb-4">
                                     <div>
-                                        <label className="block text-xs text-gray-400 mb-1">Year / Category</label>
-                                        <select value={yearSlug} onChange={e => setYearSlug(e.target.value)} className="w-full p-2 bg-black/40 border border-white/10 rounded-lg text-white text-sm">
+                                        <label className="block text-xs text-gray-500 bg-[#0F172A] mb-1">Year / Category</label>
+                                        <select value={yearSlug} onChange={e => setYearSlug(e.target.value)} className="w-full p-2.5 bg-[#1E293B] border border-gray-700 rounded-lg text-white text-xs outline-none focus:border-blue-500">
                                             <option value="gpat">GPAT</option>
                                             <option value="1st-year">1st Year</option>
                                             <option value="2nd-year">2nd Year</option>
@@ -638,79 +567,80 @@ const AdminDashboard = () => {
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="block text-xs text-gray-400 mb-1">Unit / Day Number</label>
-                                        <input type="number" value={unitNumber} onChange={e => setUnitNumber(parseInt(e.target.value))} className="w-full p-2 bg-black/40 border border-white/10 rounded-lg text-white text-sm" />
+                                        <label className="block text-xs text-gray-500 mb-1">Unit / Day Number</label>
+                                        <input type="number" value={unitNumber} onChange={e => setUnitNumber(parseInt(e.target.value))} className="w-full p-2.5 bg-[#1E293B] border border-gray-700 rounded-lg text-white text-xs outline-none focus:border-blue-500" />
                                     </div>
                                 </div>
                                 <div className="space-y-3">
                                     <div>
-                                        <label className="block text-xs text-gray-400 mb-1">Primary Keyword (Target)</label>
-                                        <input type="text" value={primaryKeyword} onChange={e => setPrimaryKeyword(e.target.value)} className="w-full p-2 bg-black/40 border border-blue-500/30 rounded-lg text-white text-sm" placeholder="Main search term..." />
+                                        <label className="block text-xs text-gray-500 mb-1">Primary Keyword</label>
+                                        <input type="text" value={primaryKeyword} onChange={e => setPrimaryKeyword(e.target.value)} className="w-full p-2.5 bg-[#1E293B] border border-gray-700 rounded-lg text-white text-xs outline-none focus:border-blue-500" placeholder="Main search term..." />
                                     </div>
                                     <div>
-                                        <label className="block text-xs text-gray-400 mb-1">Related Keywords (Comma separated)</label>
-                                        <input type="text" value={targetKeywords} onChange={e => setTargetKeywords(e.target.value)} className="w-full p-2 bg-black/40 border border-white/10 rounded-lg text-white text-sm" placeholder="e.g. pharmacology notes, drug mechanism" />
+                                        <label className="block text-xs text-gray-500 mb-1">Related Keywords</label>
+                                        <input type="text" value={targetKeywords} onChange={e => setTargetKeywords(e.target.value)} className="w-full p-2.5 bg-[#1E293B] border border-gray-700 rounded-lg text-white text-xs outline-none focus:border-blue-500" placeholder="Comma separated..." />
                                     </div>
                                 </div>
                             </div>
 
                             {/* YouTube */}
                             <div>
-                                <label className="block text-sm text-gray-400 mb-2 flex items-center gap-2"><Youtube size={16} className="text-red-500" /> YouTube Video</label>
+                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-2"><Youtube size={14} className="text-red-500" /> YouTube Video</label>
                                 <input
                                     type="text"
                                     value={youtubeId}
                                     onChange={e => {
                                         const val = e.target.value;
-                                        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-                                        const match = val.match(regExp);
-                                        setYoutubeId((match && match[2].length === 11) ? match[2] : val);
+                                        setYoutubeId(val);
                                     }}
-                                    className="w-full p-3 bg-black/40 border border-white/10 rounded-xl text-white focus:border-red-500 outline-none"
+                                    className="w-full p-3.5 bg-[#0F172A] border border-gray-700 rounded-lg text-white placeholder-gray-600 focus:border-red-500 transition-all outline-none text-sm"
                                     placeholder="Paste YouTube Link or ID"
                                 />
                             </div>
 
-                            {/* Content */}
+                            {/* Content (Quill) */}
                             <div>
-                                <label className="block text-sm text-gray-400 mb-2 flex items-center gap-2"><PenTool size={16} className="text-blue-500" /> Content</label>
-                                <div className="bg-white rounded-xl overflow-hidden text-black hidden md:block">
-                                    <ReactQuill theme="snow" value={blogContent} onChange={setBlogContent} modules={modules} style={{ height: '300px', marginBottom: '50px' }} />
-                                </div>
-                                <div className="md:hidden">
-                                    <textarea value={blogContent} onChange={e => setBlogContent(e.target.value)} className="w-full h-64 p-3 bg-black/40 border border-white/10 rounded-xl text-white" placeholder="HTML content supported on mobile..." />
+                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-2"><PenTool size={14} className="text-blue-500" /> Content</label>
+                                <div className="bg-white rounded-lg overflow-hidden text-black border-2 border-transparent focus-within:border-blue-500 transition-colors">
+                                    <ReactQuill theme="snow" value={blogContent} onChange={setBlogContent} modules={modules} style={{ height: '350px', marginBottom: '40px' }} />
                                 </div>
                             </div>
 
                             {/* Notes PDF */}
                             <div>
-                                <label className="block text-sm text-gray-400 mb-2 flex items-center gap-2"><Upload size={16} /> Notes (PDF)</label>
-                                <input type="file" accept=".pdf" onChange={e => setNotesFile(e.target.files[0])} className="text-gray-400" />
+                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-2"><Upload size={14} /> Notes (PDF)</label>
+                                <input type="file" accept=".pdf" onChange={e => setNotesFile(e.target.files[0])} className="block w-full text-sm text-gray-400
+                                  file:mr-4 file:py-2 file:px-4
+                                  file:rounded-lg file:border-0
+                                  file:text-sm file:font-semibold
+                                  file:bg-[#1E293B] file:text-blue-400
+                                  hover:file:bg-[#283548]
+                                " />
                             </div>
 
                             {/* Quiz Section */}
-                            <div className="border-t border-white/10 pt-6">
-                                <h3 className="text-lg font-bold text-white mb-4">Quiz Questions</h3>
+                            <div className="border-t border-gray-800 pt-6">
+                                <h3 className="text-sm font-bold text-white mb-4 uppercase tracking-wider">Quiz Questions</h3>
                                 {quizQuestions.map((q, idx) => (
-                                    <div key={q.id} className="mb-4 p-4 bg-white/5 rounded-xl">
-                                        <div className="flex justify-between mb-2">
-                                            <span>Q{idx + 1}</span>
-                                            <button onClick={() => setQuizQuestions(quizQuestions.filter(i => i.id !== q.id))} className="text-red-400"><Trash size={16} /></button>
+                                    <div key={q.id} className="mb-4 p-4 bg-[#0F172A] border border-gray-700 rounded-xl relative group">
+                                        <button onClick={() => setQuizQuestions(quizQuestions.filter(i => i.id !== q.id))} className="absolute top-2 right-2 text-gray-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"><Trash size={14} /></button>
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <span className="text-xs font-bold text-blue-500">Q{idx + 1}</span>
+                                            <input
+                                                value={q.question}
+                                                onChange={e => updateQuestion(q.id, 'question', e.target.value)}
+                                                className="flex-1 bg-transparent border-none text-white text-sm focus:ring-0 placeholder-gray-600 font-medium"
+                                                placeholder="Enter question here..."
+                                            />
                                         </div>
-                                        <input
-                                            value={q.question}
-                                            onChange={e => updateQuestion(q.id, 'question', e.target.value)}
-                                            className="w-full p-2 mb-2 bg-black/40 border border-white/10 rounded-lg text-white"
-                                            placeholder="Question..."
-                                        />
-                                        <div className="grid grid-cols-2 gap-2">
+                                        <div className="grid grid-cols-2 gap-3 mt-2">
                                             {q.options.map((opt, oIdx) => (
-                                                <div key={oIdx} className="flex gap-2">
-                                                    <input type="radio" checked={q.correct === oIdx} onChange={() => updateQuestion(q.id, 'correct', oIdx)} />
+                                                <div key={oIdx} className="flex items-center gap-2 bg-[#1E293B] p-2 rounded-lg border border-transparent focus-within:border-blue-500/50">
+                                                    <input type="radio" checked={q.correct === oIdx} onChange={() => updateQuestion(q.id, 'correct', oIdx)} className="accent-blue-500" />
                                                     <input
                                                         value={opt}
                                                         onChange={e => updateOption(q.id, oIdx, e.target.value)}
-                                                        className="w-full p-2 bg-black/40 border border-white/10 rounded-lg text-white text-sm"
+                                                        className="w-full bg-transparent border-none text-gray-300 text-xs focus:ring-0 placeholder-gray-600"
                                                         placeholder={`Option ${oIdx + 1}`}
                                                     />
                                                 </div>
@@ -718,17 +648,18 @@ const AdminDashboard = () => {
                                         </div>
                                     </div>
                                 ))}
-                                <button onClick={addQuestion} className="w-full py-2 border border-dashed border-gray-600 text-gray-400 rounded-xl hover:text-white hover:border-gray-400 transition-colors">
-                                    + Add Question
+                                <button onClick={addQuestion} className="w-full py-3 border border-dashed border-gray-700 text-gray-400 rounded-xl hover:text-white hover:border-gray-500 hover:bg-[#1E293B] transition-all text-sm font-medium">
+                                    + Add New Question
                                 </button>
                             </div>
 
                             <button
                                 onClick={saveTopic}
                                 disabled={loading}
-                                className="w-full py-4 bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold rounded-xl hover:shadow-lg hover:shadow-cyan-500/20 transition-all disabled:opacity-50"
+                                className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                             >
-                                {loading ? 'Saving...' : (topicId ? 'Update Topic' : 'Create Topic')}
+                                {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> : <Save size={18} />}
+                                {loading ? 'Saving...' : (topicId ? 'Update Topic Content' : 'Publish New Topic')}
                             </button>
 
                         </div>
