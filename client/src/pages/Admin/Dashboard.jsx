@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import AdminLayout from './AdminLayout';
-import { Lock, Upload, FileText, CheckSquare, LogOut, Plus, Save, Trash, Youtube, PenTool, ExternalLink, ArrowLeft, Users, Activity, ArrowRight, GraduationCap, BookOpen, Database } from 'lucide-react';
+import { Lock, Upload, FileText, CheckSquare, LogOut, Plus, Save, Trash, Youtube, PenTool, ExternalLink, ArrowLeft, Users, Activity, ArrowRight, GraduationCap, BookOpen, Database, User } from 'lucide-react';
 import { api } from '../../services/api';
 import SEO from '../../components/SEO';
 import ReactQuill from 'react-quill';
