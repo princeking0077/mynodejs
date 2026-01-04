@@ -44,6 +44,16 @@ const morgan = require('morgan');
 const pool = require('./db');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
+// Bump this value on deploy-related changes. Used to verify Hostinger is running the latest code.
+const DEPLOY_MARKER = '2026-01-04T00:00:00.000Z';
+
+// Will be populated once the frontend build path is resolved.
+const frontendResolved = {
+    label: null,
+    buildPath: null,
+    indexHtmlMtimeMs: null
+};
+
 console.log("----- SERVER STARTING -----");
 console.log(`Environment: ${process.env.NODE_ENV}`);
 console.log(`Port: ${process.env.PORT}`);
@@ -136,6 +146,26 @@ app.get('/robots.txt', (req, res) => {
 // Health & Debug
 app.get('/api/health', (req, res) => res.json({ message: "Pharma Server Running" }));
 app.get('/api/ping', (req, res) => res.send("PONG - Production Server Alive (v2.0 - 200MB Limit)"));
+
+// Deployment verification
+app.get('/api/version', (req, res) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.json({
+        deployMarker: DEPLOY_MARKER,
+        serverTime: new Date().toISOString(),
+        nodeEnv: process.env.NODE_ENV || null,
+        frontend: {
+            label: frontendResolved.label,
+            indexHtmlMtimeMs: frontendResolved.indexHtmlMtimeMs
+        },
+        checks: {
+            serverClientBuildExists: fs.existsSync(path.join(__dirname, 'client_build')),
+            rootClientDistExists: fs.existsSync(path.join(__dirname, '../client/dist')),
+            cwdClientDistExists: fs.existsSync(path.join(process.cwd(), 'client/dist')),
+            cwdDistExists: fs.existsSync(path.join(process.cwd(), 'dist'))
+        }
+    });
+});
 
 app.get('/api/debug-status', async (req, res) => {
     try {
@@ -316,8 +346,27 @@ for (const p of possiblePaths) {
     }
 }
 
+const labelBuildPath = (p) => {
+    const normalized = String(p).replace(/\\/g, '/');
+    if (normalized.endsWith('/client/dist')) return 'client/dist';
+    if (normalized.endsWith('/client/build')) return 'client/build';
+    if (normalized.endsWith('/client_build')) return 'client_build';
+    if (normalized.endsWith('/dist')) return 'dist';
+    return 'unknown';
+};
+
 if (buildPath) {
     console.log(`Serving Frontend from: ${buildPath}`);
+    frontendResolved.buildPath = buildPath;
+    frontendResolved.label = labelBuildPath(buildPath);
+    try {
+        const indexPath = path.join(buildPath, 'index.html');
+        if (fs.existsSync(indexPath)) {
+            frontendResolved.indexHtmlMtimeMs = fs.statSync(indexPath).mtimeMs;
+        }
+    } catch (e) {
+        // ignore
+    }
     app.use(express.static(buildPath));
     app.get('*', (req, res) => {
         // Prevent stale index.html from being cached (common cause of loading old layouts)
