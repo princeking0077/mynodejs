@@ -88,6 +88,13 @@ h3 {
   animation: adminGradientShift 15s ease infinite;
 }
 
+/* New folder template compatibility (admin only) */
+.admin-scope .bg-gradient-animated {
+  background: linear-gradient(-45deg, var(--primary), var(--accent), #0284c7, #9333ea);
+  background-size: 400% 400%;
+  animation: adminGradientShift 15s ease infinite;
+}
+
 @keyframes adminGradientShift {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -100,6 +107,35 @@ h3 {
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(15, 23, 42, 0.08);
 }
+
+/* In the template, most admin cards use .glass-panel; keep site-wide dark glass, but override in admin scope */
+.admin-scope .glass-panel {
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.08);
+}
+
+.admin-scope .input-glow:focus {
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.18);
+}
+
+.admin-scope .glow-primary,
+.admin-scope .glow-accent {
+  animation: adminGlowPulse 6s ease-in-out infinite;
+}
+
+@keyframes adminGlowPulse {
+  0%, 100% { transform: scale(1); opacity: 0.18; }
+  50% { transform: scale(1.05); opacity: 0.26; }
+}
+
+/* Optional class-based scrollbar (template uses custom-scrollbar class) */
+.admin-scope .custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+.admin-scope .custom-scrollbar::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.04); }
+.admin-scope .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(15, 23, 42, 0.22); border-radius: 999px; }
+.admin-scope .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(15, 23, 42, 0.32); }
 
 .gradient-text,
 .text-gradient {

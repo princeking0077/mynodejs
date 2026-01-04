@@ -278,9 +278,20 @@ const AdminDashboard = () => {
     };
     const maxYearSubjects = Math.max(1, ...dashboardYearIds.map(getYearSubjectCount));
 
+    const breadcrumb = (() => {
+        if (!context) return null;
+        const yearData = curriculum.find(c => c.id === context.yearId);
+        const semData = yearData?.semesters?.find(s => s.id === context.semId);
+        return {
+            yearTitle: yearData?.title || (context.yearId === 'gpat-module' ? 'GPAT / NIPER' : ''),
+            semTitle: semData?.title || '',
+            subjectTitle: context.subjectTitle || ''
+        };
+    })();
+
     if (!currentUser) {
         return (
-            <div className="admin-scope min-h-screen flex items-center justify-center p-4 font-sans relative overflow-hidden admin-bg-animated">
+            <div className="admin-scope min-h-screen flex items-center justify-center p-4 font-sans relative overflow-hidden bg-gradient-animated">
                 <SEO title="Admin Login" />
 
                 {/* Background glow orbs */}
@@ -290,7 +301,7 @@ const AdminDashboard = () => {
                 </div>
 
                 <div className="relative z-10 w-full max-w-lg animate-fade-in-up">
-                    <div className="glass-panel-light rounded-3xl shadow-2xl p-8 md:p-12">
+                    <div className="glass-panel rounded-3xl shadow-2xl p-8 md:p-12">
                         <div className="flex flex-col items-center text-center mb-7">
                             <div className="flex justify-center mb-5">
                                 <div className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg text-white" style={{ background: 'var(--grad-primary)' }}>
@@ -485,21 +496,21 @@ const AdminDashboard = () => {
             {/* VIEW: YEAR DETAILS */}
             {viewMode === 'year' && selectedYearData && (
                 <div className="max-w-7xl mx-auto space-y-8 animate-fade-in custom-scrollbar">
-                    <button onClick={() => setViewMode('overview')} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-4 text-sm font-bold">
+                    <button onClick={() => setViewMode('overview')} className="flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors mb-2 text-sm font-semibold">
                         <ArrowRight size={16} className="rotate-180" /> Back to Dashboard
                     </button>
 
-                    <div className="flex items-center justify-between mb-8 pb-8 border-b border-white/10">
-                        <div>
-                            <div className="text-3xl font-bold text-white mb-2">{selectedYearData.title}</div>
-                            <p className="text-gray-400">Select a subject to manage content, topics, and quizzes.</p>
+                    <div className="flex items-center justify-between mb-2 pb-6 border-b border-slate-200">
+                        <div className="min-w-0">
+                            <div className="text-2xl md:text-[28px] font-bold text-slate-900 mb-1 truncate">{selectedYearData.title}</div>
+                            <p className="text-slate-600 text-sm">Select a subject to manage topics, content, and quizzes.</p>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-12">
+                    <div className="grid grid-cols-1 gap-10">
                         {selectedYearData.semesters.map(sem => (
                             <div key={sem.id} className="space-y-4">
-                                <div className="text-lg font-bold text-emerald-400 uppercase tracking-widest border-l-4 border-emerald-500 pl-4 flex items-center gap-2">
+                                <div className="text-sm font-bold text-emerald-700 uppercase tracking-widest border-l-4 border-emerald-500 pl-4 flex items-center gap-2">
                                     {sem.title}
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -507,13 +518,13 @@ const AdminDashboard = () => {
                                         <div
                                             key={subject.id}
                                             onClick={() => handleSubjectClick(subject, selectedYearData.id, sem.id, 'bpharm')}
-                                            className="glass-panel p-5 rounded-xl cursor-pointer hover:bg-white/5 hover:border-emerald-500/30 transition-all group border border-white/5"
+                                            className="glass-panel p-5 rounded-xl cursor-pointer hover:bg-slate-50 hover:border-emerald-200 transition-all group border border-slate-200"
                                         >
                                             <div className="flex items-start justify-between">
-                                                <h4 className="font-bold text-white group-hover:text-emerald-300 transition-colors line-clamp-2 pr-4">{subject.title}</h4>
-                                                <ChevronRight size={18} className="text-gray-600 group-hover:text-emerald-500 opacity-0 group-hover:opacity-100 transition-all" />
+                                                <h4 className="font-bold text-slate-900 group-hover:text-emerald-700 transition-colors line-clamp-2 pr-4">{subject.title}</h4>
+                                                <ChevronRight size={18} className="text-slate-300 group-hover:text-emerald-600 opacity-0 group-hover:opacity-100 transition-all" />
                                             </div>
-                                            <p className="text-xs text-gray-500 mt-2 font-medium">Click to Manage Topics</p>
+                                            <p className="text-xs text-slate-500 mt-2 font-medium">Click to manage topics</p>
                                         </div>
                                     ))}
                                 </div>
@@ -525,124 +536,315 @@ const AdminDashboard = () => {
 
             {/* VIEW: EDITOR */}
             {viewMode === 'editor' && (
-                <div className="grid lg:grid-cols-[350px_1fr] gap-8 items-start animate-fade-in">
-                    {/* Left: Topics Sidebar */}
-                    <div className="glass-panel p-0 rounded-2xl overflow-hidden sticky top-24 max-h-[calc(100vh-8rem)] flex flex-col shadow-2xl shadow-black/50 border border-white/10">
-                        <div className="p-5 border-b border-white/10 bg-white/5 backdrop-blur-md flex justify-between items-center z-10">
-                            <div className="flex-1 min-w-0 mr-2">
-                                <button onClick={() => setViewMode(selectedYearData ? 'year' : 'overview')} className="text-[10px] text-gray-400 hover:text-white flex items-center gap-1 mb-1 transition-colors font-bold uppercase tracking-wider">
-                                    <ChevronLeft size={10} /> Back
+                <div className="animate-fade-in">
+                    {/* Editor Header */}
+                    <div className="mb-6 flex items-start justify-between gap-4">
+                        <div className="min-w-0">
+                            <div className="flex items-center gap-3 mb-2">
+                                <button
+                                    onClick={() => setViewMode(selectedYearData ? 'year' : 'overview')}
+                                    className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                                >
+                                    <ArrowRight className="w-5 h-5 text-slate-600 rotate-180" />
                                 </button>
-                                <div className="text-sm font-bold text-white leading-tight truncate" title={context.subjectTitle}>{context.subjectTitle}</div>
+                                <h2 className="text-2xl font-bold text-slate-900">Content Editor</h2>
                             </div>
-                            <button onClick={resetForm} className="w-8 h-8 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-black flex items-center justify-center transition-all shadow-lg shrink-0">
-                                <Plus size={18} />
-                            </button>
+                            <p className="text-slate-600 ml-14 text-sm break-words">
+                                {breadcrumb?.yearTitle ? `${breadcrumb.yearTitle} → ` : ''}
+                                {breadcrumb?.semTitle ? `${breadcrumb.semTitle} → ` : ''}
+                                {breadcrumb?.subjectTitle || ''}
+                            </p>
                         </div>
-                        <div className="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-1">
-                            {fetchingTopics ? (
-                                <div className="text-center py-12 text-gray-500">Loading...</div>
-                            ) : (
-                                <>
-                                    {existingTopics.length === 0 && <div className="text-center py-12 text-gray-500 text-sm">No topics found.</div>}
-                                    {existingTopics.map(t => (
-                                        <div key={t.id} onClick={() => handleEditTopic(t)} className={`group p-3 rounded-xl cursor-pointer transition-all border ${topicId === t.id ? 'bg-emerald-500/10 border-emerald-500/50' : 'bg-transparent border-transparent hover:bg-white/5'}`}>
-                                            <div className="flex justify-between items-start gap-2">
-                                                <div className={`font-semibold text-xs line-clamp-2 ${topicId === t.id ? 'text-emerald-400' : 'text-gray-300 group-hover:text-white'}`}>{t.title}</div>
-                                                <button onClick={(e) => handleDeleteTopic(t.id, e)} className="p-1 rounded hover:bg-red-500/20 hover:text-red-400 text-gray-600 opacity-0 group-hover:opacity-100 transition-all"><Trash size={12} /></button>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </>
-                            )}
-                        </div>
+                        <button
+                            onClick={saveTopic}
+                            disabled={loading}
+                            className="px-6 py-3 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                            style={{ backgroundImage: 'var(--grad-primary)' }}
+                        >
+                            <Save className="w-5 h-5" />
+                            {loading ? 'Saving...' : (topicId ? 'Update Topic' : 'Save Topic')}
+                        </button>
                     </div>
 
-                    {/* Right: Editor Form */}
-                    <div id="editor-panel" className="glass-panel p-8 rounded-2xl relative shadow-2xl shadow-black/50 border border-white/10">
-                        {/* Header */}
-                        <div className="flex justify-between items-center mb-6 pb-6 border-b border-white/10">
-                            <div className="text-xl font-bold text-white flex items-center gap-3">
-                                <div className="p-2 bg-emerald-500/10 rounded-lg"><PenTool size={20} className="text-emerald-400" /></div>
-                                {topicId ? 'Edit Topic' : 'New Topic'}
+                    {/* Alerts */}
+                    {error && (
+                        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex gap-2">
+                            <AlertTriangle size={16} className="text-red-500 mt-0.5" />
+                            <div className="min-w-0">{error}</div>
+                        </div>
+                    )}
+                    {successMsg && (
+                        <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-sm flex gap-2">
+                            <CheckSquare size={16} className="text-emerald-600 mt-0.5" />
+                            <div className="min-w-0">{successMsg}</div>
+                        </div>
+                    )}
+
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                        {/* Left: Existing Topics */}
+                        <div className="lg:col-span-1">
+                            <div className="glass-panel rounded-2xl p-6 sticky top-24">
+                                <div className="flex items-center justify-between gap-3 mb-4">
+                                    <h3 className="text-lg font-semibold text-slate-900">Existing Topics</h3>
+                                    {topicId && (
+                                        <button
+                                            onClick={resetForm}
+                                            className="text-xs font-semibold text-slate-600 hover:text-slate-900 px-3 py-2 rounded-lg hover:bg-slate-100 transition-colors"
+                                        >
+                                            Cancel
+                                        </button>
+                                    )}
+                                </div>
+
+                                <div className="space-y-2 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                                    {fetchingTopics ? (
+                                        <div className="text-center py-10 text-slate-500">Loading...</div>
+                                    ) : (
+                                        <>
+                                            {existingTopics.length === 0 && (
+                                                <div className="text-center py-10 text-slate-500 text-sm">No topics found.</div>
+                                            )}
+                                            {existingTopics.map(t => (
+                                                <button
+                                                    key={t.id}
+                                                    onClick={() => handleEditTopic(t)}
+                                                    className={`w-full text-left px-4 py-3 border rounded-xl transition-all group ${
+                                                        topicId === t.id
+                                                            ? 'bg-emerald-50 border-emerald-200 hover:bg-emerald-100'
+                                                            : 'bg-white border-slate-200 hover:bg-slate-50'
+                                                    }`}
+                                                >
+                                                    <div className="flex items-start justify-between gap-3">
+                                                        <p
+                                                            className={`font-medium text-sm line-clamp-2 ${
+                                                                topicId === t.id ? 'text-emerald-900' : 'text-slate-900'
+                                                            }`}
+                                                        >
+                                                            {t.title}
+                                                        </p>
+                                                        <button
+                                                            onClick={(e) => handleDeleteTopic(t.id, e)}
+                                                            className="p-1 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-all"
+                                                            title="Delete"
+                                                        >
+                                                            <Trash size={16} />
+                                                        </button>
+                                                    </div>
+                                                </button>
+                                            ))}
+                                        </>
+                                    )}
+                                </div>
+
+                                <button
+                                    onClick={resetForm}
+                                    className="w-full mt-4 px-4 py-2.5 border-2 border-dashed border-slate-300 text-slate-600 rounded-xl hover:border-emerald-400 hover:text-emerald-700 font-medium transition-colors"
+                                >
+                                    + New Topic
+                                </button>
                             </div>
-                            {topicId && <button onClick={resetForm} className="text-xs font-bold text-gray-400 hover:text-white border border-white/10 px-3 py-1.5 rounded-lg">Cancel</button>}
                         </div>
 
-                        {/* Alerts */}
-                        {error && <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-200 text-sm flex gap-2"><LogOut size={16} /> {error}</div>}
-                        {successMsg && <div className="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-200 text-sm flex gap-2"><CheckSquare size={16} /> {successMsg}</div>}
+                        {/* Right: Editor Form */}
+                        <div className="lg:col-span-2">
+                            <div className="space-y-6">
+                                {/* Basic Info */}
+                                <div className="glass-panel rounded-2xl p-6">
+                                    <h3 className="text-lg font-semibold text-slate-900 mb-4">Basic Information</h3>
+                                    <div className="space-y-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-slate-700 mb-2">Topic Title *</label>
+                                            <input
+                                                type="text"
+                                                placeholder="Enter topic title..."
+                                                value={topicTitle}
+                                                onChange={(e) => setTopicTitle(e.target.value)}
+                                                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none input-glow focus:border-emerald-500 text-slate-900 placeholder-slate-400"
+                                            />
+                                        </div>
 
-                        <div className="space-y-6">
-                            {/* Title Input */}
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">Title</label>
-                                <input type="text" value={topicTitle} onChange={e => setTopicTitle(e.target.value)} className="w-full p-4 bg-black/20 border border-white/10 rounded-xl text-white outline-none focus:border-emerald-500 text-lg font-semibold" placeholder="Topic Title" />
-                            </div>
-
-                            {/* SEO Inputs */}
-                            <div className="p-5 bg-black/20 border border-white/5 rounded-2xl grid md:grid-cols-2 gap-4">
-                                <div className="md:col-span-2 text-emerald-400 font-bold text-xs uppercase tracking-wider border-b border-white/5 pb-2 mb-2">SEO Settings</div>
-                                <div>
-                                    <label className="text-xs text-gray-500 mb-1 block">Year</label>
-                                    <select value={yearSlug} onChange={e => setYearSlug(e.target.value)} className="w-full p-2.5 bg-white/5 border border-white/10 rounded-lg text-white text-sm outline-none focus:border-emerald-500">
-                                        <option value="1st-year" className="bg-[#0f172a]">1st Year</option>
-                                        <option value="2nd-year" className="bg-[#0f172a]">2nd Year</option>
-                                        <option value="3rd-year" className="bg-[#0f172a]">3rd Year</option>
-                                        <option value="4th-year" className="bg-[#0f172a]">4th Year</option>
-                                        <option value="gpat" className="bg-[#0f172a]">GPAT</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className="text-xs text-gray-500 mb-1 block">Unit No.</label>
-                                    <input type="number" value={unitNumber} onChange={e => setUnitNumber(parseInt(e.target.value))} className="w-full p-2.5 bg-white/5 border border-white/10 rounded-lg text-white text-sm outline-none focus:border-emerald-500" />
-                                </div>
-                                <div>
-                                    <label className="text-xs text-gray-500 mb-1 block">Main Keyword</label>
-                                    <input type="text" value={primaryKeyword} onChange={e => setPrimaryKeyword(e.target.value)} className="w-full p-2.5 bg-white/5 border border-white/10 rounded-lg text-white text-sm outline-none focus:border-emerald-500" />
-                                </div>
-                                <div>
-                                    <label className="text-xs text-gray-500 mb-1 block">Related Keywords</label>
-                                    <input type="text" value={targetKeywords} onChange={e => setTargetKeywords(e.target.value)} className="w-full p-2.5 bg-white/5 border border-white/10 rounded-lg text-white text-sm outline-none focus:border-emerald-500" />
-                                </div>
-                            </div>
-
-                            {/* YouTube */}
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">YouTube URL</label>
-                                <input type="text" value={youtubeId} onChange={e => setYoutubeId(e.target.value)} className="w-full p-3 bg-black/20 border border-white/10 rounded-xl text-white outline-none focus:border-red-500 font-mono text-sm" placeholder="https://youtube.com/..." />
-                            </div>
-
-                            {/* Quill */}
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">Content</label>
-                                <div className="bg-white rounded-xl overflow-hidden text-black border-4 border-white/10">
-                                    <ReactQuill theme="snow" value={blogContent} onChange={setBlogContent} modules={modules} style={{ height: '300px', marginBottom: '40px' }} />
-                                </div>
-                            </div>
-
-                            {/* Notes */}
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">PDF Notes</label>
-                                <input type="file" accept=".pdf" onChange={e => setNotesFile(e.target.files[0])} className="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-white/5 file:text-emerald-400 hover:file:bg-white/10" />
-                            </div>
-
-                            {/* Quiz */}
-                            <div className="border-t border-white/10 pt-6">
-                                <div className="text-sm font-bold text-white mb-4 uppercase tracking-wider">Quiz Questions</div>
-                                {quizQuestions.map((q, idx) => (
-                                    <div key={q.id} className="mb-4 p-4 bg-black/20 border border-white/10 rounded-xl relative group">
-                                        <button onClick={() => setQuizQuestions(quizQuestions.filter(i => i.id !== q.id))} className="absolute top-2 right-2 text-gray-500 hover:text-red-400"><Trash size={14} /></button>
-                                        <div className="flex gap-2 mb-2"><span className="text-xs font-bold text-emerald-500">Q{idx + 1}</span><input value={q.question} onChange={e => updateQuestion(q.id, 'question', e.target.value)} className="flex-1 bg-transparent border-none text-white text-sm focus:ring-0 placeholder-gray-600" placeholder="Question" /></div>
-                                        <div className="grid grid-cols-2 gap-2">{q.options.map((opt, oIdx) => (<div key={oIdx} className="flex gap-2 bg-white/5 p-2 rounded-lg"><input type="radio" checked={q.correct === oIdx} onChange={() => updateQuestion(q.id, 'correct', oIdx)} className="accent-emerald-500" /><input value={opt} onChange={e => updateOption(q.id, oIdx, e.target.value)} className="w-full bg-transparent border-none text-gray-300 text-xs focus:ring-0" placeholder={`Option ${oIdx + 1}`} /></div>))}</div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-slate-700 mb-2">YouTube Video ID / URL</label>
+                                            <input
+                                                type="text"
+                                                placeholder="e.g., dQw4w9WgXcQ or full URL"
+                                                value={youtubeId}
+                                                onChange={(e) => setYoutubeId(e.target.value)}
+                                                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none input-glow focus:border-emerald-500 text-slate-900 placeholder-slate-400"
+                                            />
+                                        </div>
                                     </div>
-                                ))}
-                                <button onClick={addQuestion} className="w-full py-3 border border-dashed border-white/20 text-gray-400 rounded-xl hover:text-white hover:border-emerald-500 text-sm font-bold flex justify-center gap-2"><Plus size={16} /> Add Question</button>
-                            </div>
+                                </div>
 
-                            <button onClick={saveTopic} disabled={loading} className="w-full py-4 bg-emerald-500 hover:bg-emerald-400 text-black font-bold rounded-xl shadow-lg transition-all disabled:opacity-50 flex items-center justify-center gap-2">
-                                {loading ? 'Saving...' : (topicId ? 'Update Topic' : 'Publish Topic')}
-                            </button>
+                                {/* Blog Content */}
+                                <div className="glass-panel rounded-2xl p-6">
+                                    <h3 className="text-lg font-semibold text-slate-900 mb-4">Blog Content</h3>
+                                    <div className="bg-white rounded-xl overflow-hidden border border-slate-200">
+                                        <ReactQuill
+                                            theme="snow"
+                                            value={blogContent}
+                                            onChange={setBlogContent}
+                                            modules={modules}
+                                            style={{ height: '320px', marginBottom: '44px' }}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* SEO */}
+                                <div className="glass-panel rounded-2xl p-6">
+                                    <h3 className="text-lg font-semibold text-slate-900 mb-4">SEO & Metadata</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-slate-700 mb-2">Meta Title</label>
+                                            <input
+                                                type="text"
+                                                placeholder="SEO-optimized title"
+                                                value={metaTitle}
+                                                onChange={(e) => setMetaTitle(e.target.value)}
+                                                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none input-glow focus:border-emerald-500 text-slate-900 placeholder-slate-400"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-slate-700 mb-2">Year Slug</label>
+                                            <select
+                                                value={yearSlug}
+                                                onChange={(e) => setYearSlug(e.target.value)}
+                                                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none input-glow focus:border-emerald-500 text-slate-900"
+                                            >
+                                                <option value="1st-year">1st Year</option>
+                                                <option value="2nd-year">2nd Year</option>
+                                                <option value="3rd-year">3rd Year</option>
+                                                <option value="4th-year">4th Year</option>
+                                                <option value="gpat">GPAT</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-slate-700 mb-2">Unit Number</label>
+                                            <input
+                                                type="number"
+                                                min={1}
+                                                value={unitNumber}
+                                                onChange={(e) => setUnitNumber(parseInt(e.target.value || '1'))}
+                                                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none input-glow focus:border-emerald-500 text-slate-900"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-slate-700 mb-2">Primary Keyword</label>
+                                            <input
+                                                type="text"
+                                                placeholder="Main keyword"
+                                                value={primaryKeyword}
+                                                onChange={(e) => setPrimaryKeyword(e.target.value)}
+                                                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none input-glow focus:border-emerald-500 text-slate-900 placeholder-slate-400"
+                                            />
+                                        </div>
+                                        <div className="md:col-span-2">
+                                            <label className="block text-sm font-medium text-slate-700 mb-2">Meta Description</label>
+                                            <textarea
+                                                rows={3}
+                                                placeholder="SEO meta description"
+                                                value={metaDescription}
+                                                onChange={(e) => setMetaDescription(e.target.value)}
+                                                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none input-glow focus:border-emerald-500 text-slate-900 placeholder-slate-400 resize-none"
+                                            />
+                                        </div>
+                                        <div className="md:col-span-2">
+                                            <label className="block text-sm font-medium text-slate-700 mb-2">Target Keywords (comma separated)</label>
+                                            <input
+                                                type="text"
+                                                placeholder="keyword1, keyword2, keyword3"
+                                                value={targetKeywords}
+                                                onChange={(e) => setTargetKeywords(e.target.value)}
+                                                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none input-glow focus:border-emerald-500 text-slate-900 placeholder-slate-400"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Quiz */}
+                                <div className="glass-panel rounded-2xl p-6">
+                                    <div className="flex items-center justify-between mb-4 gap-3">
+                                        <h3 className="text-lg font-semibold text-slate-900">Quiz Questions</h3>
+                                        <button
+                                            onClick={addQuestion}
+                                            className="px-4 py-2 bg-emerald-100 text-emerald-700 rounded-lg hover:bg-emerald-200 font-medium text-sm flex items-center gap-2 transition-colors"
+                                        >
+                                            <Plus className="w-4 h-4" />
+                                            Add Question
+                                        </button>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        {quizQuestions.map((q, idx) => (
+                                            <div key={q.id} className="border border-slate-200 rounded-xl p-4 bg-white">
+                                                <div className="flex items-start justify-between mb-3 gap-3">
+                                                    <span className="text-sm font-medium text-slate-700">Question {idx + 1}</span>
+                                                    <button
+                                                        onClick={() => setQuizQuestions(quizQuestions.filter(i => i.id !== q.id))}
+                                                        className="text-red-500 hover:text-red-700 transition-colors"
+                                                        title="Delete"
+                                                    >
+                                                        <Trash className="w-5 h-5" />
+                                                    </button>
+                                                </div>
+                                                <input
+                                                    type="text"
+                                                    placeholder="Enter question"
+                                                    value={q.question}
+                                                    onChange={(e) => updateQuestion(q.id, 'question', e.target.value)}
+                                                    className="w-full mb-3 px-3 py-2 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-emerald-500 text-sm"
+                                                />
+
+                                                <div className="space-y-2">
+                                                    {(q.options || []).map((opt, oIdx) => (
+                                                        <div key={oIdx} className="flex items-center gap-2">
+                                                            <input
+                                                                type="radio"
+                                                                checked={q.correct === oIdx}
+                                                                onChange={() => updateQuestion(q.id, 'correct', oIdx)}
+                                                                className="accent-emerald-600"
+                                                                name={`correct-${q.id}`}
+                                                            />
+                                                            <input
+                                                                type="text"
+                                                                placeholder={`Option ${String.fromCharCode(65 + oIdx)}`}
+                                                                value={opt}
+                                                                onChange={(e) => updateOption(q.id, oIdx, e.target.value)}
+                                                                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-emerald-500"
+                                                            />
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        ))}
+
+                                        {quizQuestions.length === 0 && (
+                                            <div className="text-center py-8 text-slate-500">
+                                                No questions added yet. Click “Add Question” to get started.
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Attachments */}
+                                <div className="glass-panel rounded-2xl p-6">
+                                    <h3 className="text-lg font-semibold text-slate-900 mb-4">Attachments</h3>
+                                    <div className="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center transition-colors">
+                                        <Upload className="w-10 h-10 text-slate-400 mx-auto mb-3" />
+                                        <p className="text-slate-700 font-medium mb-1">Upload notes file (PDF)</p>
+                                        <p className="text-sm text-slate-500 mb-4">Choose a file to attach to this topic.</p>
+                                        <input
+                                            type="file"
+                                            accept=".pdf"
+                                            onChange={e => setNotesFile(e.target.files[0])}
+                                            className="block w-full text-sm text-slate-600 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-800 hover:file:bg-slate-200"
+                                        />
+                                        {notesFile?.name && (
+                                            <div className="mt-3 text-sm text-slate-600">Selected: <span className="font-semibold">{notesFile.name}</span></div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
