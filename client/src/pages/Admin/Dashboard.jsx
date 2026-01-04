@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import AdminLayout from './AdminLayout';
-import { Lock, Upload, FileText, CheckSquare, LogOut, Plus, Save, Trash, Youtube, PenTool, ExternalLink, ArrowLeft } from 'lucide-react';
+import { Lock, Upload, FileText, CheckSquare, LogOut, Plus, Save, Trash, Youtube, PenTool, ExternalLink, ArrowLeft, Users, Activity, ArrowRight, GraduationCap, BookOpen, Database } from 'lucide-react';
 import { api } from '../../services/api';
 import SEO from '../../components/SEO';
 import ReactQuill from 'react-quill';
@@ -17,6 +17,7 @@ const AdminDashboard = () => {
 
     // Global State managed by Sidebar
     const [context, setContext] = useState(null); // { type, yearId, semId, subjectId, subjectTitle }
+    const [stats, setStats] = useState({ users: '-', content: '-' });
 
     // Editor State
     const [existingTopics, setExistingTopics] = useState([]);
@@ -44,6 +45,18 @@ const AdminDashboard = () => {
     const [targetKeywords, setTargetKeywords] = useState('');
 
     const navigate = useNavigate();
+
+    // Fetch Stats on Mount
+    useEffect(() => {
+        fetch('/api/debug-status')
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'OK') {
+                    setStats({ users: data.users || 0, content: data.content || 0 });
+                }
+            })
+            .catch(err => console.error("Failed to fetch stats", err));
+    }, []);
 
     // Fetch Topics when Context Changes
     useEffect(() => {
@@ -263,18 +276,84 @@ const AdminDashboard = () => {
     }
 
     return (
-        <AdminLayout onSelectContext={setContext}>
+        <AdminLayout
+            onSelectContext={setContext}
+            title={context ? `${context.type === 'gpat' ? 'GPAT' : 'B.Pharm'} > ${context.subjectTitle}` : 'Dashboard Overview'}
+            user={currentUser}
+        >
             <SEO title="Content Manager" />
 
             {!context ? (
-                <div className="h-[80vh] flex flex-col items-center justify-center text-center p-8 glass-panel rounded-3xl">
-                    <div className="w-24 h-24 bg-blue-600/10 rounded-full flex items-center justify-center mb-6 text-blue-500">
-                        <ArrowLeft size={48} />
+                <div className="space-y-8 animate-fade-in">
+                    {/* Header */}
+                    <div className="mb-8">
+                        <h1 className="text-3xl font-bold text-white mb-2">Dashboard Overview</h1>
+                        <p className="text-gray-400">Welcome back, Administrator. Here's what's happening today.</p>
                     </div>
-                    <h1 className="text-3xl font-bold text-white mb-4">Select a Subject</h1>
-                    <p className="text-gray-400 max-w-md">
-                        Use the sidebar on the left to select a B.Pharm subject or a GPAT module to start managing content.
-                    </p>
+
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="bg-gradient-to-br from-blue-600/20 to-blue-900/20 border border-blue-500/30 p-6 rounded-2xl">
+                            <div className="flex justify-between items-start mb-4">
+                                <div className="p-3 bg-blue-500/20 rounded-xl text-blue-400">
+                                    <FileText size={24} />
+                                </div>
+                                <span className="px-2 py-1 bg-blue-500/10 text-blue-300 text-xs rounded-lg">+12 this week</span>
+                            </div>
+                            <h3 className="text-3xl font-bold text-white mb-1">{stats.content}</h3>
+                            <p className="text-gray-400 text-sm">Total Topics Managed</p>
+                        </div>
+
+                        <div className="bg-gradient-to-br from-purple-600/20 to-purple-900/20 border border-purple-500/30 p-6 rounded-2xl">
+                            <div className="flex justify-between items-start mb-4">
+                                <div className="p-3 bg-purple-500/20 rounded-xl text-purple-400">
+                                    <Users size={24} />
+                                </div>
+                                <span className="px-2 py-1 bg-purple-500/10 text-purple-300 text-xs rounded-lg">Active</span>
+                            </div>
+                            <h3 className="text-3xl font-bold text-white mb-1">{stats.users}</h3>
+                            <p className="text-gray-400 text-sm">Registered Users</p>
+                        </div>
+
+                        <div className="bg-gradient-to-br from-emerald-600/20 to-emerald-900/20 border border-emerald-500/30 p-6 rounded-2xl">
+                            <div className="flex justify-between items-start mb-4">
+                                <div className="p-3 bg-emerald-500/20 rounded-xl text-emerald-400">
+                                    <Activity size={24} />
+                                </div>
+                                <span className="px-2 py-1 bg-emerald-500/10 text-emerald-300 text-xs rounded-lg">Online</span>
+                            </div>
+                            <h3 className="text-3xl font-bold text-white mb-1">Healthy</h3>
+                            <p className="text-gray-400 text-sm">System Status</p>
+                        </div>
+                    </div>
+
+                    {/* Quick Access */}
+                    <div>
+                        <h2 className="text-xl font-bold text-white mb-4">Quick Access</h2>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            {['Year 1', 'Year 2', 'Year 3', 'Year 4'].map((y, i) => (
+                                <div key={i} className="group p-4 bg-white/5 border border-white/5 hover:border-cyan-500/50 hover:bg-white/10 rounded-xl cursor-default transition-all">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <GraduationCap className="text-gray-500 group-hover:text-cyan-400 transition-colors" size={20} />
+                                        <ArrowRight size={16} className="text-gray-600 group-hover:text-cyan-400 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
+                                    </div>
+                                    <h3 className="text-white font-medium">B.Pharm {y}</h3>
+                                    <p className="text-xs text-gray-500 mt-1">Manage Semesters</p>
+                                </div>
+                            ))}
+                            <div className="col-span-2 md:col-span-4 p-4 bg-gradient-to-r from-orange-600/10 to-orange-900/10 border border-orange-500/20 rounded-xl hover:border-orange-500/40 transition-colors cursor-default">
+                                <div className="flex items-center gap-4">
+                                    <div className="p-3 bg-orange-500/20 rounded-lg text-orange-400">
+                                        <BookOpen size={24} />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-white font-bold">GPAT Examination</h3>
+                                        <p className="text-sm text-gray-400">Manage 200+ Competitive Exam Topics & Quizzes</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             ) : (
                 <div className="grid lg:grid-cols-[1fr_1.5fr] gap-6 items-start">

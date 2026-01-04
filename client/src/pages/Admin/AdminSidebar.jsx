@@ -72,7 +72,7 @@ const AdminSidebar = ({ onLogout, onSelectContext }) => {
                 <div className="mb-6">
                     <Link
                         to="/admin"
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${location.pathname === '/admin' && !location.search ? 'bg-blue-600/20 text-blue-400 border border-blue-600/30' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all border ${location.pathname === '/admin' && !location.search ? 'bg-gradient-to-r from-blue-600/20 to-blue-900/10 text-blue-400 border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.1)]' : 'border-transparent text-gray-400 hover:bg-white/5 hover:text-white'}`}
                         onClick={() => { if (onSelectContext) onSelectContext(null); setMobileOpen(false); }}
                     >
                         <LayoutDashboard size={20} />
@@ -91,13 +91,13 @@ const AdminSidebar = ({ onLogout, onSelectContext }) => {
                         <div key={year.id} className="mb-2">
                             <button
                                 onClick={() => toggleYear(year.id)}
-                                className={`w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-sm transition-colors ${expandedYear === year.id ? 'text-white bg-white/5' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
+                                className={`w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm transition-all border border-transparent ${expandedYear === year.id ? 'bg-gradient-to-r from-blue-600/10 to-transparent border-l-blue-500 border-l-2 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
                             >
                                 <div className="flex items-center gap-3">
-                                    <GraduationCap size={18} />
+                                    <GraduationCap size={18} className={expandedYear === year.id ? 'text-blue-400' : ''} />
                                     <span>{year.title}</span>
                                 </div>
-                                {expandedYear === year.id ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                                {expandedYear === year.id ? <ChevronDown size={14} className="text-blue-400" /> : <ChevronRight size={14} />}
                             </button>
 
                             <AnimatePresence>
@@ -151,13 +151,13 @@ const AdminSidebar = ({ onLogout, onSelectContext }) => {
                         <div key={module.id} className="mb-1">
                             <button
                                 onClick={() => toggleYear(module.id)} // Reusing toggleYear for simplicity
-                                className={`w-full flex items-center justify-between px-4 py-2.5 rounded-lg text-sm transition-colors ${expandedYear === module.id ? 'text-cyan-400 bg-cyan-900/10' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
+                                className={`w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm transition-all border border-transparent ${expandedYear === module.id ? 'bg-gradient-to-r from-orange-600/10 to-transparent border-l-orange-500 border-l-2 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
                             >
                                 <div className="flex items-center gap-3">
-                                    <BookOpen size={18} />
+                                    <BookOpen size={18} className={expandedYear === module.id ? 'text-orange-400' : ''} />
                                     <span>{module.title}</span>
                                 </div>
-                                {expandedYear === module.id ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                                {expandedYear === module.id ? <ChevronDown size={14} className="text-orange-400" /> : <ChevronRight size={14} />}
                             </button>
 
                             <AnimatePresence>
