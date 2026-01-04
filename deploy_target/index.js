@@ -57,10 +57,11 @@ app.get('/api/health', (req, res) => {
 // Serve React Frontend (Production)
 // Support both deploy-style `client_build` and repo-committed Vite `client/dist`.
 const possiblePaths = [
-    path.join(__dirname, 'client_build'),
     path.join(__dirname, '../client/dist'),
     path.join(process.cwd(), 'client/dist'),
-    path.join(process.cwd(), 'dist')
+    path.join(process.cwd(), 'dist'),
+    // Fallback for legacy deployments
+    path.join(__dirname, 'client_build')
 ];
 
 let buildPath = null;
