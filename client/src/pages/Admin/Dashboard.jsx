@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import AdminLayout from './AdminLayout';
-import { Lock, Upload, FileText, CheckSquare, LogOut, Plus, Save, Trash, Youtube, PenTool, ExternalLink, Activity, BookOpen, Clock, Users, GraduationCap, User, ArrowRight, ChevronRight, ChevronLeft, AlertTriangle } from 'lucide-react';
+import { Lock, Mail, Upload, FileText, CheckSquare, LogOut, Plus, Save, Trash, Youtube, PenTool, ExternalLink, Activity, BookOpen, Clock, Users, GraduationCap, User, ArrowRight, ChevronRight, ChevronLeft, AlertTriangle } from 'lucide-react';
 import { api } from '../../services/api';
 import SEO from '../../components/SEO';
 import ReactQuill from 'react-quill';
@@ -270,18 +270,39 @@ const AdminDashboard = () => {
         ],
     };
 
+    const dashboardYearIds = ['year-1', 'year-2', 'year-3', 'year-4'];
+    const getYearSubjectCount = (yearId) => {
+        const yearData = curriculum.find(c => c.id === yearId);
+        if (!yearData?.semesters?.length) return 0;
+        return yearData.semesters.reduce((acc, sem) => acc + (sem.subjects?.length || 0), 0);
+    };
+    const maxYearSubjects = Math.max(1, ...dashboardYearIds.map(getYearSubjectCount));
+
     if (!currentUser) {
         return (
-            <div className="min-h-screen flex items-center justify-center px-4 py-10 bg-[var(--bg-dark)] font-sans">
+            <div className="min-h-screen flex items-center justify-center px-4 py-10 bg-[var(--bg-dark)] font-sans relative overflow-hidden">
                 <SEO title="Admin Login" />
-                <div className="w-full max-w-md animate-fade-in-up">
+
+                {/* Background glow */}
+                <div className="pointer-events-none absolute inset-0">
+                    <div
+                        className="absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full blur-3xl opacity-25"
+                        style={{ background: 'var(--grad-primary)' }}
+                    />
+                    <div
+                        className="absolute -bottom-56 left-1/2 h-[560px] w-[560px] -translate-x-1/2 rounded-full blur-3xl opacity-15"
+                        style={{ background: 'var(--grad-primary)' }}
+                    />
+                </div>
+
+                <div className="w-full max-w-md animate-fade-in-up relative">
                     <div className="glass-panel p-7 md:p-9 rounded-2xl border border-white/10 shadow-2xl">
                         <div className="text-center mb-7">
                             <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg shadow-emerald-500/20 bg-[var(--primary)] text-black">
-                                <Lock size={30} />
+                                <Lock size={26} />
                             </div>
                             <div className="text-[22px] md:text-2xl font-bold text-white leading-tight">Welcome back</div>
-                            <p className="text-gray-400 text-sm mt-1">Sign in to manage content and settings.</p>
+                            <p className="text-gray-400 text-sm mt-1">Enter your credentials to access the dashboard.</p>
                         </div>
                         {authError && (
                             <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-200 text-sm flex gap-2">
@@ -292,32 +313,42 @@ const AdminDashboard = () => {
                         <form onSubmit={handleLogin} className="space-y-5">
                             <div className="space-y-2">
                                 <label className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider ml-1">Email</label>
-                                <input
-                                    type="email"
-                                    value={email}
-                                    onChange={e => setEmail(e.target.value)}
-                                    className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
-                                    placeholder="admin@learnpharmacy.in"
-                                    autoComplete="email"
-                                    required
-                                />
+                                <div className="relative">
+                                    <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                                    <input
+                                        type="email"
+                                        value={email}
+                                        onChange={e => setEmail(e.target.value)}
+                                        className="w-full pl-11 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                                        placeholder="admin@learnpharmacy.in"
+                                        autoComplete="email"
+                                        required
+                                    />
+                                </div>
                             </div>
                             <div className="space-y-2">
                                 <label className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider ml-1">Password</label>
-                                <input
-                                    type="password"
-                                    value={password}
-                                    onChange={e => setPassword(e.target.value)}
-                                    className="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
-                                    placeholder="••••••••"
-                                    autoComplete="current-password"
-                                    required
-                                />
+                                <div className="relative">
+                                    <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                                    <input
+                                        type="password"
+                                        value={password}
+                                        onChange={e => setPassword(e.target.value)}
+                                        className="w-full pl-11 pr-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                                        placeholder="••••••••"
+                                        autoComplete="current-password"
+                                        required
+                                    />
+                                </div>
                             </div>
                             <button type="submit" className="w-full py-3.5 bg-[var(--primary)] hover:opacity-90 text-black font-bold rounded-xl shadow-lg shadow-emerald-500/20">
                                 Sign In
                             </button>
                         </form>
+
+                        <div className="mt-6 text-center text-[11px] text-gray-500">
+                            © {new Date().getFullYear()} LearnPharmacy. All rights reserved.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -342,8 +373,8 @@ const AdminDashboard = () => {
                     {/* Header */}
                     <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                         <div className="min-w-0">
-                            <div className="text-2xl md:text-[28px] font-bold text-white leading-tight">Dashboard</div>
-                            <p className="text-gray-400 text-sm mt-1">Welcome back, {currentUser?.name || 'Administrator'}.</p>
+                            <div className="text-2xl md:text-[28px] font-bold text-white leading-tight">Dashboard Overview</div>
+                            <p className="text-gray-400 text-sm mt-1">Here’s what’s happening in your academy today.</p>
                         </div>
                         <div className="flex gap-3">
                             <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[var(--primary)] text-black font-bold text-sm shadow-lg shadow-emerald-500/20 hover:opacity-90">
@@ -353,34 +384,49 @@ const AdminDashboard = () => {
                     </div>
 
                     {/* Stats */}
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div className="glass-panel p-5 rounded-2xl relative overflow-hidden group hover:border-emerald-500/30 transition-all">
-                            <div className="flex items-start justify-between">
+                            <div className="flex items-center justify-between">
                                 <div className="p-2.5 bg-white/5 rounded-xl text-emerald-400"><Users size={20} /></div>
+                                <span className="text-[10px] font-bold text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-2 py-1 rounded-full">Users</span>
                             </div>
-                            <p className="text-gray-400 text-[11px] font-bold uppercase tracking-wider mt-3">Users</p>
-                            <div className="text-2xl md:text-[28px] font-bold text-white leading-none mt-2">{stats.users}</div>
+                            <div className="text-2xl md:text-[28px] font-bold text-white leading-none mt-4">{stats.users}</div>
+                            <div className="mt-4 h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                <div className="h-full bg-emerald-500" style={{ width: `${Math.min(100, Math.max(4, Number(stats.users) ? (Number(stats.users) / 50) * 100 : 8))}%` }} />
+                            </div>
                         </div>
+
                         <div className="glass-panel p-5 rounded-2xl relative overflow-hidden group hover:border-cyan-500/30 transition-all">
-                            <div className="flex items-start justify-between">
+                            <div className="flex items-center justify-between">
                                 <div className="p-2.5 bg-white/5 rounded-xl text-cyan-400"><Activity size={20} /></div>
+                                <span className="text-[10px] font-bold text-cyan-300 bg-cyan-500/10 border border-cyan-500/20 px-2 py-1 rounded-full">Status</span>
                             </div>
-                            <p className="text-gray-400 text-[11px] font-bold uppercase tracking-wider mt-3">System</p>
-                            <div className="text-2xl md:text-[28px] font-bold text-white leading-none mt-2">Online</div>
+                            <div className="text-2xl md:text-[28px] font-bold text-white leading-none mt-4">Healthy</div>
+                            <div className="mt-4 h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                <div className="h-full bg-cyan-500" style={{ width: '72%' }} />
+                            </div>
                         </div>
+
                         <div className="glass-panel p-5 rounded-2xl relative overflow-hidden group hover:border-purple-500/30 transition-all">
-                            <div className="flex items-start justify-between">
+                            <div className="flex items-center justify-between">
                                 <div className="p-2.5 bg-white/5 rounded-xl text-purple-400"><BookOpen size={20} /></div>
+                                <span className="text-[10px] font-bold text-purple-300 bg-purple-500/10 border border-purple-500/20 px-2 py-1 rounded-full">Content</span>
                             </div>
-                            <p className="text-gray-400 text-[11px] font-bold uppercase tracking-wider mt-3">Content</p>
-                            <div className="text-2xl md:text-[28px] font-bold text-white leading-none mt-2">{stats.content}</div>
+                            <div className="text-2xl md:text-[28px] font-bold text-white leading-none mt-4">{stats.content}</div>
+                            <div className="mt-4 h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                <div className="h-full bg-purple-500" style={{ width: `${Math.min(100, Math.max(6, Number(stats.content) ? (Number(stats.content) / 200) * 100 : 10))}%` }} />
+                            </div>
                         </div>
+
                         <div className="glass-panel p-5 rounded-2xl relative overflow-hidden group hover:border-orange-500/30 transition-all">
-                            <div className="flex items-start justify-between">
+                            <div className="flex items-center justify-between">
                                 <div className="p-2.5 bg-white/5 rounded-xl text-orange-400"><CheckSquare size={20} /></div>
+                                <span className="text-[10px] font-bold text-orange-300 bg-orange-500/10 border border-orange-500/20 px-2 py-1 rounded-full">Quizzes</span>
                             </div>
-                            <p className="text-gray-400 text-[11px] font-bold uppercase tracking-wider mt-3">Quizzes</p>
-                            <div className="text-2xl md:text-[28px] font-bold text-white leading-none mt-2">{stats.quizzes}</div>
+                            <div className="text-2xl md:text-[28px] font-bold text-white leading-none mt-4">{stats.quizzes}</div>
+                            <div className="mt-4 h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                <div className="h-full bg-orange-500" style={{ width: `${Math.min(100, Math.max(6, Number(stats.quizzes) ? (Number(stats.quizzes) / 50) * 100 : 10))}%` }} />
+                            </div>
                         </div>
                     </div>
 
@@ -390,9 +436,11 @@ const AdminDashboard = () => {
                             <div className="p-2 bg-blue-500/10 rounded-lg"><GraduationCap size={20} className="text-blue-400" /></div>
                             Academic Management
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            {['year-1', 'year-2', 'year-3', 'year-4'].map((yearId) => {
-                                const yearTitle = yearId.replace('year-', 'Year ');
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {dashboardYearIds.map((yearId) => {
+                                const yearNumber = yearId.replace('year-', '');
+                                const subjectsCount = getYearSubjectCount(yearId);
+                                const subjectsRatio = subjectsCount / maxYearSubjects;
                                 return (
                                     <div
                                         key={yearId}
@@ -401,15 +449,27 @@ const AdminDashboard = () => {
                                     >
                                         <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-emerald-500/10 to-transparent rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
                                         <div className="relative z-10 flex items-start justify-between gap-3">
-                                            <span className="text-[10px] font-bold text-emerald-400 border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 rounded-full">ACADEMIC</span>
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white font-bold">Y{yearNumber}</div>
+                                                <span className="text-[10px] font-bold text-emerald-400 border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 rounded-full">ACADEMIC</span>
+                                            </div>
                                             <ExternalLink size={16} className="text-gray-600 group-hover:text-white transition-colors mt-1" />
                                         </div>
                                         <div className="relative z-10 mt-4">
-                                            <div className="text-xl font-bold text-white leading-tight">{yearTitle}</div>
-                                            <p className="text-xs text-gray-400 mt-1">Manage subjects & content</p>
+                                            <div className="text-xl font-bold text-white leading-tight">B.Pharm Year {yearNumber}</div>
+                                            <p className="text-xs text-gray-400 mt-1">Manage semesters, subjects and content.</p>
                                         </div>
-                                        <div className="relative z-10 mt-5 w-full px-4 py-3 bg-white/5 border border-white/10 text-gray-300 text-xs font-bold rounded-xl group-hover:bg-emerald-500 group-hover:text-black group-hover:border-emerald-500 transition-all flex items-center justify-center gap-2 select-none">
-                                            Open Year Manager <ArrowRight size={14} />
+                                        <div className="relative z-10 mt-5">
+                                            <div className="flex items-center justify-between text-[11px] text-gray-400 font-semibold">
+                                                <span>Subjects</span>
+                                                <span className="text-gray-300">{subjectsCount}</span>
+                                            </div>
+                                            <div className="mt-2 h-2 w-full bg-white/5 rounded-full overflow-hidden">
+                                                <div className="h-full bg-emerald-500" style={{ width: `${Math.max(8, Math.round(subjectsRatio * 100))}%` }} />
+                                            </div>
+                                            <div className="mt-4 w-full px-4 py-3 bg-white/5 border border-white/10 text-gray-300 text-xs font-bold rounded-xl group-hover:bg-emerald-500 group-hover:text-black group-hover:border-emerald-500 transition-all flex items-center justify-center gap-2 select-none">
+                                                Manage Year <ArrowRight size={14} />
+                                            </div>
                                         </div>
                                     </div>
                                 );
