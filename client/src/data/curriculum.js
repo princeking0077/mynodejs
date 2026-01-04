@@ -4,20 +4,125 @@ export const curriculum = [
         title: 'GPAT & Competitive Exams',
         semesters: [
             {
-                id: 'gpat-60-days',
-                title: '60 Days Crack GPAT',
-                subjects: Array.from({ length: 60 }, (_, i) => ({
-                    id: `gpat-day-${i + 1}`,
-                    title: `Day ${i + 1}`,
-                    type: 'Study Plan'
-                }))
+                id: 'gpat-pharmacology',
+                title: 'Pharmacology',
+                subjects: [
+                    { id: 'gpat-pharm-gen', title: 'General Pharmacology', type: 'Theory' },
+                    { id: 'gpat-pharm-ans', title: 'Autonomic Nervous System', type: 'Theory' },
+                    { id: 'gpat-pharm-cns', title: 'Central Nervous System', type: 'Theory' },
+                    { id: 'gpat-pharm-cvs', title: 'Cardiovascular Pharmacology', type: 'Theory' },
+                    { id: 'gpat-pharm-respgit', title: 'Respiratory & GIT', type: 'Theory' },
+                    { id: 'gpat-pharm-endo', title: 'Endocrine Pharmacology', type: 'Theory' },
+                    { id: 'gpat-pharm-chemo', title: 'Chemotherapy', type: 'Theory' },
+                    { id: 'gpat-pharm-tox', title: 'Toxicology & Bioassay', type: 'Theory' }
+                ]
             },
             {
-                id: 'gpat-resources',
-                title: 'Additional Resources',
+                id: 'gpat-pharmaceutics',
+                title: 'Pharmaceutics',
                 subjects: [
-                    { id: 'gpat-prev-years', title: 'Previous Year Papers', type: 'PDFs & Solutions' },
-                    { id: 'gpat-mock-tests', title: 'Mock Tests', type: 'Interactive' }
+                    { id: 'gpat-ceutics-physical', title: 'Physical Pharmaceutics', type: 'Theory' },
+                    { id: 'gpat-ceutics-calcs', title: 'Pharmaceutical Calculations', type: 'Theory' },
+                    { id: 'gpat-ceutics-conv', title: 'Conventional Dosage Forms', type: 'Theory' },
+                    { id: 'gpat-ceutics-adv', title: 'Advanced Dosage Forms', type: 'Theory' },
+                    { id: 'gpat-ceutics-bio', title: 'Biopharmaceutics & Pharmacokinetics', type: 'Theory' },
+                    { id: 'gpat-ceutics-ndds', title: 'NDDS', type: 'Theory' },
+                    { id: 'gpat-ceutics-ind', title: 'Industrial Pharmacy', type: 'Theory' },
+                    { id: 'gpat-ceutics-pack', title: 'Packaging & Stability', type: 'Theory' }
+                ]
+            },
+            {
+                id: 'gpat-pharm-chem',
+                title: 'Pharmaceutical Chemistry',
+                subjects: [
+                    { id: 'gpat-chem-med', title: 'Medicinal Chemistry', type: 'Theory' },
+                    { id: 'gpat-chem-org', title: 'Organic Chemistry', type: 'Theory' },
+                    { id: 'gpat-chem-inorg', title: 'Inorganic Pharmaceutical Chemistry', type: 'Theory' },
+                    { id: 'gpat-chem-phys', title: 'Physical Chemistry', type: 'Theory' }
+                ]
+            },
+            {
+                id: 'gpat-analysis',
+                title: 'Pharmaceutical Analysis',
+                subjects: [
+                    { id: 'gpat-analysis-main', title: 'Pharmaceutical Analysis (All Topics)', type: 'Theory' }
+                ]
+            },
+            {
+                id: 'gpat-pharmacognosy',
+                title: 'Pharmacognosy',
+                subjects: [
+                    { id: 'gpat-cog-main', title: 'Pharmacognosy (All Topics)', type: 'Theory' }
+                ]
+            },
+            {
+                id: 'gpat-biochem',
+                title: 'Biochemistry',
+                subjects: [
+                    { id: 'gpat-biochem-main', title: 'Biochemistry (All Topics)', type: 'Theory' }
+                ]
+            },
+            {
+                id: 'gpat-micro',
+                title: 'Microbiology',
+                subjects: [
+                    { id: 'gpat-micro-main', title: 'Microbiology (All Topics)', type: 'Theory' }
+                ]
+            },
+            {
+                id: 'gpat-biotech',
+                title: 'Biotechnology',
+                subjects: [
+                    { id: 'gpat-biotech-main', title: 'Biotechnology (All Topics)', type: 'Theory' }
+                ]
+            },
+            {
+                id: 'gpat-patho',
+                title: 'Pathophysiology',
+                subjects: [
+                    { id: 'gpat-patho-main', title: 'Pathophysiology (All Topics)', type: 'Theory' }
+                ]
+            },
+            {
+                id: 'gpat-clinical',
+                title: 'Clinical Pharmacy',
+                subjects: [
+                    { id: 'gpat-clinical-main', title: 'Clinical Pharmacy (All Topics)', type: 'Theory' }
+                ]
+            },
+            {
+                id: 'gpat-hospital',
+                title: 'Hospital & Community Pharmacy',
+                subjects: [
+                    { id: 'gpat-hospital-main', title: 'Hospital & Community Pharmacy', type: 'Theory' }
+                ]
+            },
+            {
+                id: 'gpat-juris',
+                title: 'Pharmaceutical Jurisprudence',
+                subjects: [
+                    { id: 'gpat-juris-main', title: 'Pharmaceutical Jurisprudence', type: 'Theory' }
+                ]
+            },
+            {
+                id: 'gpat-eng',
+                title: 'Pharmaceutical Engineering',
+                subjects: [
+                    { id: 'gpat-eng-main', title: 'Pharmaceutical Engineering', type: 'Theory' }
+                ]
+            },
+            {
+                id: 'gpat-biostat',
+                title: 'Biostatistics & Research',
+                subjects: [
+                    { id: 'gpat-biostat-main', title: 'Biostatistics & Research Methodology', type: 'Theory' }
+                ]
+            },
+            {
+                id: 'gpat-general',
+                title: 'General Awareness',
+                subjects: [
+                    { id: 'gpat-general-main', title: 'General Awareness', type: 'Theory' }
                 ]
             }
         ]
