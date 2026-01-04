@@ -262,6 +262,69 @@ const AdminDashboard = () => {
         }
     };
 
+    // Auto-Add Topics from Curriculum
+    const autoAddTopics = async () => {
+        if (!selectedSubject) return;
+        const subjectData = subjects.find(s => s.id === selectedSubject);
+        if (!subjectData?.topics?.length) {
+            alert("No predefined topics found in curriculum for this subject.");
+            return;
+        }
+
+        if (!window.confirm(`Found ${subjectData.topics.length} topics. Add them all?`)) return;
+
+        setLoading(true);
+        setError('');
+        setSuccessMsg('');
+
+        let addedCount = 0;
+        let skippedCount = 0;
+
+        try {
+            for (const topic of subjectData.topics) {
+                // Check if already exists
+                const exists = existingTopics.some(t => t.title === topic.title);
+                if (exists) {
+                    skippedCount++;
+                    continue;
+                }
+
+                // Prepare Data
+                const topicData = {
+                    subjectId: selectedSubject,
+                    title: topic.title,
+                    type: topic.type || 'animation',
+                    description: topic.description || '',
+                    // Default SEO
+                    yearSlug: yearSlug || '1st-year',
+                    unitNumber: 1,
+                    primaryKeyword: topic.title,
+                    targetKeywords: [],
+                    // Defaults
+                    youtubeId: '',
+                    blogContent: '',
+                    metaTitle: topic.title,
+                    metaDescription: `Learn about ${topic.title}`,
+                    quiz: [],
+                    faqs: []
+                };
+
+                // Add
+                await api.saveTopic(topicData);
+                addedCount++;
+            }
+
+            setSuccessMsg(`Batch Operation Complete: Added ${addedCount}, Skipped ${skippedCount} existing.`);
+            fetchTopics(selectedSubject); // Refresh list
+
+        } catch (err) {
+            console.error(err);
+            setError("Batch add failed: " + err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     // Quill Modules for Toolbar
     const modules = {
         toolbar: [
@@ -384,6 +447,32 @@ const AdminDashboard = () => {
                                     {subjects.map(s => <option key={s.id} value={s.id}>{s.title}</option>)}
                                 </select>
                             </div>
+
+                            {selectedSubject && (
+                                <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                                    <button
+                                        onClick={autoAddTopics}
+                                        disabled={loading}
+                                        style={{
+                                            padding: '0.7rem',
+                                            borderRadius: '0.5rem',
+                                            border: '1px solid rgba(234, 179, 8, 0.5)',
+                                            background: 'rgba(234, 179, 8, 0.1)',
+                                            color: '#fbbf24',
+                                            cursor: loading ? 'wait' : 'pointer',
+                                            fontSize: '0.85rem',
+                                            fontWeight: 'bold',
+                                            width: '100%',
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                                            transition: 'all 0.2s',
+                                        }}
+                                        title="Automatically adds all topics listed in the syllabus for this subject"
+                                    >
+                                        <Plus size={16} />
+                                        {loading ? 'Processing...' : `Auto-Add All Topics`}
+                                    </button>
+                                </div>
+                            )}
                         </div>
 
                         {/* Topic List for Selected Subject */}
