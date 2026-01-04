@@ -110,13 +110,6 @@ const SubjectView = ({ data, context }) => {
                 }
 
                 setTopics(fetchedTopics);
-
-                if (topicSlug) {
-                    const matched = fetchedTopics.find(t => t.slug === topicSlug);
-                    if (matched) setSelectedTopic(matched);
-                } else if (fetchedTopics.length > 0) {
-                    setSelectedTopic(fetchedTopics[0]);
-                }
             } catch (e) { console.error(e); }
 
             setLoading(false);
@@ -124,6 +117,20 @@ const SubjectView = ({ data, context }) => {
 
         fetchTopics();
     }, [subjectStatic?.id]);
+
+    // Sync Selection with URL
+    useEffect(() => {
+        if (topics.length > 0) {
+            if (topicSlug) {
+                const matched = topics.find(t => t.slug === topicSlug);
+                if (matched) setSelectedTopic(matched);
+            } else {
+                // Determine if we should auto-select first topic or wait for user interaction
+                // Ideally, auto-select first topic if no specific slug
+                setSelectedTopic(topics[0]);
+            }
+        }
+    }, [topics, topicSlug]);
 
     // Timer Logic
     useEffect(() => {
