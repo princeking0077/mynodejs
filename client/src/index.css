@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   /* Core Palette - Deep Space & Biopharma Emerald */
   --bg-dark: #05050a;
