@@ -167,37 +167,86 @@ async function seedGpatTopics(pool) {
         return;
     }
 
-    console.log('🌱 Starting GPAT Topics Seed...');
+    console.log('🌱 Starting GPAT Topics Seed (Target: "content" table)...');
+
+    // Minimal Curriculum Mapping for GPAT (Titles -> IDs)
+    // Sourced from client/src/data/curriculum.js
+    const gpatSubjectMapping = {
+        // Pharmacology
+        "General Pharmacology": "gpat-pharm-gen",
+        "Autonomic Nervous System": "gpat-pharm-ans",
+        "Central Nervous System": "gpat-pharm-cns",
+        "Cardiovascular Pharmacology": "gpat-pharm-cvs",
+        "Respiratory & GIT": "gpat-pharm-respgit",
+        "Endocrine Pharmacology": "gpat-pharm-endo",
+        "Chemotherapy": "gpat-pharm-chemo",
+        "Toxicology & Bioassay": "gpat-pharm-tox",
+
+        // Pharmaceutics
+        "Physical Pharmaceutics": "gpat-ceutics-physical",
+        "Pharmaceutical Calculations": "gpat-ceutics-calcs",
+        "Conventional Dosage Forms": "gpat-ceutics-conv",
+        "Advanced Dosage Forms": "gpat-ceutics-adv",
+        "Biopharmaceutics & Pharmacokinetics": "gpat-ceutics-bio",
+        "NDDS": "gpat-ceutics-ndds",
+        "Industrial Pharmacy": "gpat-ceutics-ind",
+        "Packaging & Stability": "gpat-ceutics-pack",
+
+        // Pharmaceutical Chemistry
+        "Medicinal Chemistry": "gpat-chem-med",
+        "Organic Chemistry": "gpat-chem-org",
+        "Inorganic Pharmaceutical Chemistry": "gpat-chem-inorg",
+        "Physical Chemistry": "gpat-chem-phys",
+
+        // Others (Mapped from gpatSyllabusData keys to simplified IDs if not in curriculum explicit list, 
+        // but assuming user only cares about what's in curriculum.js for Admin Panel)
+        "Pharmaceutical Analysis": "gpat-analysis-main",
+        "Pharmacognosy": "gpat-cog-main",
+        "Biochemistry": "gpat-biochem-main",
+        "Microbiology": "gpat-micro-main",
+        "Biotechnology": "gpat-biotech-main",
+        "Pathophysiology": "gpat-patho-main",
+        "Clinical Pharmacy": "gpat-clinical-main",
+        "Hospital & Community Pharmacy": "gpat-hospital-main",
+        "Pharmaceutical Jurisprudence": "gpat-juris-main",
+        "Pharmaceutical Engineering": "gpat-eng-main",
+        "Biostatistics & Research Methodology": "gpat-biostat-main",
+        "General Awareness": "gpat-general-main"
+    };
 
     try {
         let totalAdded = 0;
         let totalSkipped = 0;
 
         for (const module of gpatSyllabus) {
-            // console.log(`Processing Module: ${module.id}`);
-
             for (const [subjectTitle, topics] of Object.entries(module.topics)) {
-                // 1. Find Subject ID by Title
-                const [subjects] = await pool.query(
-                    'SELECT id FROM subjects WHERE title = ? OR title LIKE ?',
-                    [subjectTitle, `${subjectTitle}%`] // Flexible match
-                );
 
-                if (subjects.length === 0) {
-                    // console.warn(`⚠️ Subject not found in DB: "${subjectTitle}". Skipping topics.`);
-                    continue;
+                // 1. Resolve Subject ID from Map
+                // Some titles in Syllabus Data might be "Topics" (e.g. for Pharmacognosy), 
+                // in which case the Module Title is the subject.
+                let targetSubjectId = gpatSubjectMapping[subjectTitle];
+
+                if (!targetSubjectId) {
+                    // Fallback: If the section key is "Topics", try mapping the Module Title
+                    // e.g. Module "GPAT Pharmacognosy" -> Key "Topics" -> Map "Pharmacognosy"
+                    if (subjectTitle === "Topics") {
+                        const cleanModuleTitle = module.title.replace("GPAT ", "").replace(" Syllabus", "");
+                        targetSubjectId = gpatSubjectMapping[cleanModuleTitle];
+                    }
                 }
 
-                const subjectId = subjects[0].id;
-                // console.log(`   👉 Found Subject: "${subjectTitle}" (${subjectId})`);
+                if (!targetSubjectId) {
+                    // console.warn(`⚠️ Skipped: No ID mapping for subject "${subjectTitle}"`);
+                    continue;
+                }
 
                 for (const topicTitle of topics) {
                     const slug = generateSlug(topicTitle);
 
-                    // 2. Check if Topic exists
+                    // 2. Check if Topic exists in CONTENT table
                     const [existing] = await pool.query(
-                        'SELECT id FROM topics WHERE subject_id = ? AND (slug = ? OR title = ?)',
-                        [subjectId, slug, topicTitle]
+                        'SELECT id FROM content WHERE subject_id = ? AND (slug = ? OR title = ?)',
+                        [targetSubjectId, slug, topicTitle]
                     );
 
                     if (existing.length > 0) {
@@ -205,19 +254,17 @@ async function seedGpatTopics(pool) {
                         continue;
                     }
 
-                    // 3. Insert Topic
-                    // Defaulting to year_slug='gpat' and unit=1 as these are likely 1 unit per sub-topic or just general
+                    // 3. Insert Topic into CONTENT table
                     await pool.query(
-                        `INSERT INTO topics 
-                        (id, subject_id, title, slug, type, description, year_slug, unit_number, primary_keyword, created_at)
+                        `INSERT INTO content 
+                        (subject_id, title, slug, description, blog_content, year_slug, unit_number, primary_keyword, created_at)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
                         [
-                            Date.now() + Math.floor(Math.random() * 100000), // generic ID
-                            subjectId,
+                            targetSubjectId,
                             topicTitle,
                             slug,
-                            'notes', // Default type
-                            '', // No description initially
+                            '', // description (animation code)
+                            '', // blog_content
                             'gpat',
                             1, // Default Unit 1
                             topicTitle // Default keyword
@@ -225,14 +272,13 @@ async function seedGpatTopics(pool) {
                     );
 
                     totalAdded++;
-
-                    // Small delay to prevent ID collision if using Date.now() strictly
+                    // Small delay
                     await new Promise(r => setTimeout(r, 2));
                 }
             }
         }
 
-        console.log(`✅ GPAT SEED: Added ${totalAdded} topics, Skipped ${totalSkipped} existing.`);
+        console.log(`✅ GPAT SEED (Content Table): Added ${totalAdded} topics, Skipped ${totalSkipped} existing.`);
 
     } catch (error) {
         console.error('❌ Error seeding topics:', error);
