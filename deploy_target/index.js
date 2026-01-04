@@ -55,13 +55,33 @@ app.get('/api/health', (req, res) => {
 });
 
 // Serve React Frontend (Production)
-// We assume the build output is in 'client_build' directory
-const buildPath = path.join(__dirname, 'client_build');
-if (fs.existsSync(buildPath)) {
+// Support both deploy-style `client_build` and repo-committed Vite `client/dist`.
+const possiblePaths = [
+    path.join(__dirname, 'client_build'),
+    path.join(__dirname, '../client/dist'),
+    path.join(process.cwd(), 'client/dist'),
+    path.join(process.cwd(), 'dist')
+];
+
+let buildPath = null;
+for (const p of possiblePaths) {
+    if (fs.existsSync(p)) {
+        buildPath = p;
+        break;
+    }
+}
+
+if (buildPath) {
+    console.log(`Serving Frontend from: ${buildPath}`);
     app.use(express.static(buildPath));
     app.get('*', (req, res) => {
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
         res.sendFile(path.join(buildPath, 'index.html'));
     });
+} else {
+    console.error('Client build not found. Checked: ' + possiblePaths.join(', '));
 }
 
 // Start Server

@@ -320,6 +320,11 @@ if (buildPath) {
     console.log(`Serving Frontend from: ${buildPath}`);
     app.use(express.static(buildPath));
     app.get('*', (req, res) => {
+        // Prevent stale index.html from being cached (common cause of loading old layouts)
+        // Keep hashed assets cacheable; they are served by express.static above.
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
         res.sendFile(path.join(buildPath, 'index.html'));
     });
 } else {
