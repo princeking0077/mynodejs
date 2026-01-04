@@ -255,59 +255,54 @@ const AdminDashboard = () => {
 
     if (!currentUser) {
         return (
-            <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-[#0f172a]">
-                {/* Background Blobs */}
-                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/20 rounded-full blur-[100px] animate-pulse"></div>
-                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-cyan-600/20 rounded-full blur-[100px] animate-pulse delay-1000"></div>
-
+            <div className="min-h-screen flex items-center justify-center p-4 bg-[#0B1120] font-sans">
                 <SEO title="Admin Login" />
 
-                <div className="w-full max-w-md relative z-10 animate-fade-in-up">
-                    <div className="glass-panel p-8 md:p-10 rounded-3xl border border-white/10 shadow-2xl backdrop-blur-xl bg-black/40">
+                <div className="w-full max-w-md animate-fade-in-up">
+                    <div className="bg-[#0F172A] p-8 md:p-10 rounded-2xl border border-gray-800 shadow-2xl">
                         <div className="text-center mb-8">
-                            <div className="w-20 h-20 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-white/10 shadow-inner">
-                                <Lock size={32} className="text-cyan-400" />
+                            <div className="w-16 h-16 bg-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-500/30">
+                                <Lock size={32} className="text-white" />
                             </div>
-                            <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
+                            <h2 className="text-2xl font-bold text-white mb-2">Welcome Back</h2>
                             <p className="text-gray-400 text-sm">Enter your credentials to access the dashboard.</p>
                         </div>
 
                         {authError && (
                             <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3 text-red-200 text-sm">
-                                <div className="p-1 bg-red-500/20 rounded-full"><LogOut size={12} /></div>
-                                {authError}
+                                <LogOut size={16} /> {authError}
                             </div>
                         )}
 
-                        <form onSubmit={handleLogin} className="space-y-5">
-                            <div className="space-y-1.5">
-                                <label className="text-xs font-semibold text-gray-400 ml-1 uppercase tracking-wider">Email Address</label>
-                                <div className="relative group">
-                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500 group-focus-within:text-cyan-400 transition-colors">
+                        <form onSubmit={handleLogin} className="space-y-6">
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-blue-400 uppercase tracking-wider">Email Address</label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
                                         <User size={18} />
                                     </div>
                                     <input
                                         type="email"
                                         value={email}
                                         onChange={e => setEmail(e.target.value)}
-                                        className="w-full pl-10 pr-4 py-3 bg-black/20 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:border-cyan-500/50 focus:bg-white/5 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none"
+                                        className="w-full pl-10 pr-4 py-3 bg-[#1E293B] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all outline-none"
                                         placeholder="admin@learnpharmacy.in"
                                         required
                                     />
                                 </div>
                             </div>
 
-                            <div className="space-y-1.5">
-                                <label className="text-xs font-semibold text-gray-400 ml-1 uppercase tracking-wider">Password</label>
-                                <div className="relative group">
-                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500 group-focus-within:text-cyan-400 transition-colors">
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-blue-400 uppercase tracking-wider">Password</label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
                                         <Lock size={18} />
                                     </div>
                                     <input
                                         type="password"
                                         value={password}
                                         onChange={e => setPassword(e.target.value)}
-                                        className="w-full pl-10 pr-4 py-3 bg-black/20 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:border-cyan-500/50 focus:bg-white/5 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none"
+                                        className="w-full pl-10 pr-4 py-3 bg-[#1E293B] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all outline-none"
                                         placeholder="••••••••"
                                         required
                                     />
@@ -316,21 +311,25 @@ const AdminDashboard = () => {
 
                             <div className="flex items-center justify-between text-sm">
                                 <label className="flex items-center gap-2 text-gray-400 cursor-pointer hover:text-white transition-colors">
-                                    <input type="checkbox" className="rounded border-gray-600 bg-transparent text-cyan-500 focus:ring-offset-0 focus:ring-cyan-500/20" />
+                                    <input type="checkbox" className="rounded border-gray-600 bg-transparent text-blue-500 focus:ring-offset-0 focus:ring-blue-500/20" />
                                     <span>Remember me</span>
                                 </label>
-                                <button type="button" className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors">
+                                <button type="button" className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
                                     Forgot Password?
                                 </button>
                             </div>
 
                             <button
                                 type="submit"
-                                className="w-full py-3.5 bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold rounded-xl shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+                                className="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg shadow-lg shadow-blue-500/20 transition-all duration-200"
                             >
                                 Sign In
                             </button>
                         </form>
+
+                        <div className="mt-8 text-center text-xs text-gray-600">
+                            © 2026 LearnPharmacy Inc. All rights reserved.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -347,73 +346,212 @@ const AdminDashboard = () => {
 
             {!context ? (
                 <div className="space-y-8 animate-fade-in">
-                    {/* Header */}
-                    <div className="mb-8">
-                        <h1 className="text-3xl font-bold text-white mb-2">Dashboard Overview</h1>
-                        <p className="text-gray-400">Welcome back, Administrator. Here's what's happening today.</p>
+                    {/* Header Actions */}
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-2">
+                        <div>
+                            <h1 className="text-3xl font-bold text-white mb-1">Dashboard Overview</h1>
+                            <p className="text-gray-400">Here's what's happening in your academy today.</p>
+                        </div>
+                        <div className="flex gap-3">
+                            <button className="px-4 py-2 bg-[#1E293B] text-gray-300 rounded-lg border border-gray-700 hover:text-white hover:bg-[#283548] text-sm font-medium transition-colors">
+                                Export Report
+                            </button>
+                            <button className="px-4 py-2 bg-blue-600 text-white rounded-lg flex items-center gap-2 hover:bg-blue-500 shadow-lg shadow-blue-500/20 text-sm font-bold transition-colors">
+                                <Plus size={16} /> New Course
+                            </button>
+                        </div>
                     </div>
 
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="bg-gradient-to-br from-blue-600/20 to-blue-900/20 border border-blue-500/30 p-6 rounded-2xl">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {/* Users */}
+                        <div className="bg-[#151e32] p-6 rounded-xl border border-gray-800 relative overflow-hidden group hover:border-purple-500/30 transition-colors">
                             <div className="flex justify-between items-start mb-4">
-                                <div className="p-3 bg-blue-500/20 rounded-xl text-blue-400">
-                                    <FileText size={24} />
+                                <div className="p-3 bg-[#2d2b42] rounded-lg text-purple-400">
+                                    <Users size={20} />
                                 </div>
-                                <span className="px-2 py-1 bg-blue-500/10 text-blue-300 text-xs rounded-lg">+12 this week</span>
+                                <span className="px-2 py-1 bg-purple-500/10 text-purple-300 text-xs rounded font-medium">+12 this week</span>
                             </div>
-                            <h3 className="text-3xl font-bold text-white mb-1">{stats.content}</h3>
-                            <p className="text-gray-400 text-sm">Total Topics Managed</p>
+                            <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">Registered Users</p>
+                            <h3 className="text-3xl font-bold text-white">{stats.users}</h3>
+                            <div className="absolute bottom-0 left-0 w-full h-1 bg-gray-800">
+                                <div className="h-full bg-purple-500 w-[75%]"></div>
+                            </div>
                         </div>
 
-                        <div className="bg-gradient-to-br from-purple-600/20 to-purple-900/20 border border-purple-500/30 p-6 rounded-2xl">
+                        {/* System Status */}
+                        <div className="bg-[#151e32] p-6 rounded-xl border border-gray-800 relative overflow-hidden group hover:border-emerald-500/30 transition-colors">
                             <div className="flex justify-between items-start mb-4">
-                                <div className="p-3 bg-purple-500/20 rounded-xl text-purple-400">
-                                    <Users size={24} />
+                                <div className="p-3 bg-[#1c3329] rounded-lg text-emerald-400">
+                                    <Activity size={20} />
                                 </div>
-                                <span className="px-2 py-1 bg-purple-500/10 text-purple-300 text-xs rounded-lg">Active</span>
+                                <span className="px-2 py-1 bg-emerald-500/10 text-emerald-300 text-xs rounded font-medium">Online</span>
                             </div>
-                            <h3 className="text-3xl font-bold text-white mb-1">{stats.users}</h3>
-                            <p className="text-gray-400 text-sm">Registered Users</p>
+                            <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">System Status</p>
+                            <h3 className="text-3xl font-bold text-white">Healthy</h3>
+                            <div className="absolute bottom-0 left-0 w-full h-1 bg-gray-800">
+                                <div className="h-full bg-emerald-500 w-full"></div>
+                            </div>
                         </div>
 
-                        <div className="bg-gradient-to-br from-emerald-600/20 to-emerald-900/20 border border-emerald-500/30 p-6 rounded-2xl">
+                        {/* Total Courses */}
+                        <div className="bg-[#151e32] p-6 rounded-xl border border-gray-800 relative overflow-hidden group hover:border-blue-500/30 transition-colors">
                             <div className="flex justify-between items-start mb-4">
-                                <div className="p-3 bg-emerald-500/20 rounded-xl text-emerald-400">
-                                    <Activity size={24} />
+                                <div className="p-3 bg-[#1e2738] rounded-lg text-blue-400">
+                                    <BookOpen size={20} />
                                 </div>
-                                <span className="px-2 py-1 bg-emerald-500/10 text-emerald-300 text-xs rounded-lg">Online</span>
                             </div>
-                            <h3 className="text-3xl font-bold text-white mb-1">Healthy</h3>
-                            <p className="text-gray-400 text-sm">System Status</p>
+                            <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">Total Courses</p>
+                            <h3 className="text-3xl font-bold text-white flex items-end gap-2">24 <span className="text-sm text-gray-500 font-normal mb-1">across 4 years</span></h3>
+                            <div className="absolute bottom-0 left-0 w-full h-1 bg-gray-800">
+                                <div className="h-full bg-blue-500 w-[60%]"></div>
+                            </div>
+                        </div>
+
+                        {/* Quiz Submissions */}
+                        <div className="bg-[#151e32] p-6 rounded-xl border border-gray-800 relative overflow-hidden group hover:border-orange-500/30 transition-colors">
+                            <div className="flex justify-between items-start mb-4">
+                                <div className="p-3 bg-[#33261e] rounded-lg text-orange-400">
+                                    <CheckSquare size={20} />
+                                </div>
+                                <span className="px-2 py-1 bg-orange-500/10 text-orange-300 text-xs rounded font-medium">Pending</span>
+                            </div>
+                            <p className="text-gray-400 text-xs font-medium uppercase tracking-wider mb-1">Quiz Submissions</p>
+                            <h3 className="text-3xl font-bold text-white flex items-end gap-2">18 <span className="text-sm text-gray-500 font-normal mb-1">to review</span></h3>
+                            <div className="absolute bottom-0 left-0 w-full h-1 bg-gray-800">
+                                <div className="h-full bg-orange-500 w-[40%]"></div>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Quick Access */}
+                    {/* Academic Management - Years 1-4 */}
                     <div>
-                        <h2 className="text-xl font-bold text-white mb-4">Quick Access</h2>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            {['Year 1', 'Year 2', 'Year 3', 'Year 4'].map((y, i) => (
-                                <div key={i} className="group p-4 bg-white/5 border border-white/5 hover:border-cyan-500/50 hover:bg-white/10 rounded-xl cursor-default transition-all">
-                                    <div className="flex justify-between items-center mb-2">
-                                        <GraduationCap className="text-gray-500 group-hover:text-cyan-400 transition-colors" size={20} />
-                                        <ArrowRight size={16} className="text-gray-600 group-hover:text-cyan-400 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
+                        <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2"><GraduationCap size={20} className="text-blue-400" /> Academic Management</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {[1, 2, 3, 4].map((year) => (
+                                <div key={year} className="bg-[#151e32] p-6 rounded-xl border border-gray-800 hover:border-gray-600 transition-colors flex flex-col justify-between h-56">
+                                    <div>
+                                        <div className="flex justify-between items-start mb-4">
+                                            <span className="text-xs font-bold text-gray-500 border border-gray-700 px-2 py-1 rounded">Y{year}</span>
+                                            <button className="text-gray-500 hover:text-white"><ExternalLink size={14} /></button>
+                                        </div>
+                                        <h3 className="text-xl font-bold text-white mb-1">B.Pharm Year {year}</h3>
+                                        <p className="text-xs text-gray-400 leading-relaxed">Manage semesters, subjects, and student enrollment for {year === 4 ? 'Final Year' : `${year}${year === 1 ? 'st' : year === 2 ? 'nd' : 'rd'} Year`}.</p>
                                     </div>
-                                    <h3 className="text-white font-medium">B.Pharm {y}</h3>
-                                    <p className="text-xs text-gray-500 mt-1">Manage Semesters</p>
+
+                                    <div>
+                                        <div className="flex justify-between text-xs text-gray-400 mb-2">
+                                            <span>Progress</span>
+                                            <span>{year * 22}%</span>
+                                        </div>
+                                        <div className="w-full h-1.5 bg-gray-800 rounded-full mb-4">
+                                            <div className="h-full bg-blue-500 rounded-full" style={{ width: `${year * 22}%` }}></div>
+                                        </div>
+                                        <button className="w-full py-2 bg-[#1E293B] border border-gray-700 text-gray-300 text-xs font-bold rounded hover:bg-[#283548] hover:text-white transition-colors">
+                                            Manage Year
+                                        </button>
+                                    </div>
                                 </div>
                             ))}
-                            <div className="col-span-2 md:col-span-4 p-4 bg-gradient-to-r from-orange-600/10 to-orange-900/10 border border-orange-500/20 rounded-xl hover:border-orange-500/40 transition-colors cursor-default">
-                                <div className="flex items-center gap-4">
-                                    <div className="p-3 bg-orange-500/20 rounded-lg text-orange-400">
-                                        <BookOpen size={24} />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-white font-bold">GPAT Examination</h3>
-                                        <p className="text-sm text-gray-400">Manage 200+ Competitive Exam Topics & Quizzes</p>
+                        </div>
+                    </div>
+
+                    {/* Bottom Section: Engagement Graph & Recent Activity */}
+                    <div className="grid lg:grid-cols-3 gap-6">
+                        {/* Graph */}
+                        <div className="lg:col-span-2 bg-[#151e32] p-6 rounded-xl border border-gray-800">
+                            <div className="flex justify-between items-center mb-6">
+                                <h3 className="font-bold text-white">Student Engagement</h3>
+                                <select className="bg-[#0B1120] border border-gray-700 text-xs text-gray-400 rounded px-2 py-1 outline-none">
+                                    <option>Last 7 Days</option>
+                                    <option>Last 30 Days</option>
+                                </select>
+                            </div>
+
+                            {/* Mock SVG Graph */}
+                            <div className="h-64 w-full relative pt-4">
+                                <div className="absolute left-0 top-0 bottom-8 flex flex-col justify-between text-xs text-gray-600">
+                                    <span>110</span><span>100</span><span>90</span><span>80</span><span>70</span><span>60</span><span>50</span>
+                                </div>
+                                <div className="ml-8 h-full relative border-l border-b border-gray-800">
+                                    {/* Grid Lines */}
+                                    {[0, 1, 2, 3, 4, 5, 6].map(i => (
+                                        <div key={i} className="absolute w-full border-t border-gray-800/50" style={{ bottom: `${i * 14}%` }}></div>
+                                    ))}
+
+                                    {/* The Wave Line */}
+                                    <svg className="absolute inset-0 w-full h-full overflow-visible" preserveAspectRatio="none">
+                                        <defs>
+                                            <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.5" />
+                                                <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
+                                            </linearGradient>
+                                        </defs>
+                                        <path
+                                            d="M0,180 C50,190 100,160 150,150 C200,140 250,170 300,150 C350,130 400,190 450,200 C500,210 550,100 600,80 C650,60 700,50 800,40"
+                                            fill="none"
+                                            stroke="#22d3ee"
+                                            strokeWidth="3"
+                                            strokeLinecap="round"
+                                        />
+                                        <path
+                                            d="M0,180 C50,190 100,160 150,150 C200,140 250,170 300,150 C350,130 400,190 450,200 C500,210 550,100 600,80 C650,60 700,50 800,40 V250 H0 Z"
+                                            fill="url(#lineGradient)"
+                                            opacity="0.2"
+                                        />
+                                        {/* Points */}
+                                        <circle cx="0" cy="180" r="4" fill="#0B1120" stroke="#22d3ee" strokeWidth="2" />
+                                        <circle cx="150" cy="150" r="4" fill="#0B1120" stroke="#22d3ee" strokeWidth="2" />
+                                        <circle cx="300" cy="150" r="4" fill="#0B1120" stroke="#22d3ee" strokeWidth="2" />
+                                        <circle cx="450" cy="200" r="4" fill="#0B1120" stroke="#22d3ee" strokeWidth="2" />
+                                        <circle cx="600" cy="80" r="4" fill="#0B1120" stroke="#22d3ee" strokeWidth="2" />
+                                    </svg>
+
+                                    <div className="absolute -bottom-6 w-full flex justify-between text-xs text-gray-500">
+                                        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
+                        {/* Recent Activity */}
+                        <div className="bg-[#151e32] p-6 rounded-xl border border-gray-800">
+                            <div className="flex justify-between items-center mb-6">
+                                <h3 className="font-bold text-white">Recent Activity</h3>
+                            </div>
+                            <div className="space-y-6">
+                                <div className="flex gap-4">
+                                    <div className="w-2 h-2 mt-2 rounded-full bg-cyan-500 shrink-0"></div>
+                                    <div>
+                                        <p className="text-sm text-gray-300">New syllabus uploaded for <span className="text-cyan-400 font-medium">Pharmacology</span></p>
+                                        <p className="text-xs text-gray-500 mt-1">2 hours ago</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4">
+                                    <div className="w-2 h-2 mt-2 rounded-full bg-purple-500 shrink-0"></div>
+                                    <div>
+                                        <p className="text-sm text-gray-300">User <span className="font-medium text-white">Rahul K.</span> completed registration</p>
+                                        <p className="text-xs text-gray-500 mt-1">4 hours ago</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4">
+                                    <div className="w-2 h-2 mt-2 rounded-full bg-orange-500 shrink-0"></div>
+                                    <div>
+                                        <p className="text-sm text-gray-300">System maintenance scheduled</p>
+                                        <p className="text-xs text-gray-500 mt-1">Yesterday</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4">
+                                    <div className="w-2 h-2 mt-2 rounded-full bg-emerald-500 shrink-0"></div>
+                                    <div>
+                                        <p className="text-sm text-gray-300">Server health check passed</p>
+                                        <p className="text-xs text-gray-500 mt-1">Yesterday</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <button className="w-full mt-8 py-2 border border-white/10 text-gray-400 text-xs rounded hover:bg-white/5 transition-colors">
+                                View All Log
+                            </button>
                         </div>
                     </div>
                 </div>

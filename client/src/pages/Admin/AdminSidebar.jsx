@@ -51,151 +51,158 @@ const AdminSidebar = ({ onLogout, onSelectContext }) => {
     };
 
     const SidebarContent = () => (
-        <div className="h-full flex flex-col" style={{ background: '#0f172a', borderRight: '1px solid rgba(255,255,255,0.1)' }}>
+        <div className="h-full flex flex-col bg-[#0F172A] border-r border-gray-800">
             {/* Logo Area */}
-            <div className="p-6 flex items-center justify-between">
-                <div className="flex items-center gap-2 text-xl font-bold text-white">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center">
-                        <LayoutDashboard size={18} className="text-white" />
+            <div className="p-6 flex items-center justify-between border-b border-gray-800">
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-cyan-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20">
+                        <LayoutDashboard size={18} strokeWidth={2.5} />
                     </div>
-                    <span>Admin<span className="text-cyan-400">Panel</span></span>
+                    <span className="text-xl font-bold text-white tracking-tight">Admin<span className="text-gray-400 font-normal">Panel</span></span>
                 </div>
-                <button className="md:hidden text-white" onClick={() => setMobileOpen(false)}>
+                <button className="md:hidden text-gray-400 hover:text-white" onClick={() => setMobileOpen(false)}>
                     <X size={24} />
                 </button>
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 overflow-y-auto px-4 py-2 custom-scrollbar">
+            <nav className="flex-1 overflow-y-auto py-6 custom-scrollbar space-y-8">
 
                 {/* Dashboard Link */}
-                <div className="mb-6">
+                <div className="px-4">
                     <Link
                         to="/admin"
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all border ${location.pathname === '/admin' && !location.search ? 'bg-gradient-to-r from-blue-600/20 to-blue-900/10 text-blue-400 border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.1)]' : 'border-transparent text-gray-400 hover:bg-white/5 hover:text-white'}`}
+                        className={`flex items-center gap-3 px-4 py-3 rounded-r-full transition-all border-l-4 ${location.pathname === '/admin' && !location.search ? 'border-cyan-500 bg-[#1E293B] text-white shadow-lg shadow-black/20' : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'}`}
                         onClick={() => { if (onSelectContext) onSelectContext(null); setMobileOpen(false); }}
                     >
                         <LayoutDashboard size={20} />
-                        <span className="font-medium">Overview</span>
+                        <span className="font-medium text-sm">Overview</span>
                     </Link>
                 </div>
 
-                {/* Section: B.Pharm */}
-                <div className="mb-2 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Content Management
+                {/* Section: Content Management */}
+                <div className="px-4">
+                    <div className="px-4 text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">
+                        Content Management
+                    </div>
+                    <div className="space-y-1">
+                        {bpharmYears.map(year => (
+                            <div key={year.id}>
+                                <button
+                                    onClick={() => toggleYear(year.id)}
+                                    className={`w-full flex items-center justify-between px-4 py-2.5 rounded-r-full text-sm transition-all border-l-4 ${expandedYear === year.id ? 'border-blue-500 bg-[#1E293B] text-white' : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'}`}
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <GraduationCap size={18} className={expandedYear === year.id ? 'text-blue-400' : ''} />
+                                        <span>{year.title}</span>
+                                    </div>
+                                    {expandedYear === year.id ? <ChevronDown size={14} className="text-blue-400" /> : <ChevronRight size={14} />}
+                                </button>
+
+                                <AnimatePresence>
+                                    {expandedYear === year.id && (
+                                        <motion.div
+                                            initial={{ height: 0, opacity: 0 }}
+                                            animate={{ height: 'auto', opacity: 1 }}
+                                            exit={{ height: 0, opacity: 0 }}
+                                            className="overflow-hidden ml-4 pl-4 border-l border-gray-800 mt-1 space-y-1"
+                                        >
+                                            {year.semesters.map(sem => (
+                                                <div key={sem.id}>
+                                                    <button
+                                                        onClick={(e) => toggleSem(sem.id, e)}
+                                                        className="w-full flex items-center justify-between px-3 py-2 text-xs font-medium text-gray-500 hover:text-blue-400 transition-colors"
+                                                    >
+                                                        <span>{sem.title}</span>
+                                                        {expandedSem === sem.id ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
+                                                    </button>
+                                                    {expandedSem === sem.id && (
+                                                        <div className="pl-3 py-1 space-y-1">
+                                                            {sem.subjects.map(subject => (
+                                                                <button
+                                                                    key={subject.id}
+                                                                    onClick={() => handleSubjectSelect(subject, year.id, sem.id, 'bpharm')}
+                                                                    className="w-full text-left px-3 py-1.5 text-[11px] text-gray-500 hover:text-white hover:bg-white/5 rounded transition-colors truncate relative flex items-center gap-2"
+                                                                    title={subject.title}
+                                                                >
+                                                                    <div className="w-1 h-1 rounded-full bg-gray-600"></div>
+                                                                    {subject.title}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
-                {/* B.Pharm Accordion */}
-                <div className="mb-4">
-                    {bpharmYears.map(year => (
-                        <div key={year.id} className="mb-2">
-                            <button
-                                onClick={() => toggleYear(year.id)}
-                                className={`w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm transition-all border border-transparent ${expandedYear === year.id ? 'bg-gradient-to-r from-blue-600/10 to-transparent border-l-blue-500 border-l-2 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
-                            >
-                                <div className="flex items-center gap-3">
-                                    <GraduationCap size={18} className={expandedYear === year.id ? 'text-blue-400' : ''} />
-                                    <span>{year.title}</span>
-                                </div>
-                                {expandedYear === year.id ? <ChevronDown size={14} className="text-blue-400" /> : <ChevronRight size={14} />}
-                            </button>
-
-                            <AnimatePresence>
-                                {expandedYear === year.id && (
-                                    <motion.div
-                                        initial={{ height: 0, opacity: 0 }}
-                                        animate={{ height: 'auto', opacity: 1 }}
-                                        exit={{ height: 0, opacity: 0 }}
-                                        className="overflow-hidden ml-4 pl-4 border-l border-white/10 mt-1 space-y-1"
-                                    >
-                                        {year.semesters.map(sem => (
-                                            <div key={sem.id}>
-                                                <button
-                                                    onClick={(e) => toggleSem(sem.id, e)}
-                                                    className="w-full flex items-center justify-between px-3 py-2 text-sm text-gray-400 hover:text-cyan-400 transition-colors"
-                                                >
-                                                    <span>{sem.title}</span>
-                                                    {expandedSem === sem.id ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
-                                                </button>
-
-                                                {/* Subjects List */}
-                                                {expandedSem === sem.id && (
-                                                    <div className="pl-4 py-1 space-y-1">
-                                                        {sem.subjects.map(subject => (
-                                                            <button
-                                                                key={subject.id}
-                                                                onClick={() => handleSubjectSelect(subject, year.id, sem.id, 'bpharm')}
-                                                                className="w-full text-left px-3 py-1.5 text-xs text-gray-500 hover:text-white hover:bg-white/5 rounded transition-colors truncate"
-                                                                title={subject.title}
-                                                            >
-                                                                {subject.title}
-                                                            </button>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ))}
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
-                    ))}
-                </div>
-
-                {/* GPAT Section */}
-                <div className="mb-6">
-                    <div className="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                {/* Section: Competitive Exams */}
+                <div className="px-4">
+                    <div className="px-4 text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">
                         Competitive Exams
                     </div>
-                    {gpatModule && gpatModule.semesters.map(module => (
-                        <div key={module.id} className="mb-1">
-                            <button
-                                onClick={() => toggleYear(module.id)} // Reusing toggleYear for simplicity
-                                className={`w-full flex items-center justify-between px-4 py-3 rounded-lg text-sm transition-all border border-transparent ${expandedYear === module.id ? 'bg-gradient-to-r from-orange-600/10 to-transparent border-l-orange-500 border-l-2 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
-                            >
-                                <div className="flex items-center gap-3">
-                                    <BookOpen size={18} className={expandedYear === module.id ? 'text-orange-400' : ''} />
-                                    <span>{module.title}</span>
-                                </div>
-                                {expandedYear === module.id ? <ChevronDown size={14} className="text-orange-400" /> : <ChevronRight size={14} />}
-                            </button>
+                    <div className="space-y-1">
+                        {gpatModule && (
+                            <div key={gpatModule.id}>
+                                <button
+                                    onClick={() => toggleYear(gpatModule.id)}
+                                    className={`w-full flex items-center justify-between px-4 py-2.5 rounded-r-full text-sm transition-all border-l-4 ${expandedYear === gpatModule.id ? 'border-orange-500 bg-[#1E293B] text-white' : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'}`}
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <BookOpen size={18} className={expandedYear === gpatModule.id ? 'text-orange-400' : ''} />
+                                        <span>GPAT / NIPER</span>
+                                    </div>
+                                    {expandedYear === gpatModule.id ? <ChevronDown size={14} className="text-orange-400" /> : <ChevronRight size={14} />}
+                                </button>
 
-                            <AnimatePresence>
-                                {expandedYear === module.id && (
-                                    <motion.div
-                                        initial={{ height: 0, opacity: 0 }}
-                                        animate={{ height: 'auto', opacity: 1 }}
-                                        exit={{ height: 0, opacity: 0 }}
-                                        className="overflow-hidden ml-4 pl-4 border-l border-white/10 mt-1"
-                                    >
-                                        {module.subjects.map(subject => (
-                                            <button
-                                                key={subject.id}
-                                                onClick={() => handleSubjectSelect(subject, 'gpat-module', module.id, 'gpat')}
-                                                className="w-full text-left px-3 py-2 text-xs text-gray-400 hover:text-cyan-400 hover:bg-white/5 rounded transition-colors truncate"
-                                            >
-                                                {subject.title}
-                                            </button>
-                                        ))}
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
-                    ))}
+                                <AnimatePresence>
+                                    {expandedYear === gpatModule.id && (
+                                        <motion.div
+                                            initial={{ height: 0, opacity: 0 }}
+                                            animate={{ height: 'auto', opacity: 1 }}
+                                            exit={{ height: 0, opacity: 0 }}
+                                            className="overflow-hidden ml-4 pl-4 border-l border-gray-800 mt-1"
+                                        >
+                                            {gpatModule.semesters.map(module => (
+                                                <div key={module.id} className="mb-1">
+                                                    <div className="px-3 py-1.5 text-xs font-bold text-gray-500 uppercase">{module.title}</div>
+                                                    {module.subjects.map(subject => (
+                                                        <button
+                                                            key={subject.id}
+                                                            onClick={() => handleSubjectSelect(subject, 'gpat-module', module.id, 'gpat')}
+                                                            className="w-full text-left px-3 py-1.5 text-[11px] text-gray-500 hover:text-orange-400 rounded transition-colors truncate flex items-center gap-2"
+                                                        >
+                                                            <div className="w-1 h-1 rounded-full bg-gray-600"></div>
+                                                            {subject.title}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            ))}
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </nav>
 
             {/* Bottom Actions */}
-            <div className="p-4 border-t border-white/10 bg-black/20">
-                <Link to="/admin/settings" className="flex items-center gap-3 px-4 py-2 text-gray-400 hover:text-white transition-colors mb-2 rounded-lg hover:bg-white/5">
+            <div className="p-4 border-t border-gray-800 bg-[#0B1120]">
+                <Link to="/admin/settings" className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white transition-colors mb-1 rounded-lg hover:bg-white/5">
                     <Settings size={18} />
-                    <span className="text-sm">Global Settings</span>
+                    <span className="text-sm font-medium">Global Settings</span>
                 </Link>
                 <button
                     onClick={onLogout}
-                    className="w-full flex items-center gap-3 px-4 py-2 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                    className="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors group"
                 >
-                    <LogOut size={18} />
+                    <LogOut size={18} className="group-hover:translate-x-1 transition-transform" />
                     <span className="text-sm font-medium">Logout</span>
                 </button>
             </div>
