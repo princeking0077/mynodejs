@@ -327,91 +327,51 @@ app.get('/reset-admin', async (req, res) => {
     }
 });
 
-// Serve React Frontend (FINAL CATCH-ALL)
-// Serve React Frontend (Vite Build)
-// Check multiple possible locations for robustness
-const possiblePaths = [
-    path.join(__dirname, '../client/dist'), // Standard Structure
-    path.join(__dirname, '../client/build'), // React Standard
-    path.join(__dirname, 'client/dist'),    // If running from server root
-    path.join(process.cwd(), 'client/dist'), // From project root
-    path.join(process.cwd(), 'dist')         // Fallback
-];
+// --- NEXT.JS SSR INTEGRATION (OPTION A) ---
+const { createProxyMiddleware } = require('http-proxy-middleware');
+const { spawn } = require('child_process');
 
-let buildPath = null;
-for (const p of possiblePaths) {
-    if (fs.existsSync(p)) {
-        buildPath = p;
-        break;
-    }
-}
+// 1. Boot Next.js in the background on Port 3005 to prevent EADDRINUSE
+const nextPort = 3005;
+console.log(`\n🚀 [PROXY] Spawning Next.js SSR Server on internal port ${nextPort}...`);
 
-const labelBuildPath = (p) => {
-    const normalized = String(p).replace(/\\/g, '/');
-    if (normalized.endsWith('/client/dist')) return 'client/dist';
-    if (normalized.endsWith('/client/build')) return 'client/build';
-    if (normalized.endsWith('/client_build')) return 'client_build';
-    if (normalized.endsWith('/dist')) return 'dist';
-    return 'unknown';
-};
-
-if (buildPath) {
-    console.log(`Serving Frontend from: ${buildPath}`);
-    frontendResolved.buildPath = buildPath;
-    frontendResolved.label = labelBuildPath(buildPath);
-    try {
-        const indexPath = path.join(buildPath, 'index.html');
-        if (fs.existsSync(indexPath)) {
-            frontendResolved.indexHtmlMtimeMs = fs.statSync(indexPath).mtimeMs;
-        }
-    } catch (e) {
-        // ignore
-    }
-    app.use(express.static(buildPath));
-    app.get('*', (req, res) => {
-        // Prevent stale index.html from being cached (common cause of loading old layouts)
-        // Keep hashed assets cacheable; they are served by express.static above.
-        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-        res.setHeader('Pragma', 'no-cache');
-        res.setHeader('Expires', '0');
-        res.sendFile(path.join(buildPath, 'index.html'));
+try {
+    const nextjsPath = path.join(__dirname, '../learnpharmacy-next');
+    // Graceful npm process wrapper that accounts for windows/linux differences
+    const npmCmd = /^win/.test(process.platform) ? 'npm.cmd' : 'npm';
+    const nextProcess = spawn(npmCmd, ['run', 'start'], {
+        cwd: nextjsPath,
+        stdio: 'inherit',
+        env: { ...process.env, PORT: nextPort }
     });
-} else {
-    // For development (or if build is missing), just log
-    // List contents of directories to help debug
-    const listDir = (dir) => {
-        try {
-            return fs.readdirSync(dir).join(', ');
-        } catch (e) {
-            return `[Error reading: ${e.message}]`;
-        }
-    };
 
-    console.log("Client build not found. Checked: " + possiblePaths.join(", "));
-    app.get('/', (req, res) => res.send(`
-        <div style="font-family: monospace; padding: 20px;">
-            <h1 style="color: red;">Backend Running - Frontend Not Found</h1>
-            <p><strong>Checked Paths:</strong></p>
-            <ul>${possiblePaths.map(p => `<li>${p}</li>`).join('')}</ul>
-            
-            <hr>
-            <h3>Server Diagnostics:</h3>
-            <p><strong>Current Directory (__dirname):</strong> ${__dirname}</p>
-            <p><strong>Files:</strong> ${listDir(__dirname)}</p>
-            
-            <p><strong>Process CWD:</strong> ${process.cwd()}</p>
-            <p><strong>Files:</strong> ${listDir(process.cwd())}</p>
-            
-            <p><strong>Parent Directory (../):</strong> ${path.resolve(__dirname, '..')}</p>
-            <p><strong>Files:</strong> ${listDir(path.resolve(__dirname, '..'))}</p>
-            
-            <p><strong>Client Directory Check (../client):</strong> ${path.resolve(__dirname, '../client')}</p>
-            <p><strong>Files:</strong> ${listDir(path.resolve(__dirname, '../client'))}</p>
-             <p><strong>Dist Directory Check (../client/dist):</strong> ${path.resolve(__dirname, '../client/dist')}</p>
-            <p><strong>Files:</strong> ${listDir(path.resolve(__dirname, '../client/dist'))}</p>
-        </div>
-    `));
+    nextProcess.on('error', (err) => {
+        console.error('❌ [PROXY] Failed to spawn Next.js process:', err);
+    });
+
+    // Auto-kill Next.js when Express crashes
+    process.on('exit', () => nextProcess.kill());
+} catch (e) {
+    console.error('❌ [PROXY] Exception while spawning Next.js:', e);
 }
+
+// 2. Proxy all Front-End & SSR traffic to Next.js Process
+app.use('*', createProxyMiddleware({
+    target: `http://127.0.0.1:${nextPort}`,
+    changeOrigin: true,
+    ws: true,
+    onError: (err, req, res) => {
+        res.status(502).send(`
+            <div style="font-family: sans-serif; padding: 40px; text-align: center;">
+                <h1 style="color: #3b82f6;">Next.js is Starting...</h1>
+                <p>The Application server is booting up. Next.js SSR engine takes a few seconds to warm up.</p>
+                <p><strong>Please refresh the page in 5-10 seconds.</strong></p>
+                <code style="color: #ef4444; margin-top: 20px; display: block;">Error: ${err.message}</code>
+            </div>
+        `);
+    }
+}));
+
 
 // Global Error Handler (Must be last)
 app.use((err, req, res, next) => {

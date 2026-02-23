@@ -6,20 +6,21 @@
     "scripts": {
         "dev": "cd learnpharmacy-next && npm run dev",
         "build": "cd learnpharmacy-next && npm install --legacy-peer-deps && npm run build",
-        "start": "cd learnpharmacy-next && npm run start",
+        "start": "node index.js",
         "lint": "cd learnpharmacy-next && npm run lint",
         "setup": "node server/setup.js",
         "db:update": "node server/add_seo_columns.js",
         "db:update:v2": "node server/update_schema_settings.js"
     },
     "dependencies": {
-        "concurrently": "^8.2.2",
         "bcryptjs": "^2.4.3",
         "compression": "^1.8.1",
+        "concurrently": "^8.2.2",
         "cors": "^2.8.5",
         "dotenv": "^16.3.1",
         "express": "^4.18.2",
         "helmet": "^8.1.0",
+        "http-proxy-middleware": "^3.0.5",
         "jsonwebtoken": "^9.0.2",
         "morgan": "^1.10.1",
         "multer": "^1.4.5-lts.1",
