@@ -1,0 +1,1669 @@
+
+---
+
+## YEAR 3 - SEMESTER VI
+
+---
+
+### 27. MEDICINAL CHEMISTRY – III
+
+**Unit I: Beta-Lactam & Aminoglycoside Antibiotics**
+* Introduction to antibiotics
+* Beta-lactam antibiotics
+* Penicillins
+* SAR of penicillins
+* Natural penicillins
+* Semisynthetic penicillins
+* Cephalosporins
+* Generations of cephalosporins
+* SAR
+* Beta-lactamase inhibitors
+* Clavulanic acid
+* Sulbactam
+* Monobactams
+* Aztreonam
+* Carbapenems
+* Aminoglycosides
+* Streptomycin
+* Gentamicin
+* Kanamycin
+* Neomycin
+* SAR
+
+**Unit II: Other Antibiotics & Antimalarials**
+* Tetracyclines
+* SAR of tetracyclines
+* Oxytetracycline
+* Doxycycline
+* Minocycline
+* Macrolides
+* Erythromycin
+* Clarithromycin
+* Azithromycin
+* Miscellaneous antibiotics
+* Chloramphenicol
+* Clindamycin
+* Prodrug concept
+* Applications
+* Antimalarials
+* Etiology of malaria
+* Quinolines
+* Chloroquine
+* Primaquine
+* Mefloquine
+* Biguanides
+* Artemisinin derivatives
+
+**Unit III: Antitubercular & Urinary Tract Agents**
+* Antitubercular agents
+* First-line drugs
+* Isoniazid - SAR
+* Rifampicin
+* Pyrazinamide
+* Ethambutol
+* Streptomycin
+* Second-line drugs
+* Ethionamide
+* Cycloserine
+* Urinary tract anti-infectives
+* Quinolones
+* SAR of quinolones
+* Nalidixic acid
+* Norfloxacin
+* Ciprofloxacin
+* Ofloxacin
+* Moxifloxacin
+* Nitrofurantoin
+* Methenamine
+* Antiviral agents
+* Amantadine
+* Acyclovir
+* Zidovudine
+* Protease inhibitors
+
+**Unit IV: Antifungal, Antiprotozoal & Anthelmintic Agents**
+* Antifungal antibiotics
+* Amphotericin B
+* Nystatin
+* Griseofulvin
+* Synthetic antifungals
+* Azoles - Miconazole, Ketoconazole, Fluconazole
+* Terbinafine
+* Tolnaftate
+* Antiprotozoal agents
+* Metronidazole
+* Tinidazole
+* Diloxanide
+* Pentamidine
+* Anthelmintics
+* Mebendazole
+* Albendazole
+* Praziquantel
+* Ivermectin
+* Sulfonamides
+* SAR
+* Classification
+* Trimethoprim
+* Sulfones - Dapsone
+
+**Unit V: Drug Design**
+* Approaches to drug design
+* Random screening
+* Rational drug design
+* QSAR
+* Physicochemical parameters
+* Partition coefficient
+* Hammett's constant
+* Taft's steric parameter
+* Hansch analysis
+* Free-Wilson analysis
+* Pharmacophore modeling
+* Docking techniques
+* Combinatorial chemistry
+* Solid phase synthesis
+* Solution phase synthesis
+* Applications
+
+---
+
+### 28. PHARMACOLOGY – III
+
+**Unit I: Respiratory & GI Pharmacology**
+* Drugs acting on respiratory system
+* Anti-asthmatic drugs
+* Bronchodilators
+* Anti-inflammatory agents
+* Mast cell stabilizers
+* Drugs for COPD
+* Expectorants
+* Mucolytics
+* Antitussives
+* Nasal decongestants
+* Respiratory stimulants
+* Drugs acting on GI tract
+* Antiulcer agents
+* Antacids
+* H2 blockers
+* PPIs
+* Cytoprotectives
+* Laxatives and antidiarrheals
+* Antiemetics
+* Prokinetics
+
+**Unit II: Chemotherapy – Antibiotics**
+* General principles of chemotherapy
+* Antimicrobial spectrum
+* Bactericidal vs bacteriostatic
+* Drug resistance
+* Combination therapy
+* Sulfonamides
+* Mechanism of action
+* Uses
+* Cotrimoxazole
+* Beta-lactam antibiotics
+* Penicillins
+* Cephalosporins
+* Aminoglycosides
+* Macrolides
+* Tetracyclines
+* Quinolones
+* Chloramphenicol
+
+**Unit III: Chemotherapy – Antimicrobials**
+* Antitubercular drugs
+* First-line drugs
+* Second-line drugs
+* Drug regimens
+* Antileprotic drugs
+* Dapsone
+* Rifampicin
+* Clofazimine
+* Antifungal agents
+* Polyenes
+* Azoles
+* Antiviral drugs
+* Anti-HIV drugs
+* Anti-herpes drugs
+* Anthelmintics
+* Antimalarial drugs
+* Antiamoebic drugs
+
+**Unit IV: Cancer Chemotherapy & Immunopharmacology**
+* Urinary tract infections
+* Drugs for UTI
+* Sexually transmitted diseases
+* Treatment protocols
+* Cancer chemotherapy
+* Principles
+* Alkylating agents
+* Antimetabolites
+* Antibiotics
+* Hormones
+* Targeted therapy
+* Immunopharmacology
+* Immunostimulants
+* Immunosuppressants
+* Monoclonal antibodies
+* Biosimilars
+
+**Unit V: Toxicology**
+* Principles of toxicology
+* Acute toxicity
+* Subacute toxicity
+* Chronic toxicity
+* Genotoxicity
+* Carcinogenicity
+* Teratogenicity
+* Mutagenicity
+* General principles of poisoning treatment
+* Decontamination
+* Antidotes
+* Specific poisonings
+* Barbiturate poisoning
+* Opioid poisoning
+* Organophosphorus poisoning
+* Heavy metal poisoning
+* Chronopharmacology
+* Biological rhythms
+* Chronotherapy
+
+---
+
+### 29. HERBAL DRUG TECHNOLOGY
+
+**Unit I: Raw Materials & Traditional Medicine**
+* Herbs as raw materials
+* Definitions
+* Source of herbs
+* Selection and authentication
+* Processing methods
+* Biodynamic agriculture
+* Good agricultural practices
+* Organic farming
+* Pest management
+* Biopesticides
+* Indian systems of medicine
+* Ayurveda principles
+* Siddha system
+* Unani system
+* Homeopathy
+* Ayurvedic formulations
+* Asava and Arista
+* Churna
+* Bhasma
+
+**Unit II: Nutraceuticals**
+* Definition and scope
+* Market overview
+* Types of products
+* Health benefits
+* Diabetes management
+* Cardiovascular health
+* Cancer prevention
+* GI disorders
+* Health food herbs
+* Alfalfa
+* Ginger
+* Garlic
+* Ginseng
+* Ashwagandha
+* Spirulina
+* Herbal-drug interactions
+* Herbal-food interactions
+* St. John's Wort interactions
+* Ginkgo interactions
+
+**Unit III: Herbal Cosmetics & Formulations**
+* Herbal cosmetics
+* Raw materials
+* Fixed oils
+* Waxes
+* Natural colors
+* Perfumes
+* Skin care products
+* Hair care products
+* Oral care products
+* Herbal excipients
+* Natural colorants
+* Natural sweeteners
+* Natural binders
+* Natural disintegrants
+* Herbal formulations
+* Syrups and mixtures
+* Herbal tablets
+* Phytosomes
+
+**Unit IV: Quality & Regulations**
+* Evaluation of herbal drugs
+* WHO guidelines
+* ICH guidelines
+* Stability testing
+* Shelf life determination
+* Patents and IPR
+* Traditional knowledge
+* Case studies
+* Turmeric patent
+* Neem patent
+* Regulatory issues
+* ASU DTAB
+* ASU DCC
+* Schedule Z
+* International regulations
+
+**Unit V: Herbal Industry**
+* Herbal drug industry
+* Present scenario
+* Future prospects
+* Plant-based industries in India
+* Research institutions
+* Schedule T - GMP
+* Components and objectives
+* Infrastructure requirements
+* Equipment and machinery
+* Standard operating procedures
+* Documentation
+* Quality assurance
+
+---
+
+### 30. BIOPHARMACEUTICS & PHARMACOKINETICS
+
+**Unit I: Absorption & Distribution**
+* Introduction to biopharmaceutics
+* Drug absorption
+* Mechanisms of absorption
+* Passive diffusion
+* Facilitated diffusion
+* Active transport
+* Factors affecting absorption
+* Physicochemical factors
+* Physiological factors
+* Formulation factors
+* Non-oral absorption routes
+* Drug distribution
+* Tissue permeability
+* Plasma protein binding
+* Tissue binding
+* Apparent volume of distribution
+* Clinical significance of binding
+
+**Unit II: Elimination & Bioavailability**
+* Drug metabolism
+* Phase I reactions
+* Oxidation
+* Reduction
+* Hydrolysis
+* Phase II reactions
+* Conjugation
+* Factors affecting metabolism
+* Drug excretion
+* Renal excretion
+* Glomerular filtration
+* Tubular secretion
+* Tubular reabsorption
+* Biliary excretion
+* Other routes
+* Bioavailability
+* Absolute bioavailability
+* Relative bioavailability
+* Measurement methods
+* Bioequivalence studies
+
+**Unit III: Pharmacokinetic Models**
+* Introduction to pharmacokinetics
+* Compartment models
+* Non-compartment models
+* Physiological models
+* One-compartment model
+* IV bolus administration
+* IV infusion
+* Extravascular administration
+* Pharmacokinetic parameters
+* Elimination rate constant
+* Half-life
+* Volume of distribution
+* Area under curve
+* Clearance
+* Absorption rate constant
+
+**Unit IV: Multicompartment Models**
+* Two-compartment model
+* IV bolus kinetics
+* Distribution phase
+* Elimination phase
+* Hybrid rate constants
+* Multiple dosing
+* Drug accumulation
+* Steady state levels
+* Fluctuation
+* Loading dose calculation
+* Maintenance dose calculation
+* Dosing interval selection
+* Clinical applications
+
+**Unit V: Nonlinear Pharmacokinetics**
+* Introduction to nonlinearity
+* Causes of nonlinearity
+* Saturable absorption
+* Saturable binding
+* Saturable metabolism
+* Saturable excretion
+* Michaelis-Menten kinetics
+* Km and Vmax
+* Parameter estimation
+* Clinical implications
+* Drugs showing nonlinear kinetics
+* Phenytoin
+* Alcohol
+
+---
+
+### 31. PHARMACEUTICAL BIOTECHNOLOGY
+
+**Unit I: Enzyme & Genetic Engineering**
+* Introduction to biotechnology
+* Applications in pharmacy
+* Enzyme biotechnology
+* Enzyme immobilization methods
+* Adsorption
+* Covalent bonding
+* Entrapment
+* Cross-linking
+* Applications
+* Biosensors
+* Principles
+* Types
+* Applications in pharmacy
+* Protein engineering
+* Industrial enzymes
+* Amylase
+* Lipase
+* Protease
+* Genetic engineering basics
+
+**Unit II: Recombinant DNA Technology**
+* Cloning vectors
+* Plasmids
+* Bacteriophages
+* Cosmids
+* Restriction enzymes
+* DNA ligase
+* Gene cloning
+* Recombinant DNA technology
+* Steps involved
+* Applications in medicine
+* Recombinant products
+* Interferons
+* Insulin production
+* Hepatitis B vaccine
+* PCR technology
+* Principles
+* Applications
+
+**Unit III: Immunology**
+* Types of immunity
+* Innate immunity
+* Acquired immunity
+* Humoral immunity
+* Cell-mediated immunity
+* Immunoglobulins
+* Structure
+* Classes
+* Functions
+* MHC complex
+* Structure and function
+* Hypersensitivity reactions
+* Types I-IV
+* Immunostimulants
+* Immunosuppressants
+* Vaccines
+* Types
+* Production methods
+* Hybridoma technology
+* Monoclonal antibodies
+* Blood products
+
+**Unit IV: Molecular Techniques**
+* Immunoblotting
+* ELISA
+* Western blotting
+* Southern blotting
+* Northern blotting
+* Genetic organization
+* Prokaryotic genome
+* Eukaryotic genome
+* Microbial genetics
+* Transformation
+* Transduction
+* Conjugation
+* Plasmids
+* Transposons
+* Biotransformation
+* Applications
+* Mutation
+* Types of mutations
+
+**Unit V: Fermentation Technology**
+* Fermentation basics
+* Types of fermentation
+* Submerged
+* Solid state
+* Media requirements
+* Equipment
+* Sterilization methods
+* Aeration and agitation
+* Fermenter design
+* Types of fermenters
+* Controls and instrumentation
+* Production of
+* Penicillins
+* Citric acid
+* Vitamin B12
+* Glutamic acid
+* Griseofulvin
+* Blood products
+* Collection and processing
+* Storage
+
+---
+
+### 32. PHARMACEUTICAL QUALITY ASSURANCE
+
+**Unit I: Quality Management Concepts**
+* Quality control definition
+* Quality assurance definition
+* GMP concept
+* Total Quality Management
+* Definition
+* Elements
+* Philosophies
+* ICH guidelines
+* Q-series guidelines
+* Stability testing guidelines
+* Quality by Design
+* Definition
+* Elements
+* Tools
+* ISO 9000
+* ISO 14000
+* NABL accreditation
+* Principles
+* Procedures
+
+**Unit II: Organization & Facilities**
+* Personnel
+* Responsibilities
+* Training programs
+* Hygiene requirements
+* Health records
+* Premises design
+* Construction requirements
+* Plant layout
+* Maintenance
+* Sanitation
+* Environmental control
+* HVAC systems
+* Utilities
+* Sterile area maintenance
+* Contamination control
+* Equipment selection
+* Purchase specifications
+* Maintenance
+* Raw materials
+* Specifications
+* Storage
+
+**Unit III: Quality Control**
+* QC tests for containers
+* Glass containers
+* Plastic containers
+* Rubber closures
+* Secondary packaging
+* Good Laboratory Practices
+* General provisions
+* Organization
+* Personnel requirements
+* Facilities
+* Equipment
+* Testing operations
+* Protocol requirements
+* Records and reports
+* Inspections
+
+**Unit IV: Documentation & Complaints**
+* Complaints handling
+* Evaluation
+* Investigation
+* Corrective actions
+* Returned goods
+* Handling procedures
+* Recall procedures
+* Waste disposal
+* Documentation
+* Batch formula record
+* Master formula record
+* Standard operating procedures
+* Quality audit
+* Quality review
+* Distribution records
+
+**Unit V: Validation & Warehousing**
+* Calibration
+* Principles
+* Procedures
+* Qualification
+* IQ, OQ, PQ
+* Validation
+* Definition
+* Types
+* Prospective
+* Concurrent
+* Retrospective
+* Validation master plan
+* Analytical method validation
+* Parameters
+* Acceptance criteria
+* Warehousing
+* Good warehousing practice
+* Materials management
+* Inventory control
+
+---
+
+## YEAR 4 - SEMESTER VII
+
+---
+
+### 33. INSTRUMENTAL METHODS OF ANALYSIS
+
+**Unit I: UV-Visible & Fluorescence Spectroscopy**
+* UV-Visible spectroscopy
+* Electronic transitions
+* Types of transitions
+* Chromophores
+* Auxochromes
+* Spectral shifts
+* Bathochromic shift
+* Hypsochromic shift
+* Hyperchromic effect
+* Hypochromic effect
+* Solvent effects
+* Beer-Lambert's law
+* Derivation
+* Deviations
+* Instrumentation
+* Light sources
+* Monochromators
+* Sample cells
+* Detectors
+* Applications
+* Fluorimetry
+* Theory
+* Electronic states
+* Fluorescence vs phosphorescence
+* Factors affecting fluorescence
+* Quenching
+* Instrumentation
+* Applications
+
+**Unit II: IR & Atomic Spectroscopy**
+* IR spectroscopy
+* Introduction
+* Molecular vibrations
+* Stretching
+* Bending
+* Fundamental modes
+* Sample handling
+* Factors affecting vibrations
+* Instrumentation
+* Sources
+* Monochromators
+* Detectors
+* Applications
+* Flame photometry
+* Principle
+* Interferences
+* Instrumentation
+* Applications
+* Atomic absorption spectroscopy
+* Principle
+* Atomization methods
+* Interferences
+* Instrumentation
+* Applications
+* Nepheloturbidometry
+* Principle
+* Instrumentation
+* Applications
+
+**Unit III: Chromatography Basics**
+* Introduction to chromatography
+* Classification
+* Adsorption chromatography
+* Methodology
+* Applications
+* Partition chromatography
+* Thin layer chromatography
+* Principle
+* Stationary phases
+* Mobile phases
+* Rf values
+* Development techniques
+* Detection methods
+* Applications
+* Paper chromatography
+* Introduction
+* Methodology
+* Development techniques
+* Applications
+* Electrophoresis
+* Principles
+* Factors affecting mobility
+* Paper electrophoresis
+* Gel electrophoresis
+* Capillary electrophoresis
+* Applications
+
+**Unit IV: Gas & Liquid Chromatography**
+* Gas chromatography
+* Theory
+* Retention parameters
+* Resolution
+* Instrumentation
+* Carrier gas
+* Injection systems
+* Columns - packed and capillary
+* Detectors - FID, TCD, ECD
+* Derivatization
+* Temperature programming
+* Applications
+* HPLC
+* Theory
+* Modes of separation
+* Normal phase
+* Reverse phase
+* Ion exchange
+* Size exclusion
+* Instrumentation
+* Pumps
+* Injectors
+* Columns
+* Detectors
+* Applications
+
+**Unit V: Specialized Chromatography**
+* Ion exchange chromatography
+* Classification
+* Ion exchange resins
+* Properties
+* Mechanism
+* Factors affecting exchange
+* Methodology
+* Applications
+* Gel chromatography
+* Theory
+* Gel types
+* Instrumentation
+* Applications
+* Affinity chromatography
+* Principle
+* Ligands
+* Supports
+* Methodology
+* Applications
+
+---
+
+### 34. INDUSTRIAL PHARMACY – II
+
+**Unit I: Pilot Plant & Scale-up**
+* Pilot plant scale-up
+* General considerations
+* Personnel requirements
+* Space requirements
+* Equipment considerations
+* Raw material requirements
+* Scale-up for solids
+* Tablets
+* Capsules
+* Scale-up for liquids
+* Solutions
+* Suspensions
+* Emulsions
+* Scale-up for semi-solids
+* Documentation requirements
+* SUPAC guidelines
+* Platform technology
+
+**Unit II: Technology Transfer**
+* WHO guidelines
+* Terminology
+* Technology transfer protocol
+* Quality risk management
+* Transfer from R&D to production
+* Process transfer
+* Packaging transfer
+* Cleaning validation transfer
+* API transfer
+* Finished product transfer
+* Documentation
+* Premises qualification
+* Equipment qualification
+* Analytical method transfer
+* TT agencies in India
+* APCTD
+* NRDC
+* TIFAC
+* Legal aspects
+* Confidentiality agreements
+* Licensing
+* MoUs
+
+**Unit III: Regulatory Affairs**
+* Introduction to regulatory affairs
+* Historical development
+* Regulatory authorities
+* US FDA
+* EMA
+* CDSCO
+* Role of RA department
+* Drug development process
+* Non-clinical development
+* IND application
+* Requirements
+* Submission process
+* Clinical trials
+* Phases
+* Protocols
+* NDA submission
+* ANDA
+* BE studies
+* Biostatistics
+* Data presentation
+
+**Unit IV: Quality Management Systems**
+* Quality management
+* Total Quality Management
+* Quality by Design
+* Six Sigma
+* DMAIC methodology
+* Out of Specifications
+* Investigation
+* CAPA
+* Change control
+* Types of changes
+* Procedures
+* ISO 9000 series
+* Requirements
+* Certification
+* ISO 14000
+* Environmental management
+* NABL
+* GLP
+
+**Unit V: Indian Regulatory Requirements**
+* CDSCO
+* Organization
+* Functions
+* State Licensing Authority
+* Organization
+* Functions
+* Certificate of Pharmaceutical Product
+* COPP requirements
+* New drug approval
+* Requirements
+* Procedures
+* Clinical trial requirements
+* Schedule Y
+* Post-marketing surveillance
+
+---
+
+### 35. PHARMACY PRACTICE
+
+**Unit I: Hospital Pharmacy**
+* Hospital organization
+* Classification of hospitals
+* Primary, secondary, tertiary
+* Organization structure
+* Medical staff functions
+* Hospital pharmacy
+* Definition and functions
+* Organization
+* Location and layout
+* Staff requirements
+* Pharmacist responsibilities
+* Adverse drug reactions
+* Classification
+* Detection methods
+* Reporting systems
+* Management
+* Community pharmacy
+* Organization
+* Types and design
+* Legal requirements
+* Record maintenance
+
+**Unit II: Drug Distribution & Formulary**
+* Drug distribution systems
+* Inpatient dispensing
+* Floor stock system
+* Individual prescription
+* Unit dose system
+* Outpatient dispensing
+* Controlled drug dispensing
+* Hospital formulary
+* Definition and contents
+* Preparation
+* Revision process
+* Drug additions and deletions
+* Therapeutic drug monitoring
+* Need and importance
+* Factors considered
+* Indian scenario
+* Medication adherence
+* Causes of non-adherence
+* Pharmacist's role
+* Patient medication history
+* Community pharmacy management
+
+**Unit III: Clinical Services**
+* Pharmacy and Therapeutics Committee
+* Organization
+* Functions
+* Policies
+* Drug information services
+* Drug information centers
+* Information sources
+* Computerized services
+* Patient counseling
+* Definition
+* Steps
+* Special cases
+* Education and training
+* Pharmacist's role
+* Training programs
+* Community services
+* Code of ethics
+* Communication skills
+
+**Unit IV: Clinical Pharmacy**
+* Budget preparation
+* Implementation
+* Monitoring
+* Clinical pharmacy
+* Definition and concept
+* Functions
+* Responsibilities
+* Drug therapy monitoring
+* Medication chart review
+* Clinical review
+* Pharmacist intervention
+* Ward rounds
+* Pharmaceutical care
+* Dosing based on pharmacokinetics
+* OTC medications
+* Classification
+* Rational use
+* Patient education
+
+**Unit V: Drug Store & Clinical Tests**
+* Drug store management
+* Organization
+* Types of materials
+* Storage conditions
+* Inventory control
+* Principles
+* Purchase procedures
+* Economic order quantity
+* Reorder level
+* Drug expenditure analysis
+* Investigational drugs
+* Principles
+* Classification
+* Control measures
+* Role of pharmacist
+* Clinical laboratory tests
+* Blood chemistry
+* Hematology
+* Urinalysis
+* Interpretation
+
+---
+
+### 36. NOVEL DRUG DELIVERY SYSTEMS
+
+**Unit I: Controlled Release Systems**
+* Introduction to NDDS
+* Terminology
+* Rationale
+* Advantages
+* Disadvantages
+* Drug candidate selection
+* Controlled release approaches
+* Diffusion controlled systems
+* Matrix systems
+* Reservoir systems
+* Dissolution controlled systems
+* Matrix systems
+* Encapsulated dissolution
+* Ion exchange resins
+* Physicochemical properties
+* Biological factors
+* Polymers in NDDS
+* Classification
+* Properties
+* Biodegradable polymers
+* Non-biodegradable polymers
+* Applications
+
+**Unit II: Microencapsulation & Mucosal Delivery**
+* Microencapsulation
+* Definition
+* Advantages
+* Disadvantages
+* Types
+* Microspheres
+* Microcapsules
+* Methods
+* Coacervation
+* Spray drying
+* Solvent evaporation
+* Applications
+* Mucosal drug delivery
+* Bioadhesion principles
+* Mucoadhesive polymers
+* Buccal delivery
+* Formulation considerations
+* Advantages
+* Applications
+* Implantable systems
+* Types
+* Osmotic pumps
+* Applications
+
+**Unit III: Transdermal & Oral Modified Release**
+* Transdermal drug delivery
+* Skin structure
+* Permeation pathways
+* Factors affecting permeation
+* Permeation enhancers
+* Components of TDDS
+* Formulation approaches
+* Evaluation
+* Gastroretentive systems
+* Introduction
+* Approaches
+* Floating systems
+* High density systems
+* Mucoadhesive systems
+* Expandable systems
+* Applications
+* Pulmonary delivery
+* Anatomy considerations
+* Formulation of inhalers
+* DPI
+* MDI
+* Nebulizers
+* Nasal delivery
+
+**Unit IV: Targeted Drug Delivery**
+* Concepts of targeting
+* Active targeting
+* Passive targeting
+* Advantages
+* Disadvantages
+* Liposomes
+* Types
+* Preparation methods
+* Applications
+* Niosomes
+* Preparation
+* Applications
+* Nanoparticles
+* Types
+* Preparation methods
+* Applications
+* Monoclonal antibodies
+* Production
+* Applications
+* Immunoconjugates
+
+**Unit V: Specialized Delivery Systems**
+* Ocular drug delivery
+* Anatomy of eye
+* Barriers to delivery
+* Conventional systems
+* Novel approaches
+* Ocuserts
+* Intraocular implants
+* Nanoparticles
+* Intrauterine drug delivery
+* Introduction
+* Types of IUDs
+* Advantages
+* Disadvantages
+* Development
+* Applications
+* Contraception
+* Hormone replacement
+
+---
+
+## YEAR 4 - SEMESTER VIII
+
+---
+
+### 37. BIOSTATISTICS & RESEARCH METHODOLOGY
+
+**Unit I: Descriptive Statistics**
+* Introduction to statistics
+* Biostatistics definition
+* Data types
+* Frequency distribution
+* Measures of central tendency
+* Mean
+* Arithmetic mean
+* Geometric mean
+* Harmonic mean
+* Median
+* Mode
+* Measures of dispersion
+* Range
+* Variance
+* Standard deviation
+* Coefficient of variation
+* Correlation
+* Karl Pearson's coefficient
+* Spearman's rank correlation
+* Multiple correlation
+
+**Unit II: Probability & Parametric Tests**
+* Regression analysis
+* Linear regression
+* Multiple regression
+* Curve fitting
+* Probability
+* Definition
+* Probability distributions
+* Binomial distribution
+* Poisson distribution
+* Normal distribution
+* Sampling concepts
+* Population and sample
+* Sampling methods
+* Hypothesis testing
+* Null hypothesis
+* Alternative hypothesis
+* Type I and Type II errors
+* Parametric tests
+* t-test
+* One sample
+* Paired
+* Unpaired
+* ANOVA
+* One-way
+* Two-way
+
+**Unit III: Non-parametric Tests & Research Design**
+* Non-parametric tests
+* Wilcoxon signed rank test
+* Mann-Whitney U test
+* Kruskal-Wallis test
+* Friedman test
+* Chi-square test
+* Research methodology
+* Need for research
+* Design of experiments
+* Experimental design techniques
+* Plagiarism
+* Graphical methods
+* Histograms
+* Pie charts
+* Scatter plots
+* Response surface plots
+* Sample size determination
+* Power analysis
+* Study design
+* Cohort studies
+* Cross-sectional studies
+* Clinical trial phases
+
+**Unit IV: Advanced Statistical Methods**
+* Blocking and confounding
+* Two-level factorials
+* Regression modeling
+* Simple linear regression
+* Multiple regression
+* Hypothesis testing
+* Statistical software
+* SPSS
+* MINITAB
+* R
+* Excel applications
+* Data analysis
+* Industrial applications
+* Clinical trial analysis
+
+**Unit V: Design of Experiments**
+* Factorial design
+* 2² factorial design
+* 2³ factorial design
+* Advantages
+* Interpretation
+* Response surface methodology
+* Central composite design
+* Box-Behnken design
+* Historical design
+* Optimization techniques
+* Simplex method
+* Contour plots
+* Applications in formulation development
+
+---
+
+### 38. SOCIAL & PREVENTIVE PHARMACY
+
+**Unit I: Health & Nutrition**
+* Concept of health
+* WHO definition
+* Dimensions of health
+* Determinants of health
+* Disease concept
+* Prevention levels
+* Primary prevention
+* Secondary prevention
+* Tertiary prevention
+* Social causes of disease
+* Nutrition and health
+* Balanced diet
+* Nutrients
+* Nutritional deficiencies
+* Protein-energy malnutrition
+* Vitamin deficiencies
+* Mineral deficiencies
+* Prevention of malnutrition
+* Sociology and health
+* Socio-cultural factors
+* Urbanization impact
+* Poverty and health
+* Personal hygiene
+
+**Unit II: Prevention of Diseases**
+* General principles
+* Disease prevention
+* Disease control
+* Communicable diseases
+* Cholera
+* SARS
+* Ebola
+* Influenza
+* Respiratory infections
+* Malaria
+* Dengue
+* Filariasis
+* Non-communicable diseases
+* Hypertension
+* Diabetes mellitus
+* Cancer
+* Drug addiction
+* Substance abuse
+* Prevention strategies
+
+**Unit III: National Health Programs – I**
+* HIV/AIDS control programme
+* Objectives
+* Strategies
+* Achievements
+* TB control programme
+* RNTCP
+* DOTS strategy
+* Integrated Disease Surveillance
+* IDSP
+* Leprosy control programme
+* Mental health programme
+* Deafness prevention programme
+* Immunization programme
+* Schedule
+* Vaccines
+* Blindness control programme
+* Pulse polio programme
+
+**Unit IV: National Health Programs – II**
+* Mother and child health
+* RCH programme
+* Janani Suraksha Yojana
+* Family welfare programme
+* Objectives
+* Methods
+* Tobacco control programme
+* Malaria prevention programme
+* Elderly health programme
+* Social health programmes
+* Role of WHO
+* Technical assistance
+* Guidelines
+* Funding
+
+**Unit V: Community Health Services**
+* Primary Health Centers
+* Functions
+* Staff
+* Services
+* Rural health
+* Sanitation improvement
+* Water supply
+* Waste disposal
+* National Urban Health Mission
+* Urban health challenges
+* Strategies
+* School health
+* Health education
+* Health promotion
+* Community participation
+
+---
+
+### 39. PHARMA MARKETING MANAGEMENT (Elective)
+
+**Unit I: Marketing Fundamentals**
+* Marketing definition
+* Marketing concepts
+* Production concept
+* Product concept
+* Selling concept
+* Marketing concept
+* Societal marketing concept
+* Marketing vs selling
+* Marketing environment
+* Micro environment
+* Macro environment
+* Industry analysis
+* Competitive analysis
+* Consumer behavior
+* Buying process
+* Factors affecting buying
+* Industrial buying
+* Pharmaceutical market
+* Size and composition
+* Market segmentation
+* Targeting
+* Market research
+
+**Unit II: Product Management**
+* Product decisions
+* Product classification
+* Product line decisions
+* Product mix decisions
+* Product life cycle
+* Introduction
+* Growth
+* Maturity
+* Decline
+* Portfolio analysis
+* BCG matrix
+* Product positioning
+* Strategies
+* New product development
+* Process
+* Challenges
+* Branding
+* Packaging
+* Labeling
+* Pharmaceutical product management
+
+**Unit III: Promotion Strategies**
+* Promotion mix
+* Components
+* Determinants
+* Promotional budget
+* Methods
+* Personal selling
+* Process
+* Techniques
+* Advertising
+* Types
+* Media selection
+* Direct marketing
+* Medical exhibitions
+* Sampling
+* Public relations
+* Digital promotion
+* OTC product promotion
+* Regulatory considerations
+
+**Unit IV: Distribution & Sales Force**
+* Distribution channels
+* Types
+* Channel design
+* Channel selection
+* Channel conflicts
+* Physical distribution
+* Warehousing
+* Transportation
+* Inventory management
+* Sales force management
+* Professional sales representatives
+* Duties
+* Selection
+* Training
+* Supervision
+* Motivation
+* Evaluation
+* Compensation
+* Detailing techniques
+
+**Unit V: Pricing & Emerging Concepts**
+* Pricing
+* Importance
+* Objectives
+* Determinants
+* Pricing methods
+* Cost-based
+* Competition-based
+* Demand-based
+* Pricing strategies
+* DPCO overview
+* NPPA functions
+* Price control
+* Emerging marketing concepts
+* Vertical marketing
+* Horizontal marketing
+* Rural marketing
+* Consumerism
+* Global marketing
+* E-marketing
+
+---
+
+### 40. PHARMACEUTICAL REGULATORY SCIENCE (Elective)
+
+**Unit I: Drug Discovery & Development**
+* Drug discovery stages
+* Target identification
+* Lead discovery
+* Lead optimization
+* Drug development process
+* Preclinical studies
+* In vitro studies
+* In vivo studies
+* Toxicology studies
+* Non-clinical activities
+* Pharmacokinetics
+* Pharmacodynamics
+* Clinical studies
+* Phase I-IV
+* Innovator drugs
+* Generic drugs
+* Concept
+* Development process
+* 505(b)(2) pathway
+
+**Unit II: Regulatory Approval Process**
+* IND application
+* Requirements
+* Components
+* Review process
+* NDA
+* Requirements
+* Review timeline
+* Approval process
+* ANDA
+* Bioequivalence requirements
+* Review process
+* Post-approval changes
+* SUPAC guidelines
+* Annual reports
+* Regulatory authorities
+* US FDA
+* EMA
+* PMDA
+* TGA
+* Health Canada
+* CDSCO
+
+**Unit III: Technical Documentation**
+* Export procedures
+* Requirements
+* Documentation
+* Drug Master Files
+* Types
+* Content
+* Submission
+* Common Technical Document
+* Structure
+* Module 1-5
+* Content requirements
+* eCTD
+* Format
+* Submission
+* ACTD
+* Structure
+* Requirements
+
+**Unit IV: Clinical Trials**
+* Clinical trial protocols
+* Design
+* Components
+* IRB/Ethics Committee
+* Formation
+* Functions
+* Informed consent
+* Process
+* Requirements
+* GCP compliance
+* Investigator obligations
+* Sponsor responsibilities
+* Monitor duties
+* Trial management
+* Pharmacovigilance
+* Safety monitoring
+* Adverse event reporting
+
+**Unit V: Regulatory Concepts**
+* Terminology
+* Guidelines vs regulations
+* Laws and Acts
+* Reference publications
+* Orange Book
+* Purpose
+* Content
+* Purple Book
+* Federal Register
+* Code of Federal Regulations
+* Structure
+* Relevant parts
+* Indian regulations
+* Schedule Y
+* New drug regulations
+* Clinical trial regulations
+
+---
+
+### 41. PHARMACOVIGILANCE (Elective)
+
+**Unit I: Introduction to Pharmacovigilance**
+* History and development
+* Thalidomide tragedy
+* Evolution of pharmacovigilance
+* Importance of safety monitoring
+* WHO drug monitoring programme
+* Uppsala Monitoring Centre
+* Signal detection
+* Pharmacovigilance Program of India
+* PvPI
+* Structure
+* Functions
+* Adverse drug reactions
+* Definition
+* Classification
+* Type A reactions
+* Type B reactions
+* Detection methods
+* Causality assessment
+* WHO-UMC system
+* Naranjo algorithm
+* Severity assessment
+* Seriousness assessment
+* Predictability
+* Preventability
+* Management of ADRs
+* Basic terminology
+
+**Unit II: Classification & Information Systems**
+* Drug classification systems
+* ATC classification
+* Structure
+* Application
+* Disease classification
+* ICD system
+* Versions
+* Daily defined doses
+* International Nonproprietary Names
+* Drug dictionaries
+* WHO-ART
+* MedDRA
+* Terminology
+* SMQs
+* WHO Drug Dictionary
+* EudraVigilance
+* Information resources
+* Drug information sources
+* ADR databases
+* Establishing PV programs
+* Hospital setting
+* Industry setting
+* National level
+
+**Unit III: Methods & Vaccine Safety**
+* Vaccine pharmacovigilance
+* Special considerations
+* Vaccination failure
+* Adverse events following immunization
+* Classification
+* Investigation
+* PV methods
+* Passive surveillance
+* Spontaneous reporting
+* Case series
+* Stimulated reporting
+* Active surveillance
+* Sentinel sites
+* Registries
+* Comparative studies
+* Cross-sectional
+* Case-control
+* Cohort studies
+* Targeted clinical investigations
+* Communication
+* Risk communication
+* Crisis management
+
+**Unit IV: Case Processing & Signal Detection**
+* Case processing
+* Case receipt
+* Data entry
+* Coding
+* Quality review
+* Case assessment
+* Seriousness
+* Expectedness
+* Prioritization
+* Follow-up procedures
+* Regulatory reporting
+* Signal detection
+* Definition of signal
+* Sources of signals
+* Data mining
+* Statistical methods
+* Signal evaluation
+* Signal assessment
+* Benefit-risk assessment
+
+**Unit V: Reporting & Regulations**
+* Regulatory reporting
+* ICSR
+* Format
+* Submission
+* PBRER/PSUR
+* Content
+* Timelines
+* DSUR
+* Requirements
+* Regulatory requirements
+* India
+* USA
+* Europe
+* ICH guidelines
+* E2A-E2F
+* Pharmacovigilance audit
+* Planning
+* Conduct
+* Reporting
+* Special populations
+* Pediatrics
+* Geriatrics
+* Pregnancy
+* Lactation
+
+---

@@ -1,0 +1,56 @@
+const express = require('express');
+const router = express.Router();
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const pool = require('../db');
+
+// Login Route
+router.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const [rows] = await pool.query("SELECT * FROM users WHERE email = ?", [email]);
+
+        if (rows.length === 0) {
+            return res.status(401).json({ message: "Invalid credentials" });
+        }
+
+        const user = rows[0];
+        const match = await bcrypt.compare(password, user.password);
+
+        if (!match) {
+            return res.status(401).json({ message: "Invalid credentials" });
+        }
+
+        // Generate Token
+        // FALLBACK SECRET applied because server env is unreliable
+        const secret = process.env.JWT_SECRET || 'fallback_secret_key_123456';
+        const token = jwt.sign({ id: user.id, email: user.email }, secret, { expiresIn: '24h' });
+
+        res.json({
+            message: "Login successful",
+            token,
+            user: { id: user.id, email: user.email }
+        });
+
+    } catch (error) {
+        console.error("LOGIN ERROR:", error);
+        res.status(500).json({
+            message: "Server error: " + error.message,
+            stack: error.stack,
+            env_check: {
+                has_jwt: !!process.env.JWT_SECRET,
+                db_host: process.env.DB_HOST
+            }
+        });
+    }
+});
+
+const authenticateToken = require('../middleware/auth.middleware');
+
+// Verify Token
+router.get('/verify', authenticateToken, (req, res) => {
+    res.json({ message: "Token is valid", user: req.user });
+});
+
+module.exports = router;
