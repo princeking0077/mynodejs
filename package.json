@@ -4,10 +4,10 @@
     "main": "index.js",
     "description": "Root Orchestration for Pharma App",
     "scripts": {
-        "build": "echo 'Skipping build on server - using pre-built assets from git'",
-        "build:local": "npm run build --prefix client",
-        "start": "node index.js",
-        "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start -p 3000",
+        "lint": "next lint",
         "setup": "node server/setup.js",
         "db:update": "node server/add_seo_columns.js",
         "db:update:v2": "node server/update_schema_settings.js"
