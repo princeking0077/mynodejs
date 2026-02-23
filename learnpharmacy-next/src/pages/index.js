@@ -1,42 +1,43 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Search, BookOpen, Sparkles, ArrowRight, Zap, Layers, Users } from 'lucide-react';
+import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import SEO from '../components/SEO';
+import { motion } from 'framer-motion';
+import { Search, BookOpen, Sparkles, ArrowRight, Zap, Layers, Users } from 'lucide-react';
 import ChemicalShowcase from '../components/ChemicalShowcase';
 import PharmaBackground from '../components/PharmaBackground';
-import { homepageSEO, homepageSchema } from '../data/seoConfig';
 
-const Home = ({ initialStats }) => {
+export default function Home({ stats }) {
     const [searchQuery, setSearchQuery] = useState('');
-    const [stats, setStats] = useState(initialStats);
     const router = useRouter();
-    const navigate = router.push;
-
-    // Fetch Stats on Mount (can be disabled if SSG is enough)
-    React.useEffect(() => {
-        // Quick fetch for dynamic numbers
-        import('../services/api').then(({ api }) => {
-            api.getStats().then(data => {
-                if (data) setStats(data);
-            });
-        }).catch(err => console.log('API fetch from client: ', err));
-    }, []);
 
     const handleSearch = (e) => {
         e.preventDefault();
         if (searchQuery.trim()) {
-            navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+            router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
         }
     };
 
     return (
         <>
-            <SEO
-                {...homepageSEO}
-                schema={homepageSchema}
-            />
+            <Head>
+                <title>LearnPharmacy.in | Visual Pharmacy Education</title>
+                <meta name="description" content="Master Pharmacy with 3D visuals, simplified notes, and real-time quizzes. The complete visual pharmacy education platform for B.Pharm and D.Pharm students in India." />
+
+                <link rel="canonical" href="https://learnpharmacy.in" />
+
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content="https://learnpharmacy.in" />
+                <meta property="og:title" content="LearnPharmacy.in | Visual Pharmacy Education" />
+                <meta property="og:description" content="Master Pharmacy with 3D visuals, simplified notes, and real-time quizzes. The complete visual pharmacy education platform for B.Pharm and D.Pharm students in India." />
+                <meta property="og:image" content="https://learnpharmacy.in/default-og.jpg" />
+
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="LearnPharmacy.in | Visual Pharmacy Education" />
+                <meta name="twitter:description" content="Master Pharmacy with 3D visuals, simplified notes, and real-time quizzes. The complete visual pharmacy education platform for B.Pharm and D.Pharm students in India." />
+                <meta name="twitter:image" content="https://learnpharmacy.in/default-og.jpg" />
+            </Head>
+
             <PharmaBackground />
 
             <div className="container" style={{ paddingBottom: '4rem', position: 'relative', zIndex: 1 }}>
@@ -51,8 +52,6 @@ const Home = ({ initialStats }) => {
                     paddingTop: '2rem',
                     marginBottom: '4rem'
                 }}>
-
-                    {/* Badge */}
                     <div
                         style={{
                             display: 'inline-flex',
@@ -72,13 +71,11 @@ const Home = ({ initialStats }) => {
                         <span>LearnPharmacy.in Learning Ecosystem</span>
                     </div>
 
-                    {/* Main Title - No Animation for LCP */}
                     <h1 style={{ marginBottom: '1.5rem', maxWidth: '800px', opacity: 1, transform: 'none' }}>
                         Master Pharmacy <br />
                         <span className="gradient-text" style={{ fontSize: '1.1em' }}>With Visuals</span>
                     </h1>
 
-                    {/* Subtitle */}
                     <p
                         style={{
                             color: 'var(--text-muted)',
@@ -92,7 +89,6 @@ const Home = ({ initialStats }) => {
                         3D animations, and real-time quizzes.
                     </p>
 
-                    {/* Search Bar - Hero */}
                     <motion.form
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -182,7 +178,6 @@ const Home = ({ initialStats }) => {
                                         <h3 style={{ fontSize: '1.8rem', marginBottom: '0.5rem', color: 'white' }}>{item.year}</h3>
                                         <p style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '1.1rem' }}>{item.desc}</p>
 
-                                        {/* Dynamic Topic Count Badge */}
                                         {stats && stats.byYear && stats.byYear[item.slug] > 0 && (
                                             <div style={{
                                                 marginTop: '0.8rem',
@@ -216,7 +211,6 @@ const Home = ({ initialStats }) => {
                         ))}
                     </div>
 
-                    {/* New Syllabus Quick Links Section */}
                     <div style={{ marginTop: '4rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
                         <Link href="/gpat-syllabus" style={{ textDecoration: 'none' }}>
                             <motion.div
@@ -265,7 +259,6 @@ const Home = ({ initialStats }) => {
                     </div>
                 </section>
 
-                {/* Ready to Transform Section (Extracted & Enhanced) */}
                 <section style={{ textAlign: 'center', marginBottom: '8rem', padding: '0 1rem' }}>
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
@@ -286,8 +279,6 @@ const Home = ({ initialStats }) => {
                                 color: 'white', border: 'none', borderRadius: '3rem',
                                 cursor: 'pointer', transition: '0.3s', boxShadow: '0 0 30px rgba(168, 85, 247, 0.4)'
                             }}
-                                onMouseEnter={e => e.target.style.transform = 'scale(1.05)'}
-                                onMouseLeave={e => e.target.style.transform = 'scale(1)'}
                             >
                                 Get Started Now
                             </button>
@@ -295,10 +286,8 @@ const Home = ({ initialStats }) => {
                     </motion.div>
                 </section>
 
-                {/* Chemical Showcase Section */}
                 <ChemicalShowcase />
 
-                {/* Stats Section */}
                 <section style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
@@ -327,7 +316,6 @@ const Home = ({ initialStats }) => {
                     ))}
                 </section>
 
-                {/* Call to Action - Ready to Excel */}
                 <section style={{
                     textAlign: 'center',
                     padding: '5rem 2rem',
@@ -350,19 +338,32 @@ const Home = ({ initialStats }) => {
             </div>
         </>
     );
-};
+}
 
 export async function getStaticProps() {
-    // Generate static content at build time (SSG)
-    // You can fetch from your actual database here instead of calling the client API
-    const SSG_Stats = { total: 500, byYear: { "1st-year": 40, "2nd-year": 50, "3rd-year": 60, "4th-year": 55 } };
+    // In SSG, we fetch dynamic data at build time
+    let SSG_Stats = {
+        total: 512,
+        byYear: {
+            "1st-year": 120,
+            "2nd-year": 145,
+            "3rd-year": 90,
+            "4th-year": 157
+        }
+    };
+
+    // If you have a local node endpoint to fetch the actual DB count from Hostinger:
+    // try {
+    //     const res = await fetch('https://learnpharmacy.in/api/settings/stats');
+    //     if (res.ok) SSG_Stats = await res.json();
+    // } catch (e) {
+    //     console.error("Failed to fetch API stats", e);
+    // }
 
     return {
         props: {
-            initialStats: SSG_Stats
+            stats: SSG_Stats
         },
-        revalidate: 3600 // Revalidate every hour
+        revalidate: 3600 // Re-generate page every hour (ISR)
     };
 }
-
-export default Home;
