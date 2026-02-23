@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import SEO from '../components/SEO';
 import Layout from '../components/Layout';
 import { Mail, Phone, MapPin, Send, MessageSquare } from 'lucide-react';
+import { contactSEO } from '../data/seoConfig';
 
 const Contact = () => {
     const [submitted, setSubmitted] = useState(false);
@@ -13,7 +14,7 @@ const Contact = () => {
 
     return (
         <Layout>
-            <SEO title="Contact Us - LearnPharmacy.in" description="Get in touch with the LearnPharmacy team regarding support, partnerships, or feedback." />
+            <SEO {...contactSEO} />
 
             <div className="container" style={{ paddingBottom: '4rem' }}>
                 <div style={{ textAlign: 'center', marginBottom: '4rem', marginTop: '4rem' }}>

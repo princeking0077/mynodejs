@@ -2,76 +2,87 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
 /**
- * Enhanced SEO Component with JSON-LD Schema Support
- * Handles meta tags, Open Graph, Twitter Cards, and structured data
+ * Enhanced SEO Component
+ * Based on 'SEO Implementation Guide for LearnPharmacy.in'
+ * Supports expanded meta tags, Open Graph, Twitter Cards, and JSON-LD Schema.
  */
 const SEO = ({
     title,
     description,
+    canonical,
+    robots = "index, follow",
     keywords,
-    canonicalUrl,
+    ogType = "website",
+    ogImage = "https://learnpharmacy.in/default-og.jpg",
+    article,
     breadcrumbs,
-    schemas = [],
-    ogImage,
-    noindex = false
+    schema
 }) => {
-    const siteTitle = "LearnPharmacy.in";
-    const fullTitle = title ? `${title} | ${siteTitle}` : `${siteTitle} | Visual Pharmacy Education`;
-    const defaultDesc = "Master B.Pharm concepts with 3D animations, simplified notes, and real-time quizzes. The complete visual learning ecosystem.";
-    const finalDescription = description || defaultDesc;
-    const baseURL = process.env.REACT_APP_SITE_URL || 'https://learnpharmacy.in';
-    const finalCanonicalUrl = canonicalUrl || (typeof window !== 'undefined' ? window.location.href : baseURL);
-    const defaultOgImage = `${baseURL}/og-image.jpg`; // You'll need to create this
+    const siteName = "LearnPharmacy.in";
+    const fullTitle = title && title.includes(siteName) ? title : `${title ? title + ' | ' : ''}${siteName}`;
 
-    // Build keywords from breadcrumbs if not provided
-    let finalKeywords = keywords;
-    if (!keywords && breadcrumbs) {
-        finalKeywords = breadcrumbs.map(b => b.name).join(', ') + ', pharmacy, b.pharm, learnpharmacy';
-    }
+    // Helper function for breadcrumbs
+    const generateBreadcrumbSchema = (items) => ({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": items.map((item, index) => ({
+            "@type": "ListItem",
+            "position": index + 1,
+            "name": item.name,
+            "item": item.url
+        }))
+    });
 
     return (
         <Helmet>
-            {/* Basic Meta Tags */}
+            {/* Primary Meta Tags */}
             <title>{fullTitle}</title>
-            <meta name="description" content={finalDescription} />
-            {finalKeywords && <meta name="keywords" content={finalKeywords} />}
+            <meta name="description" content={description} />
+            <meta name="robots" content={robots} />
+            {keywords && <meta name="keywords" content={keywords} />}
+            {canonical && <link rel="canonical" href={canonical} />}
 
-            {/* Canonical URL */}
-            <link rel="canonical" href={finalCanonicalUrl} />
+            {/* Language */}
+            <html lang="en-IN" />
+            <meta httpEquiv="content-language" content="en-IN" />
 
-            {/* Robots Meta */}
-            {noindex ? (
-                <meta name="robots" content="noindex, nofollow" />
-            ) : (
-                <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-            )}
-
-            {/* Open Graph / Facebook */}
-            <meta property="og:type" content="website" />
-            <meta property="og:url" content={finalCanonicalUrl} />
+            {/* Open Graph */}
+            <meta property="og:type" content={ogType} />
+            {canonical && <meta property="og:url" content={canonical} />}
             <meta property="og:title" content={fullTitle} />
-            <meta property="og:description" content={finalDescription} />
-            <meta property="og:image" content={ogImage || defaultOgImage} />
-            <meta property="og:site_name" content={siteTitle} />
+            <meta property="og:description" content={description} />
+            <meta property="og:image" content={ogImage} />
+            <meta property="og:site_name" content={siteName} />
+            <meta property="og:locale" content="en_IN" />
+
+            {/* Article-specific OG tags */}
+            {article && (
+                <>
+                    {article.published_time && <meta property="article:published_time" content={article.published_time} />}
+                    {article.modified_time && <meta property="article:modified_time" content={article.modified_time} />}
+                    {article.section && <meta property="article:section" content={article.section} />}
+                </>
+            )}
 
             {/* Twitter Card */}
             <meta name="twitter:card" content="summary_large_image" />
-            <meta name="twitter:url" content={finalCanonicalUrl} />
             <meta name="twitter:title" content={fullTitle} />
-            <meta name="twitter:description" content={finalDescription} />
-            <meta name="twitter:image" content={ogImage || defaultOgImage} />
+            <meta name="twitter:description" content={description} />
+            <meta name="twitter:image" content={ogImage} />
 
-            {/* Additional SEO Tags */}
-            <meta name="author" content="LearnPharmacy Team" />
-            <meta name="language" content="English" />
-            <meta name="revisit-after" content="7 days" />
+            {/* Breadcrumb Schema */}
+            {breadcrumbs && breadcrumbs.length > 0 && (
+                <script type="application/ld+json">
+                    {JSON.stringify(generateBreadcrumbSchema(breadcrumbs))}
+                </script>
+            )}
 
-            {/* JSON-LD Structured Data */}
-            {schemas && schemas.length > 0 && schemas.map((schema, index) => (
-                <script key={`schema-${index}`} type="application/ld+json">
+            {/* Additional Schema */}
+            {schema && (
+                <script type="application/ld+json">
                     {JSON.stringify(schema)}
                 </script>
-            ))}
+            )}
         </Helmet>
     );
 };

@@ -6,11 +6,12 @@ import SEO from '../components/SEO';
 import PharmaBackground from '../components/PharmaBackground';
 import { gpatSyllabus } from '../data/gpatSyllabusData';
 import { Link } from 'react-router-dom';
+import { gpatHubSEO } from '../data/seoConfig';
 
 const GpatSyllabus = () => {
     return (
         <Layout>
-            <SEO title="GPAT Syllabus" description="Complete GPAT 2024-25 Syllabus Module wise" />
+            <SEO {...gpatHubSEO} />
             <PharmaBackground />
 
             <div className="container" style={{ position: 'relative', zIndex: 1, paddingBottom: '4rem' }}>

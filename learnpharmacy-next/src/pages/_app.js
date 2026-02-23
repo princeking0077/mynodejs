@@ -1,7 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
 import { AnimatePresence } from 'framer-motion';
-import { AuthProvider } from '../contexts/AuthContext';
+// import { AuthProvider } from '../contexts/AuthContext';
 import Layout from '../components/Layout';
 import ErrorBoundary from '../components/ErrorBoundary';
 
@@ -15,13 +15,11 @@ export default function App({ Component, pageProps, router }) {
       </Head>
 
       <ErrorBoundary>
-        <AuthProvider>
-          <Layout>
-            <AnimatePresence mode="wait" initial={false}>
-              <Component {...pageProps} key={router.pathname} />
-            </AnimatePresence>
-          </Layout>
-        </AuthProvider>
+        <Layout>
+          <AnimatePresence mode="wait" initial={false}>
+            <Component {...pageProps} key={router.pathname} />
+          </AnimatePresence>
+        </Layout>
       </ErrorBoundary>
     </>
   );

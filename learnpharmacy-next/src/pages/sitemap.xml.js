@@ -53,8 +53,9 @@ function generateSiteMap(subjects, articles) {
  `;
 }
 
-export function SiteMap() {
+export default function SiteMap() {
     // getServerSideProps will do the heavy lifting
+    return null;
 }
 
 export async function getServerSideProps({ res }) {

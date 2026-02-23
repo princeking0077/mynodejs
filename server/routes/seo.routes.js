@@ -257,7 +257,7 @@ router.get('/quality-report', authenticateToken, async (req, res) => {
                     stats: sitemapStats
                 }
             },
-            overallScore: this.calculateOverallScore(orphans, cannibalization, withoutKeywords, lowWordCount, withoutCanonical, indexable[0].count)
+            overallScore: calculateOverallScore(orphans, cannibalization, withoutKeywords, lowWordCount, withoutCanonical, indexable[0].count)
         };
 
         res.json(report);
@@ -269,7 +269,7 @@ router.get('/quality-report', authenticateToken, async (req, res) => {
 /**
  * Calculate overall SEO quality score
  */
-router.calculateOverallScore = (orphans, cannibalization, withoutKeywords, lowWordCount, withoutCanonical, indexableCount) => {
+const calculateOverallScore = (orphans, cannibalization, withoutKeywords, lowWordCount, withoutCanonical, indexableCount) => {
     let score = 100;
 
     // Deduct points for issues

@@ -1,12 +1,11 @@
-import React from 'react';
-import SEO from '../components/SEO';
+import { aboutSEO } from '../data/seoConfig';
 import Layout from '../components/Layout';
 import { Target, Users, Award, Code, Sparkles, GraduationCap } from 'lucide-react';
 
 const About = () => {
     return (
         <Layout>
-            <SEO title="About Us - LearnPharmacy.in" description="Revolutionizing Pharmacy Education. Meet the creating team: Shaikh Shoaib and Yousha Ansari." />
+            <SEO {...aboutSEO} />
             <div className="container" style={{ paddingBottom: '4rem' }}>
 
                 {/* Hero Section */}

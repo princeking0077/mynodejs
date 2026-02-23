@@ -14,7 +14,9 @@ class SitemapGenerator {
 
         const sitemaps = [
             { loc: `${baseURL}/sitemap-core.xml`, lastmod: new Date().toISOString() },
-            { loc: `${baseURL}/sitemap-content.xml`, lastmod: new Date().toISOString() }
+            { loc: `${baseURL}/sitemap-subjects.xml`, lastmod: new Date().toISOString() },
+            { loc: `${baseURL}/sitemap-content.xml`, lastmod: new Date().toISOString() },
+            { loc: `${baseURL}/sitemap-gpat.xml`, lastmod: new Date().toISOString() }
         ];
 
         let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
@@ -119,6 +121,32 @@ class SitemapGenerator {
     }
 
     /**
+     * Generate subjects sitemap
+     */
+    static async generateSubjectSitemap() {
+        const baseURL = process.env.SITE_URL || 'https://learnpharmacy.in';
+
+        let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+        xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+        xml += '</urlset>';
+        await this.cacheSitemap('subjects', xml, 0);
+        return xml;
+    }
+
+    /**
+     * Generate GPAT sitemap
+     */
+    static async generateGpatSitemap() {
+        const baseURL = process.env.SITE_URL || 'https://learnpharmacy.in';
+
+        let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+        xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+        xml += '</urlset>';
+        await this.cacheSitemap('gpat', xml, 0);
+        return xml;
+    }
+
+    /**
      * Cache sitemap in database for performance
      */
     static async cacheSitemap(type, xmlContent, urlsCount) {
@@ -164,6 +192,10 @@ class SitemapGenerator {
                 return await this.generateCoreSitemap();
             case 'content':
                 return await this.generateContentSitemap();
+            case 'subjects':
+                return await this.generateSubjectSitemap();
+            case 'gpat':
+                return await this.generateGpatSitemap();
             default:
                 throw new Error(`Invalid sitemap type: ${type}`);
         }

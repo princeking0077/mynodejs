@@ -284,6 +284,89 @@ class InternalLinkingEngine {
             suggestions: links
         };
     }
+
+    /**
+     * Generate SEO-optimized anchor text
+     */
+    static generateAnchorText(topic, linkType) {
+        switch (linkType) {
+            case 'parent':
+                return `Back to ${topic.subject_name}`;
+            case 'sibling':
+                return topic.title;
+            case 'prev':
+                return `← Previous: ${topic.title}`;
+            case 'next':
+                return `Next: ${topic.title} →`;
+            case 'related':
+                return `${topic.primary_keyword} Notes`;
+            default:
+                return topic.title;
+        }
+    }
+
+    /**
+     * Generate "Related Topics" section HTML
+     */
+    static generateRelatedTopicsHTML(currentTopic, relatedTopics, limit = 5) {
+        const filtered = relatedTopics
+            .filter(t => t.id !== currentTopic.id)
+            .slice(0, limit);
+
+        return `
+      <section class="related-topics" aria-label="Related Topics">
+        <h3>Related Topics You May Like</h3>
+        <ul>
+          ${filtered.map(topic => `
+            <li>
+              <a href="/${topic.subject_slug}/${topic.slug}" 
+                 title="${topic.title} - ${topic.subject_name}">
+                ${topic.title}
+              </a>
+              <span class="subject-tag">${topic.subject_name}</span>
+            </li>
+          `).join('')}
+        </ul>
+      </section>
+    `;
+    }
+
+    /**
+     * Generate breadcrumb navigation HTML
+     */
+    static generateBreadcrumbHTML(breadcrumbs) {
+        return `
+      <nav aria-label="Breadcrumb" class="breadcrumb">
+        <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+          ${breadcrumbs.map((item, index) => `
+            <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <a itemprop="item" href="${item.url}">
+                <span itemprop="name">${item.name}</span>
+              </a>
+              <meta itemprop="position" content="${index + 1}" />
+            </li>
+          `).join('<span class="separator">›</span>')}
+        </ol>
+      </nav>
+    `;
+    }
+
+    /**
+     * Check link health for SEO
+     */
+    static async checkLinkHealth() {
+        const issues = [];
+        const orphans = await this.detectOrphanPages();
+        if (orphans.length > 0) {
+            issues.push({
+                type: 'ORPHAN_PAGES',
+                severity: 'high',
+                count: orphans.length,
+                pages: orphans
+            });
+        }
+        return issues;
+    }
 }
 
 module.exports = InternalLinkingEngine;

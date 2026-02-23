@@ -10,6 +10,7 @@ import AnimationViewer from '../components/AnimationViewer';
 import Quiz from '../components/Quiz';
 import { curriculum } from '../data/curriculum';
 import { api } from '../services/api';
+import { generateSubjectSchema, generateTopicSchema } from '../data/seoConfig';
 
 const SubjectView = ({ data, context }) => {
     // We expect 'slug' if coming from dispatcher, or 'subjectSlug' if legacy (though we are removing legacy)
@@ -189,8 +190,12 @@ const SubjectView = ({ data, context }) => {
                 title={selectedTopic?.metaTitle || selectedTopic?.title || subjectStatic.title}
                 description={selectedTopic?.metaDescription || `Learn ${subjectStatic.title} - Notes, Animations, and Quizzes.`}
                 keywords={selectedTopic?.targetKeywords?.join(', ') || ''}
-                canonicalUrl={selectedTopic?.canonicalUrl || ''}
+                canonical={selectedTopic?.canonicalUrl || ''}
                 breadcrumbs={selectedTopic?.breadcrumbs || []}
+                schema={selectedTopic
+                    ? generateTopicSchema(subjectStatic, selectedTopic)
+                    : generateSubjectSchema(subjectStatic, topics)
+                }
             />
 
             <main className="container" style={{ paddingBottom: '4rem' }}>

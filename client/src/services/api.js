@@ -234,6 +234,53 @@ export const api = {
             console.error("Save Settings Error", error);
             throw error;
         }
+    },
+
+    // SEO Tools
+    getQualityReport: async () => {
+        try {
+            const user = JSON.parse(localStorage.getItem('apex_user'));
+            const response = await fetch(`${API_BASE_URL}/seo/quality-report`, {
+                headers: { 'Authorization': `Bearer ${user?.token}` }
+            });
+            if (!response.ok) return null;
+            return await response.json();
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
+    },
+
+    regenerateLinks: async () => {
+        try {
+            const user = JSON.parse(localStorage.getItem('apex_user'));
+            const response = await fetch(`${API_BASE_URL}/seo/regenerate-links`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${user?.token}` }
+            });
+            return await response.json();
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    },
+
+    invalidateSitemap: async (type = 'all') => {
+        try {
+            const user = JSON.parse(localStorage.getItem('apex_user'));
+            const response = await fetch(`${API_BASE_URL}/seo/invalidate-sitemap`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user?.token}`
+                },
+                body: JSON.stringify({ type })
+            });
+            return await response.json();
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
     }
 };
 

@@ -1,11 +1,12 @@
 import React from 'react';
 import SEO from '../components/SEO';
 import Layout from '../components/Layout';
+import { privacySEO } from '../data/seoConfig';
 
 const Privacy = () => {
     return (
         <Layout>
-            <SEO title="Privacy Policy - LearnPharmacy.in" />
+            <SEO {...privacySEO} />
             <div className="container" style={{ paddingBottom: '4rem' }}>
                 <div className="glass-panel" style={{ padding: '3rem', maxWidth: '900px', margin: '4rem auto', lineHeight: '1.7', color: 'var(--text-secondary)' }}>
                     <h1 style={{ marginBottom: '1rem', fontSize: '2.5rem', color: 'white' }}>Privacy Policy</h1>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { Loader } from 'lucide-react';
 
-const animationFiles = import.meta.glob('../animations/*.jsx');
+// Vite syntax removed for Next.js compatibility
+const animationFiles = {};
 
 const AnimationViewer = ({ animationId, code }) => {
     const [Component, setComponent] = useState(null);

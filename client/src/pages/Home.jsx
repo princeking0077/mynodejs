@@ -6,6 +6,7 @@ import SEO from '../components/SEO';
 import Layout from '../components/Layout';
 import ChemicalShowcase from '../components/ChemicalShowcase';
 import PharmaBackground from '../components/PharmaBackground';
+import { homepageSEO, homepageSchema } from '../data/seoConfig';
 
 const Home = () => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -31,7 +32,10 @@ const Home = () => {
 
     return (
         <Layout>
-            <SEO title="Home" description="Master Pharmacy with 3D Visuals and Notes" />
+            <SEO
+                {...homepageSEO}
+                schema={homepageSchema}
+            />
             <PharmaBackground />
 
             <div className="container" style={{ paddingBottom: '4rem', position: 'relative', zIndex: 1 }}>
