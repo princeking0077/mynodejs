@@ -4,10 +4,10 @@
     "main": "index.js",
     "description": "Root Orchestration for Pharma App",
     "scripts": {
-        "dev": "next dev",
-        "build": "next build",
-        "start": "next start -p 3000",
-        "lint": "next lint",
+        "dev": "cd learnpharmacy-next && npm run dev",
+        "build": "cd learnpharmacy-next && npm install --legacy-peer-deps && npm run build",
+        "start": "cd learnpharmacy-next && npm run start",
+        "lint": "cd learnpharmacy-next && npm run lint",
         "setup": "node server/setup.js",
         "db:update": "node server/add_seo_columns.js",
         "db:update:v2": "node server/update_schema_settings.js"
