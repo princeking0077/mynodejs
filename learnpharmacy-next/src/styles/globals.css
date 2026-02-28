@@ -28,7 +28,6 @@
   margin: 0;
   padding: 0;
   -webkit-tap-highlight-color: transparent;
-  /* Mobile friendly */
 }
 
 body {
@@ -54,16 +53,15 @@ h6 {
 }
 
 h1 {
-  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  font-size: clamp(2rem, 7vw, 4.5rem);
 }
 
-/* Responsive Hero Text */
 h2 {
-  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-size: clamp(1.5rem, 5vw, 3rem);
 }
 
 h3 {
-  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-size: clamp(1.2rem, 3.5vw, 2rem);
 }
 
 /* Admin UI: prevent global hero typography from breaking dashboard/editor layouts */
@@ -104,14 +102,13 @@ h3 {
   font-size: 1.25rem;
 }
 
-/* Admin Design System (reference-style) */
+/* Admin Design System */
 .admin-scope .admin-bg-animated {
   background: linear-gradient(-45deg, var(--primary), var(--accent), #0284c7, #9333ea);
   background-size: 400% 400%;
   animation: adminGradientShift 15s ease infinite;
 }
 
-/* New folder template compatibility (admin only) */
 .admin-scope .bg-gradient-animated {
   background: linear-gradient(-45deg, var(--primary), var(--accent), #0284c7, #9333ea);
   background-size: 400% 400%;
@@ -133,29 +130,21 @@ h3 {
 }
 
 .admin-scope .glass-panel-light {
-  background: linear-gradient(180deg,
-      rgba(255, 255, 255, 0.78) 0%,
-      rgba(255, 255, 255, 0.55) 100%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.78) 0%, rgba(255, 255, 255, 0.55) 100%);
   backdrop-filter: blur(18px) saturate(140%);
   -webkit-backdrop-filter: blur(18px) saturate(140%);
   border: 1px solid rgba(255, 255, 255, 0.35);
-  box-shadow:
-    0 18px 55px rgba(2, 6, 23, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: 0 18px 55px rgba(2, 6, 23, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 
-/* In the template, most admin cards use .glass-panel; keep site-wide dark glass, but override in admin scope */
 .admin-scope .glass-panel {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.10) 100%);
   backdrop-filter: blur(22px) saturate(160%);
   -webkit-backdrop-filter: blur(22px) saturate(160%);
   border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow:
-    0 24px 70px rgba(2, 6, 23, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  box-shadow: 0 24px 70px rgba(2, 6, 23, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
-/* Template animation helper */
 .admin-scope .animate-fade-in-up {
   animation: adminFadeInUp 600ms ease both;
 }
@@ -195,7 +184,6 @@ h3 {
   }
 }
 
-/* Optional class-based scrollbar (template uses custom-scrollbar class) */
 .admin-scope .custom-scrollbar::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -221,9 +209,7 @@ h3 {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   color: transparent;
-  /* Fallback */
   display: inline-block;
-  /* Helps with gradient rendering */
 }
 
 a {
@@ -240,7 +226,6 @@ a {
 
 .glass-panel {
   background: rgba(30, 30, 40, 0.7);
-  /* Lighter, more opaque for contrast */
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -285,21 +270,86 @@ a {
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Mobile Optimizations */
-@media (max-width: 768px) {
-  .logo-text {
-    display: none;
+/* =====================================================
+   RESPONSIVE — Mobile First
+   ===================================================== */
+
+/* Tablet */
+@media (max-width: 900px) {
+  .container {
+    width: 93%;
   }
 
-  /* Hide text on small mobile if requested, or keep it */
+  /* Index: curriculum section header row → stack */
+  .section-header-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.5rem !important;
+  }
+
+  /* Dashboard quick-actions + recent content grid */
+  .dashboard-side-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
   .container {
     width: 94%;
+  }
+
+  /* Admin sidebar handled in admin.css */
+
+  /* Generic section spacing */
+  section {
+    margin-bottom: 4rem !important;
+  }
+
+  /* Hero CTA section */
+  .hero-cta-section {
+    padding: 3rem 1rem !important;
+    border-radius: 1.5rem !important;
+  }
+
+  .hero-cta-section h2 {
+    font-size: clamp(1.6rem, 6vw, 2.5rem) !important;
+  }
+
+  /* Stats grid min width adjustment */
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)) !important;
+  }
+
+  /* Form modals: single column on mobile */
+  .form-grid-2col {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .container {
+    width: 96%;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 9vw, 3rem);
+  }
+
+  h2 {
+    font-size: clamp(1.4rem, 6vw, 2rem);
+  }
+
+  .btn {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.95rem;
   }
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -307,6 +357,6 @@ a {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 4px;
 }

@@ -10,18 +10,18 @@ const dev = process.env.NODE_ENV !== 'production';
 const nextApp = next({ dev, dir: __dirname });
 const handle = nextApp.getRequestHandler();
 
-console.log("----- STARTING NEXT.JS CUSTOM SERVER -----");
-console.log(`Port: ${process.env.PORT || 3000}`);
 
 nextApp.prepare().then(() => {
     const app = express();
     const helmet = require('helmet');
     const compression = require('compression');
     const morgan = require('morgan');
+    const cookieParser = require('cookie-parser');
     const pool = require('./server/db'); // Points to learnpharmacy-next/server/db.js
     require('dotenv').config({ path: path.join(__dirname, 'server/.env') });
 
     // Middleware
+    app.use(cookieParser());
     app.use(helmet({
         crossOriginResourcePolicy: { policy: "cross-origin" },
         contentSecurityPolicy: false,
@@ -47,6 +47,7 @@ nextApp.prepare().then(() => {
         app.use('/api/upload', require('./server/routes/upload.routes'));
         app.use('/api/settings', require('./server/routes/settings.routes'));
         app.use('/api/seo', require('./server/routes/seo.routes'));
+        app.use('/api/subjects', require('./server/routes/subjects.routes'));
     } catch (e) {
         console.error("Warning: API routes not found. Only Next.js will work.", e);
     }

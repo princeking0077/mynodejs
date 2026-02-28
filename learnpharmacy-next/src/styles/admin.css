@@ -1,0 +1,138 @@
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+    background: #080814;
+    font-family: 'Inter', sans-serif;
+}
+
+.admin-sidebar {
+    width: 260px;
+    background: rgba(5, 5, 20, 0.95);
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateX(0);
+    overflow-y: auto;
+}
+
+.admin-main {
+    margin-left: 260px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-width: 0;
+}
+
+/* Hide mobile menu button on desktop */
+.mobile-menu-btn {
+    display: none !important;
+}
+
+/* Mobile sidebar overlay */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 99;
+}
+
+.sidebar-overlay.visible {
+    display: block;
+}
+
+/* Admin responsive grids */
+.admin-two-col {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.admin-form-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 1rem;
+}
+
+.admin-sitemap-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 900px) {
+    .admin-two-col {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-sidebar {
+        transform: translateX(-100%);
+    }
+
+    .admin-sidebar.open {
+        transform: translateX(0);
+    }
+
+    .admin-main {
+        margin-left: 0 !important;
+    }
+
+    .mobile-menu-btn {
+        display: block !important;
+    }
+
+    /* Admin main content padding */
+    .admin-main>main {
+        padding: 1rem !important;
+    }
+
+    /* Admin header padding */
+    .admin-main>header {
+        padding: 0 1rem !important;
+    }
+
+    .admin-form-two-col {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-sitemap-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Dashboard stat cards */
+    .admin-stat-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-stat-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .admin-main>main {
+        padding: 0.75rem !important;
+    }
+}

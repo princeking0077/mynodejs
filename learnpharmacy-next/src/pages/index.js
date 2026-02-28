@@ -3,11 +3,11 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
-import { Search, BookOpen, Sparkles, ArrowRight, Zap, Layers, Users } from 'lucide-react';
+import { Search, BookOpen, Sparkles, ArrowRight, Zap, Layers, Users, Calendar, Newspaper } from 'lucide-react';
 import ChemicalShowcase from '../components/ChemicalShowcase';
 import PharmaBackground from '../components/PharmaBackground';
 
-export default function Home({ stats }) {
+export default function Home({ stats, articles }) {
     const [searchQuery, setSearchQuery] = useState('');
     const router = useRouter();
 
@@ -21,21 +21,24 @@ export default function Home({ stats }) {
     return (
         <>
             <Head>
-                <title>LearnPharmacy.in | Visual Pharmacy Education</title>
-                <meta name="description" content="Master Pharmacy with 3D visuals, simplified notes, and real-time quizzes. The complete visual pharmacy education platform for B.Pharm and D.Pharm students in India." />
+                <title>B.Pharm Notes & GPAT Preparation | Visual Pharmacy Education – LearnPharmacy.in</title>
+                <meta name="description" content="India's best B.Pharm notes platform — all 8 semesters, GPAT preparation, 3D animations, topic-wise quizzes and free study materials. Ace your B.Pharmacy exams with LearnPharmacy.in." />
 
-                <link rel="canonical" href="https://learnpharmacy.in" />
+                <link rel="canonical" href="https://www.learnpharmacy.in" />
 
                 <meta property="og:type" content="website" />
-                <meta property="og:url" content="https://learnpharmacy.in" />
-                <meta property="og:title" content="LearnPharmacy.in | Visual Pharmacy Education" />
-                <meta property="og:description" content="Master Pharmacy with 3D visuals, simplified notes, and real-time quizzes. The complete visual pharmacy education platform for B.Pharm and D.Pharm students in India." />
-                <meta property="og:image" content="https://learnpharmacy.in/default-og.jpg" />
+                <meta property="og:url" content="https://www.learnpharmacy.in" />
+                <meta property="og:title" content="B.Pharm Notes & GPAT Preparation | LearnPharmacy.in" />
+                <meta property="og:description" content="India's best B.Pharm notes platform — all 8 semesters, GPAT preparation, 3D animations and topic-wise quizzes. Free study materials for pharmacy students." />
+                <meta property="og:image" content="https://www.learnpharmacy.in/default-og.jpg" />
+                <meta property="og:locale" content="en_IN" />
 
                 <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content="LearnPharmacy.in | Visual Pharmacy Education" />
-                <meta name="twitter:description" content="Master Pharmacy with 3D visuals, simplified notes, and real-time quizzes. The complete visual pharmacy education platform for B.Pharm and D.Pharm students in India." />
-                <meta name="twitter:image" content="https://learnpharmacy.in/default-og.jpg" />
+                <meta name="twitter:title" content="B.Pharm Notes & GPAT Preparation | LearnPharmacy.in" />
+                <meta name="twitter:description" content="India's best B.Pharm notes — all 8 semesters, GPAT prep, 3D animations and quizzes. Free for pharmacy students." />
+                <meta name="twitter:image" content="https://www.learnpharmacy.in/default-og.jpg" />
+
+                <meta name="keywords" content="B.Pharm notes, B.Pharmacy notes India, GPAT preparation, pharmacy notes free, B.Pharm syllabus, pharmacology notes, pharmaceutics notes" />
             </Head>
 
             <PharmaBackground />
@@ -50,6 +53,8 @@ export default function Home({ stats }) {
                     alignItems: 'center',
                     textAlign: 'center',
                     paddingTop: '2rem',
+                    paddingLeft: '1rem',
+                    paddingRight: '1rem',
                     marginBottom: '4rem'
                 }}>
                     <div
@@ -131,7 +136,7 @@ export default function Home({ stats }) {
 
                 {/* Browse Curriculum Section */}
                 <section style={{ marginBottom: '8rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', marginBottom: '3rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '3rem', flexWrap: 'wrap', gap: '0.75rem' }}>
                         <div>
                             <h2 style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Browse Curriculum</h2>
                             <p style={{ color: 'var(--text-muted)' }}>Structured B.Pharm learning path</p>
@@ -265,14 +270,14 @@ export default function Home({ stats }) {
                         whileInView={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.8 }}
                     >
-                        <h2 style={{ fontSize: '3.5rem', fontWeight: 'bold', marginBottom: '1.5rem', lineHeight: 1.1 }}>
+                        <h2 style={{ fontSize: 'clamp(1.8rem, 5vw, 3.5rem)', fontWeight: 'bold', marginBottom: '1.5rem', lineHeight: 1.1 }}>
                             Ready to transform <br />
                             <span className="text-gradient">your grades?</span>
                         </h2>
                         <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto 2rem auto' }}>
                             Join thousands of pharmacy students who are mastering complex topics through our visual learning platform.
                         </p>
-                        <Link href="/year/1">
+                        <Link href="/year/year-1">
                             <button style={{
                                 padding: '1.2rem 3rem', fontSize: '1.2rem', fontWeight: 'bold',
                                 background: 'linear-gradient(90deg, #22d3ee, #a855f7)',
@@ -290,9 +295,9 @@ export default function Home({ stats }) {
 
                 <section style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                    gap: '2rem',
-                    marginBottom: '8rem'
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+                    gap: '1.5rem',
+                    marginBottom: '6rem'
                 }}>
                     {[
                         { label: 'Active Students', value: '10k+', icon: Users, color: '#3b82f6' },
@@ -316,21 +321,57 @@ export default function Home({ stats }) {
                     ))}
                 </section>
 
+                {/* Recent Articles / Blog Section */}
+                {articles && articles.length > 0 && (
+                    <section style={{ marginBottom: '8rem', padding: '0 1rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem' }}>
+                            <div>
+                                <div style={{ color: '#10b981', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, marginBottom: '0.5rem' }}><Newspaper size={18} /> Latest Updates</div>
+                                <h2 style={{ fontSize: '2.5rem', fontWeight: '800' }}>Pharmacy Blog & News</h2>
+                            </div>
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem' }}>
+                            {articles.map(article => (
+                                <Link href={`/articles/${article.slug}`} key={article.id} style={{ textDecoration: 'none' }}>
+                                    <motion.div
+                                        whileHover={{ y: -8 }}
+                                        className="glass-panel"
+                                        style={{ height: '100%', padding: '2rem', borderRadius: 24, display: 'flex', flexDirection: 'column', gap: '1rem', border: '1px solid rgba(255,255,255,0.05)' }}
+                                    >
+                                        <div style={{ display: 'flex', gap: '0.8rem', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', fontWeight: 600 }}>
+                                            <span style={{ color: '#3b82f6', textTransform: 'uppercase', letterSpacing: 1 }}>{article.subject_id}</span>
+                                            <span>•</span>
+                                            <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}><Calendar size={14} /> {new Date(article.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                                        </div>
+                                        <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'white', lineHeight: 1.4 }}>{article.title}</h3>
+                                        <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: 1.6, marginTop: 'auto', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                                            {article.meta_description || 'Read more about this topic in our comprehensive guide...'}
+                                        </p>
+                                        <div style={{ color: '#10b981', fontWeight: 600, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '1rem' }}>
+                                            Read Article <ArrowRight size={14} />
+                                        </div>
+                                    </motion.div>
+                                </Link>
+                            ))}
+                        </div>
+                    </section>
+                )}
+
                 <section style={{
                     textAlign: 'center',
-                    padding: '5rem 2rem',
+                    padding: 'clamp(2.5rem, 6vw, 5rem) clamp(1rem, 4vw, 2rem)',
                     background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1))',
-                    borderRadius: '3rem',
+                    borderRadius: 'clamp(1.5rem, 4vw, 3rem)',
                     border: '1px solid rgba(255,255,255,0.1)',
                     position: 'relative',
                     overflow: 'hidden'
                 }}>
                     <div style={{ position: 'relative', zIndex: 2 }}>
-                        <h2 style={{ fontSize: '3rem', marginBottom: '1rem', fontWeight: '800' }}>Ready to Excel?</h2>
+                        <h2 style={{ fontSize: 'clamp(1.6rem, 5vw, 3rem)', marginBottom: '1rem', fontWeight: '800' }}>Ready to Excel?</h2>
                         <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', marginBottom: '3rem', maxWidth: '600px', margin: '0 auto 3rem auto' }}>
                             Don't just pass your exams. Understand the science behind the pharmacy.
                         </p>
-                        <Link href="/year/1" className="btn btn-primary" style={{ padding: '1rem 3rem', fontSize: '1.1rem' }}>
+                        <Link href="/year/year-1" className="btn btn-primary" style={{ padding: '1rem 3rem', fontSize: '1.1rem' }}>
                             Start Learning Free
                         </Link>
                     </div>
@@ -341,28 +382,39 @@ export default function Home({ stats }) {
 }
 
 export async function getStaticProps() {
-    // In SSG, we fetch dynamic data at build time
-    let SSG_Stats = {
-        total: 512,
-        byYear: {
-            "1st-year": 120,
-            "2nd-year": 145,
-            "3rd-year": 90,
-            "4th-year": 157
-        }
-    };
+    let SSG_Stats = { total: 0, byYear: {} };
+    let latestArticles = [];
 
-    // If you have a local node endpoint to fetch the actual DB count from Hostinger:
-    // try {
-    //     const res = await fetch('https://learnpharmacy.in/api/settings/stats');
-    //     if (res.ok) SSG_Stats = await res.json();
-    // } catch (e) {
-    //     console.error("Failed to fetch API stats", e);
-    // }
+    try {
+        const pool = require('../../server/db');
+
+        // Fetch accurate global stats
+        try {
+            const [statRows] = await pool.query("SELECT year_slug, COUNT(*) as count FROM content GROUP BY year_slug");
+            let total = 0;
+            const byYear = {};
+            statRows.forEach(row => {
+                total += row.count;
+                if (row.year_slug) byYear[row.year_slug] = row.count;
+            });
+            SSG_Stats = { total, byYear };
+        } catch (e) { console.error("Stats fetching failed", e); }
+
+        // Fetch up to 3 recent articles securely
+        try {
+            const [rows] = await pool.query("SELECT id, title, slug, subject_id, meta_description, created_at FROM content WHERE subject_id IN ('general', 'articles', 'blog') ORDER BY created_at DESC LIMIT 3");
+            latestArticles = JSON.parse(JSON.stringify(rows));
+        } catch (dbErr) {
+            console.error("Direct db fetch failed", dbErr);
+        }
+    } catch (e) {
+        console.error("Failed to fetch homepage data", e);
+    }
 
     return {
         props: {
-            stats: SSG_Stats
+            stats: SSG_Stats,
+            articles: latestArticles
         },
         revalidate: 3600 // Re-generate page every hour (ISR)
     };
