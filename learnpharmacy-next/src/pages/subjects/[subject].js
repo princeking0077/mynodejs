@@ -3,16 +3,43 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Download, Play, BookOpen, PenTool, Layout as LayoutIcon, ChevronRight, Clock, X, CheckSquare } from 'lucide-react';
+import { ArrowLeft, Download, Play, BookOpen, PenTool, Layout as LayoutIcon, ChevronRight, Clock, X, CheckSquare, CheckCircle } from 'lucide-react';
 import Breadcrumbs from '../../components/Breadcrumbs';
 import AnimationViewer from '../../components/AnimationViewer';
 import Quiz from '../../components/Quiz';
+import { curriculum } from '../../data/curriculum';
+import { api } from '../../services/api';
 
 export default function Subject({ subjectStatic, topics }) {
     const router = useRouter();
     // Initialize with first topic so it is rendered in raw HTML by Next.js SSR!
     const [selectedTopic, setSelectedTopic] = useState(topics && topics.length > 0 ? topics[0] : null);
     const [downloadTimer, setDownloadTimer] = useState({ show: false, count: 30, url: null });
+    const [completedTopics, setCompletedTopics] = useState({});
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+        try {
+            const saved = localStorage.getItem('learnpharmacy_progress');
+            if (saved) setCompletedTopics(JSON.parse(saved));
+        } catch (e) {
+            console.warn("Failed to parse progress", e);
+        }
+    }, []);
+
+    const toggleCompletion = (topicId) => {
+        setCompletedTopics(prev => {
+            const next = { ...prev };
+            if (next[topicId]) {
+                delete next[topicId];
+            } else {
+                next[topicId] = true;
+            }
+            localStorage.setItem('learnpharmacy_progress', JSON.stringify(next));
+            return next;
+        });
+    };
 
     // Sync state if topics change (e.g. client side navigation)
     useEffect(() => {
@@ -61,7 +88,7 @@ export default function Subject({ subjectStatic, topics }) {
         return (
             <div className="container flex-center" style={{ minHeight: '60vh', flexDirection: 'column', gap: '1rem' }}>
                 <h2>Subject Not Found</h2>
-                <Link href="/year/1" className="btn btn-primary">Browse All Subjects</Link>
+                <Link href="/year/year-1" className="btn btn-primary">Browse All Subjects</Link>
             </div>
         );
     }
@@ -87,6 +114,44 @@ export default function Subject({ subjectStatic, topics }) {
                 <meta name="twitter:title" content={pageTitle} />
                 <meta name="twitter:description" content={pageDescription} />
                 <meta name="twitter:image" content="https://learnpharmacy.in/default-og.jpg" />
+
+                {/* Course Schema for Rich Results */}
+                <script type="application/ld+json" dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "Course",
+                        "name": subjectStatic.title,
+                        "description": pageDescription,
+                        "provider": {
+                            "@type": "Organization",
+                            "name": "LearnPharmacy.in",
+                            "url": "https://www.learnpharmacy.in"
+                        },
+                        "url": canonicalUrl,
+                        "educationalLevel": "B.Pharmacy",
+                        "inLanguage": "en-IN",
+                        "isAccessibleForFree": true,
+                        "hasCourseInstance": [
+                            {
+                                "@type": "CourseInstance",
+                                "courseMode": "online"
+                            }
+                        ]
+                    })
+                }} />
+
+                {/* BreadcrumbList Schema */}
+                <script type="application/ld+json" dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.learnpharmacy.in" },
+                            { "@type": "ListItem", "position": 2, "name": subjectStatic.yearTitle, "item": `https://www.learnpharmacy.in/year/${subjectStatic.yearId}` },
+                            { "@type": "ListItem", "position": 3, "name": subjectStatic.title, "item": canonicalUrl }
+                        ]
+                    })
+                }} />
             </Head>
 
             <main className="container" style={{ paddingBottom: '4rem' }}>
@@ -158,7 +223,7 @@ export default function Subject({ subjectStatic, topics }) {
                             </div>
                             <h1 style={{ fontSize: '2.5rem', fontWeight: '800', lineHeight: '1.2' }}>{subjectStatic.title}</h1>
                             <p style={{ color: 'var(--text-muted)', marginTop: '0.5rem', fontSize: '1.1rem' }}>
-                                {topics.length} Topics Available
+                                {topics.length} Topics Available {isMounted && `• ${topics.filter(t => completedTopics[t.id]).length}/${topics.length} Completed`}
                             </p>
                         </div>
                     </div>
@@ -194,7 +259,10 @@ export default function Subject({ subjectStatic, topics }) {
                                             borderColor: selectedTopic?.id === t.id ? 'none' : 'rgba(255,255,255,0.05)'
                                         }}
                                     >
-                                        <span style={{ color: selectedTopic?.id === t.id ? 'black' : 'var(--text-main)', fontSize: '0.95rem' }}>{t.title}</span>
+                                        <span style={{ color: selectedTopic?.id === t.id ? 'black' : 'var(--text-main)', fontSize: '0.95rem', display: 'flex', alignItems: 'center' }}>
+                                            {isMounted && completedTopics[t.id] && <CheckCircle size={14} color={selectedTopic?.id === t.id ? '#0f172a' : '#10b981'} style={{ marginRight: '6px' }} />}
+                                            {t.title}
+                                        </span>
                                         {selectedTopic?.id === t.id && <ChevronRight size={16} />}
                                     </div>
                                 ))}
@@ -325,6 +393,23 @@ export default function Subject({ subjectStatic, topics }) {
                                         <Quiz topicTitle={selectedTopic.title} questions={selectedTopic.quiz} />
                                     </section>
                                 )}
+
+                                {/* Progress Completion Toggle */}
+                                {isMounted && (
+                                    <div style={{ marginTop: '1rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'center' }}>
+                                        <button
+                                            onClick={() => toggleCompletion(selectedTopic.id)}
+                                            className="btn"
+                                            style={{
+                                                background: completedTopics[selectedTopic.id] ? 'transparent' : 'var(--primary)',
+                                                color: completedTopics[selectedTopic.id] ? '#10b981' : 'black',
+                                                border: completedTopics[selectedTopic.id] ? '1px solid #10b981' : 'none',
+                                                display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.8rem 2rem', fontSize: '1.1rem'
+                                            }}>
+                                            {completedTopics[selectedTopic.id] ? <><CheckCircle size={20} /> Marked as Completed</> : "Mark as Complete"}
+                                        </button>
+                                    </div>
+                                )}
                             </motion.div>
                         )}
                     </div>
@@ -383,16 +468,14 @@ export default function Subject({ subjectStatic, topics }) {
     );
 }
 
-// 1. Generate Static Paths at Build Time
 export async function getStaticPaths() {
-    const { curriculum } = await import('../../data/curriculum');
     const paths = [];
 
     // Extract all subject slugs from the local curriculum file
     curriculum.forEach(year => {
         year.semesters.forEach(sem => {
             sem.subjects.forEach(sub => {
-                const normalize = (str) => str.toLowerCase().replace(/–/g, '-').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+                const normalize = (str) => str.toLowerCase().replace('gpat ', '').replace(/–/g, '-').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
                 const slug = normalize(sub.title);
                 paths.push({ params: { subject: slug } });
             });
@@ -408,13 +491,12 @@ export async function getStaticPaths() {
 // 2. Fetch Data at Build Time (Executes on Node.js Server)
 export async function getStaticProps({ params }) {
     const { subject } = params;
-    const { curriculum } = await import('../../data/curriculum');
     let subjectStatic = null;
 
     // A. Match the route slug to the curriculum database
     for (const year of curriculum) {
         for (const sem of year.semesters) {
-            const normalize = (str) => str.toLowerCase().replace(/–/g, '-').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+            const normalize = (str) => str.toLowerCase().replace('gpat ', '').replace(/–/g, '-').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
             const sub = sem.subjects.find(s => normalize(s.title) === subject || s.id === subject);
             if (sub) {
                 subjectStatic = { ...sub, yearId: year.id, yearTitle: year.title, semTitle: sem.title };
@@ -431,7 +513,6 @@ export async function getStaticProps({ params }) {
     // B. Fetch the Topics for this Subject from the API
     let topics = [];
     try {
-        const { api } = await import('../../services/api');
         const dynamicTopics = await api.getContent(subjectStatic.id);
 
         if (Array.isArray(dynamicTopics)) {
