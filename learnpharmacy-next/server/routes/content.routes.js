@@ -5,6 +5,7 @@ const authenticateToken = require('../middleware/auth.middleware');
 const URLMapper = require('../services/url-mapper');
 const InternalLinkingEngine = require('../services/internal-linking-engine');
 const SitemapGenerator = require('../services/sitemap-generator');
+const { sanitizeHtml } = require('../utils/sanitize');
 
 // Get content by Subject ID
 router.get('/', async (req, res) => {
@@ -54,21 +55,25 @@ router.get('/search', async (req, res) => {
     if (!q) return res.json([]);
 
     try {
-        // PHP Logic: title LIKE :q OR subject_id LIKE :q OR description LIKE :q OR blog_content LIKE :q
+        // Robust Weighted Algorithmic Search Scoring Without Requiring FULLTEXT indices
         const query = `
-            SELECT id, subject_id, title, slug, description, 'topic' as type 
+            SELECT id, subject_id, title, slug, description, 'topic' as type,
+                   (CASE WHEN title LIKE ? THEN 10 ELSE 0 END) +
+                   (CASE WHEN subject_id LIKE ? THEN 8 ELSE 0 END) +
+                   (CASE WHEN description LIKE ? THEN 5 ELSE 0 END) +
+                   (CASE WHEN blog_content LIKE ? THEN 1 ELSE 0 END) as relevance
             FROM content 
             WHERE title LIKE ? 
                OR subject_id LIKE ? 
                OR description LIKE ? 
                OR blog_content LIKE ? 
-            ORDER BY created_at DESC 
-            LIMIT 20
+            ORDER BY relevance DESC, created_at DESC 
+            LIMIT 30
         `;
-        const searchTerm = `%${q}%`;
-        const [rows] = await pool.query(query, [searchTerm, searchTerm, searchTerm, searchTerm]);
+        const st = `%${q}%`;
+        const [rows] = await pool.query(query, [st, st, st, st, st, st, st, st]);
 
-        // Ensure slug exists (PHP fallback logic handled here by assumed DB column or default)
+        // Ensure slug exists (Fallback logic handled here by assumed DB column)
         const results = rows.map(row => ({
             ...row,
             id: String(row.id),
@@ -136,13 +141,16 @@ router.post('/', authenticateToken, async (req, res) => {
             unitTitle: title
         }));
 
+        // Sanitize incoming HTML to prevent XSS attacks
+        const cleanBlogContent = sanitizeHtml(blogContent);
+
         const [result] = await pool.query(
             `INSERT INTO content (
                 subject_id, title, slug, description, blog_content, youtube_id, file_url, quiz_data, 
                 meta_title, meta_description, faqs, year_slug, unit_number, primary_keyword, 
                 target_keywords, canonical_url, breadcrumb_path, content_word_count, reading_time_minutes
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [subjectId, title, slug, description, blogContent, youtubeId, fileUrl, JSON.stringify(quiz),
+            [subjectId, title, slug, description, cleanBlogContent, youtubeId, fileUrl, JSON.stringify(quiz),
                 metaTitle, metaDescription, JSON.stringify(faqs || []), yearSlug, unitNumber, primaryKeyword,
                 JSON.stringify(targetKeywords || []), canonicalUrl, breadcrumbPath, wordCount, readingTime]
         );
@@ -182,12 +190,15 @@ router.put('/', authenticateToken, async (req, res) => {
         const wordCount = URLMapper.extractWordCount(blogContent);
         const readingTime = URLMapper.calculateReadingTime(wordCount);
 
+        // Sanitize incoming HTML
+        const cleanBlogContent = sanitizeHtml(blogContent);
+
         let sql = `UPDATE content SET 
             title = ?, description = ?, blog_content = ?, youtube_id = ?, quiz_data = ?, 
             meta_title = ?, meta_description = ?, faqs = ?, content_word_count = ?, 
             reading_time_minutes = ?`;
         const params = [
-            title, description, blogContent, youtubeId, JSON.stringify(quiz),
+            title, description, cleanBlogContent, youtubeId, JSON.stringify(quiz),
             metaTitle, metaDescription, JSON.stringify(faqs || []), wordCount, readingTime
         ];
 

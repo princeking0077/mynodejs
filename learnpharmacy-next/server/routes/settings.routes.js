@@ -3,18 +3,29 @@ const router = express.Router();
 const pool = require('../db');
 const authenticateToken = require('../middleware/auth.middleware');
 
+let globalCache = null;
+let globalCacheTime = 0;
+const CACHE_LIFETIME = 1000 * 60 * 60; // 1 hour
+
 // GET all settings (Public - for Layout injection)
 router.get('/public', async (req, res) => {
     try {
+        if (globalCache && (Date.now() - globalCacheTime < CACHE_LIFETIME)) {
+            return res.json(globalCache);
+        }
+
         const [rows] = await pool.query("SELECT setting_key, setting_value FROM global_seo_settings");
         const settings = {};
         rows.forEach(row => {
             settings[row.setting_key] = row.setting_value;
         });
+
+        globalCache = settings;
+        globalCacheTime = Date.now();
         res.json(settings);
     } catch (error) {
         console.error(error);
-        res.json({}); // Fail gracefully for public
+        res.json(globalCache || {}); // Fail gracefully for public, fallback to cache if exists
     }
 });
 
@@ -47,6 +58,7 @@ router.post('/', authenticateToken, async (req, res) => {
                 [key, value, value]
             );
         }
+        globalCache = null; // Invalidate cache aggressively to force reload on next hit
         res.json({ message: "Global settings updated successfully" });
     } catch (error) {
         console.error(error);

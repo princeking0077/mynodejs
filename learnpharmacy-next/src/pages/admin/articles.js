@@ -118,6 +118,21 @@ export default function Articles() {
                     </div>
                 )}
             </div>
+
+            <style jsx>{`
+                select option {
+                    background: #1a1a2e;
+                    color: white;
+                    padding: 8px;
+                }
+                select option:checked {
+                    background: #10b981;
+                    color: white;
+                }
+                select option:hover {
+                    background: rgba(16, 185, 129, 0.2);
+                }
+            `}</style>
         </AdminLayout>
     );
 }

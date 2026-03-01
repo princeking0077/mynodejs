@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { LayoutDashboard, BookOpen, FileText, Settings, LogOut, Menu, ChevronRight, Cpu, Globe } from 'lucide-react';
+import { LayoutDashboard, BookOpen, FileText, Settings, LogOut, Menu, ChevronRight, Cpu, Globe, GraduationCap, ClipboardCheck, Search, Pill, Microscope } from 'lucide-react';
 
 const NAV = [
     { icon: LayoutDashboard, label: 'Dashboard', href: '/admin/dashboard' },
-    { icon: BookOpen, label: 'Content', href: '/admin/content' },
-    { icon: FileText, label: 'Articles', href: '/admin/articles' },
+    { icon: GraduationCap, label: 'Subject Manager', href: '/admin/subjects' },
+    { icon: Pill, label: 'B.Pharm Content', href: '/admin/bpharm-content' },
+    { icon: Microscope, label: 'GPAT Content', href: '/admin/gpat-content' },
+    { icon: ClipboardCheck, label: 'GPAT Tests', href: '/admin/quizzes' },
     { icon: Globe, label: 'SEO Settings', href: '/admin/seo' },
     { icon: Settings, label: 'Settings', href: '/admin/settings' },
 ];

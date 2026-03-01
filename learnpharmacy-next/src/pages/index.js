@@ -2,12 +2,40 @@ import React, { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { motion } from 'framer-motion';
-import { Search, BookOpen, Sparkles, ArrowRight, Zap, Layers, Users, Calendar, Newspaper } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Search, BookOpen, Sparkles, ArrowRight, Zap, Clock, ChevronDown } from 'lucide-react';
 import ChemicalShowcase from '../components/ChemicalShowcase';
 import PharmaBackground from '../components/PharmaBackground';
+import SEO from '../components/SEO';
 
-export default function Home({ stats, articles }) {
+const FAQItem = ({ question, answer }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    return (
+        <div style={{ border: '1px solid rgba(255,255,255,0.06)', borderRadius: 16, overflow: 'hidden', background: 'rgba(255,255,255,0.02)' }}>
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                style={{ width: '100%', padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'none', border: 'none', color: 'white', cursor: 'pointer', textAlign: 'left' }}
+            >
+                <span style={{ fontSize: '1.1rem', fontWeight: 600 }}>{question}</span>
+                <motion.div animate={{ rotate: isOpen ? 180 : 0 }}><ChevronDown size={20} /></motion.div>
+            </button>
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        style={{ overflow: 'hidden' }}
+                    >
+                        <div style={{ padding: '0 1.5rem 1.5rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 }}>{answer}</div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+};
+
+export default function Home({ stats, quizzes }) {
     const [searchQuery, setSearchQuery] = useState('');
     const router = useRouter();
 
@@ -18,364 +46,151 @@ export default function Home({ stats, articles }) {
         }
     };
 
+    // FAQ Schema
+    const faqSchema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Is LearnPharmacy.in free for students?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes! Our core mission is to provide high-quality pharmacy education materials, including B.Pharm notes and GPAT test series, completely free of charge."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Are the notes based on PCI syllabus?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Absolutely. All our B.Pharm notes are structured strictly according to the latest Pharmacy Council of India (PCI) syllabus for all 8 semesters."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "How can I access the GPAT Online Tests?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "You can find all available tests in our GPAT Online Test section. Simply click on a test to start practicing with our professional timer-based interface."
+                }
+            }
+        ]
+    };
+
     return (
         <>
-            <Head>
-                <title>B.Pharm Notes & GPAT Preparation | Visual Pharmacy Education – LearnPharmacy.in</title>
-                <meta name="description" content="India's best B.Pharm notes platform — all 8 semesters, GPAT preparation, 3D animations, topic-wise quizzes and free study materials. Ace your B.Pharmacy exams with LearnPharmacy.in." />
-
-                <link rel="canonical" href="https://www.learnpharmacy.in" />
-
-                <meta property="og:type" content="website" />
-                <meta property="og:url" content="https://www.learnpharmacy.in" />
-                <meta property="og:title" content="B.Pharm Notes & GPAT Preparation | LearnPharmacy.in" />
-                <meta property="og:description" content="India's best B.Pharm notes platform — all 8 semesters, GPAT preparation, 3D animations and topic-wise quizzes. Free study materials for pharmacy students." />
-                <meta property="og:image" content="https://www.learnpharmacy.in/default-og.jpg" />
-                <meta property="og:locale" content="en_IN" />
-
-                <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content="B.Pharm Notes & GPAT Preparation | LearnPharmacy.in" />
-                <meta name="twitter:description" content="India's best B.Pharm notes — all 8 semesters, GPAT prep, 3D animations and quizzes. Free for pharmacy students." />
-                <meta name="twitter:image" content="https://www.learnpharmacy.in/default-og.jpg" />
-
-                <meta name="keywords" content="B.Pharm notes, B.Pharmacy notes India, GPAT preparation, pharmacy notes free, B.Pharm syllabus, pharmacology notes, pharmaceutics notes" />
-            </Head>
+            <SEO
+                title="Free B.Pharm Notes & GPAT Preparation | Visual Pharmacy Education"
+                description="India's #1 free B.Pharm notes platform covering all 8 semesters with 3D animations, interactive quizzes, and GPAT preparation. 500+ visual topics, 10k+ students."
+                canonical="https://www.learnpharmacy.in"
+                keywords="B.Pharm notes, pharmacy notes free, GPAT preparation, PCI syllabus, pharmacy education India, pharmaceutical sciences, pharmacology notes, pharmaceutical chemistry"
+                ogImage="https://www.learnpharmacy.in/og-image.jpg"
+                schema={faqSchema}
+            />
 
             <PharmaBackground />
 
             <div className="container" style={{ paddingBottom: '4rem', position: 'relative', zIndex: 1 }}>
                 {/* Hero Section */}
-                <section style={{
-                    minHeight: '85vh',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    textAlign: 'center',
-                    paddingTop: '2rem',
-                    paddingLeft: '1rem',
-                    paddingRight: '1rem',
-                    marginBottom: '4rem'
-                }}>
-                    <div
-                        style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '0.5rem',
-                            padding: '0.5rem 1rem',
-                            background: 'rgba(16, 185, 129, 0.1)',
-                            border: '1px solid rgba(16, 185, 129, 0.2)',
-                            borderRadius: '50px',
-                            color: 'var(--primary)',
-                            fontSize: '0.9rem',
-                            fontWeight: '600',
-                            marginBottom: '2rem'
-                        }}
-                    >
-                        <Sparkles size={16} />
-                        <span>LearnPharmacy.in Learning Ecosystem</span>
+                <section style={{ minHeight: '85vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', padding: '2rem 1rem' }}>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)', borderRadius: 50, color: 'var(--primary)', fontSize: '0.9rem', fontWeight: 600, marginBottom: '2rem' }}>
+                        <Sparkles size={16} /> <span>LearnPharmacy.in Learning Ecosystem</span>
                     </div>
-
-                    <h1 style={{ marginBottom: '1.5rem', maxWidth: '800px', opacity: 1, transform: 'none' }}>
-                        Master Pharmacy <br />
-                        <span className="gradient-text" style={{ fontSize: '1.1em' }}>With Visuals</span>
-                    </h1>
-
-                    <p
-                        style={{
-                            color: 'var(--text-muted)',
-                            fontSize: '1.2rem',
-                            maxWidth: '600px',
-                            marginBottom: '3rem',
-                            lineHeight: '1.6'
-                        }}
-                    >
-                        The comprehensive platform for B.Pharm students. Simplified notes,
-                        3D animations, and real-time quizzes.
-                    </p>
-
-                    <motion.form
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 0.3 }}
-                        onSubmit={handleSearch}
-                        style={{
-                            width: '100%',
-                            maxWidth: '500px',
-                            position: 'relative'
-                        }}
-                    >
-                        <Search style={{
-                            position: 'absolute',
-                            left: '1.2rem',
-                            top: '50%',
-                            transform: 'translateY(-50%)',
-                            color: 'var(--text-muted)'
-                        }} />
-                        <input
-                            type="text"
-                            placeholder="Search topics, subjects..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            style={{
-                                width: '100%',
-                                padding: '1rem 1rem 1rem 3.5rem',
-                                background: 'rgba(255,255,255,0.05)',
-                                border: '1px solid rgba(255,255,255,0.1)',
-                                borderRadius: '50px',
-                                color: 'white',
-                                fontSize: '1rem',
-                                outline: 'none',
-                                transition: 'all 0.3s'
-                            }}
-                            onFocus={(e) => e.target.style.background = 'rgba(255,255,255,0.1)'}
-                            onBlur={(e) => e.target.style.background = 'rgba(255,255,255,0.05)'}
-                        />
+                    <h1 style={{ marginBottom: '1.5rem', maxWidth: '800px' }}>Master Pharmacy <br /><span className="gradient-text" style={{ fontSize: '1.1em' }}>With Visuals</span></h1>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', maxWidth: 600, marginBottom: '3rem', lineHeight: 1.6 }}>The comprehensive platform for B.Pharm students. Simplified notes, 3D animations, and real-time quizzes.</p>
+                    <motion.form initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} onSubmit={handleSearch} style={{ width: '100%', maxWidth: 500, position: 'relative' }}>
+                        <Search style={{ position: 'absolute', left: '1.2rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+                        <input placeholder="Search topics, subjects..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} style={{ width: '100%', padding: '1rem 1rem 1rem 3.5rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 50, color: 'white' }} />
                     </motion.form>
                 </section>
 
-                {/* Browse Curriculum Section */}
-                <section style={{ marginBottom: '8rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '3rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+                {/* Stats Section */}
+                <section style={{ margin: '6rem 0 8rem', padding: '4rem 2rem', background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(16, 185, 129, 0.05))', borderRadius: '2rem', border: '1px solid rgba(255,255,255,0.05)' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '3rem', textAlign: 'center' }}>
                         <div>
-                            <h2 style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Browse Curriculum</h2>
-                            <p style={{ color: 'var(--text-muted)' }}>Structured B.Pharm learning path</p>
+                            <div style={{ fontSize: '3.5rem', fontWeight: 800, background: 'linear-gradient(135deg, #3b82f6, #10b981)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '0.5rem' }}>
+                                {stats?.total || 500}+
+                            </div>
+                            <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: '1.1rem', fontWeight: 600 }}>Visual Topics</div>
+                        </div>
+                        <div>
+                            <div style={{ fontSize: '3.5rem', fontWeight: 800, background: 'linear-gradient(135deg, #10b981, #f59e0b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '0.5rem' }}>
+                                10k+
+                            </div>
+                            <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: '1.1rem', fontWeight: 600 }}>Active Students</div>
+                        </div>
+                        <div>
+                            <div style={{ fontSize: '3.5rem', fontWeight: 800, background: 'linear-gradient(135deg, #f59e0b, #8b5cf6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '0.5rem' }}>
+                                50k+
+                            </div>
+                            <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: '1.1rem', fontWeight: 600 }}>Quizzes Taken</div>
                         </div>
                     </div>
+                </section>
 
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                        gap: '2rem'
-                    }}>
+                {/* Browse Curriculum */}
+                <section style={{ marginBottom: '8rem' }}>
+                    <h2 style={{ fontSize: '2.5rem', marginBottom: '3rem' }}>Browse Curriculum</h2>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
                         {[
-                            { year: '1st Year', desc: 'Semesters 1 & 2', slug: '1st-year', color: '#3b82f6', id: 'year-1' },
-                            { year: '2nd Year', desc: 'Semesters 3 & 4', slug: '2nd-year', color: '#10b981', id: 'year-2' },
-                            { year: '3rd Year', desc: 'Semesters 5 & 6', slug: '3rd-year', color: '#f59e0b', id: 'year-3' },
-                            { year: '4th Year', desc: 'Semesters 7 & 8', slug: '4th-year', color: '#8b5cf6', id: 'year-4' }
+                            { year: '1st Year', desc: 'Semesters 1 & 2', id: 'year-1', color: '#3b82f6' },
+                            { year: '2nd Year', desc: 'Semesters 3 & 4', id: 'year-2', color: '#10b981' },
+                            { year: '3rd Year', desc: 'Semesters 5 & 6', id: 'year-3', color: '#f59e0b' },
+                            { year: '4th Year', desc: 'Semesters 7 & 8', id: 'year-4', color: '#8b5cf6' }
                         ].map((item) => (
                             <Link href={`/year/${item.id}`} key={item.id} style={{ textDecoration: 'none' }}>
-                                <motion.div
-                                    whileHover={{ y: -10 }}
-                                    className="glass-panel"
-                                    style={{
-                                        padding: '2.5rem',
-                                        borderRadius: 'var(--radius-lg)',
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        gap: '1.5rem',
-                                        position: 'relative',
-                                        overflow: 'hidden',
-                                        height: '100%',
-                                        border: '1px solid rgba(255,255,255,0.05)'
-                                    }}
-                                >
-                                    <div style={{
-                                        width: '60px', height: '60px',
-                                        borderRadius: '16px',
-                                        background: `${item.color}20`,
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        color: item.color
-                                    }}>
-                                        <BookOpen size={28} />
-                                    </div>
-                                    <div>
-                                        <h3 style={{ fontSize: '1.8rem', marginBottom: '0.5rem', color: 'white' }}>{item.year}</h3>
-                                        <p style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '1.1rem' }}>{item.desc}</p>
+                                <motion.div whileHover={{ y: -10 }} className="glass-panel" style={{ padding: '2.5rem', borderRadius: 24, display: 'flex', flexDirection: 'column', gap: '1.5rem', border: '1px solid rgba(255,255,255,0.05)', height: '100%' }}>
+                                    <div style={{ width: 60, height: 60, borderRadius: 16, background: `${item.color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: item.color }}><BookOpen size={28} /></div>
+                                    <div><h3 style={{ fontSize: '1.8rem', color: 'white' }}>{item.year}</h3><p style={{ color: 'rgba(255,255,255,0.7)' }}>{item.desc}</p></div>
+                                    <div style={{ marginTop: 'auto', color: item.color, fontWeight: 700 }}>Start Learning <ArrowRight size={18} /></div>
+                                </motion.div>
+                            </Link>
+                        ))}
+                    </div>
+                </section>
 
-                                        {stats && stats.byYear && stats.byYear[item.slug] > 0 && (
-                                            <div style={{
-                                                marginTop: '0.8rem',
-                                                display: 'inline-flex',
-                                                alignItems: 'center',
-                                                gap: '0.4rem',
-                                                fontSize: '0.85rem',
-                                                color: item.color,
-                                                background: `rgba(255,255,255,0.05)`,
-                                                padding: '0.3rem 0.8rem',
-                                                borderRadius: '20px'
-                                            }}>
-                                                <Layers size={14} /> {stats.byYear[item.slug]} Topics Added
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div style={{
-                                        marginTop: 'auto',
-                                        paddingTop: '1rem',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '0.5rem',
-                                        color: item.color,
-                                        fontWeight: '700',
-                                        fontSize: '1rem'
-                                    }}>
-                                        Start Learning <ArrowRight size={18} />
+                {/* GPAT Online Test Section */}
+                <section style={{ marginBottom: '8rem' }}>
+                    <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+                        <h2 style={{ fontSize: '3rem', fontWeight: 800, marginBottom: '1rem' }}>GPAT Online Test Series</h2>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem' }}>Practice with real-time timer and performance tracking</p>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+                        {quizzes && quizzes.map(quiz => (
+                            <Link href={`/test/${quiz.slug}`} key={quiz.id} style={{ textDecoration: 'none' }}>
+                                <motion.div whileHover={{ y: -10 }} className="glass-panel" style={{ padding: '2rem', borderRadius: 24, border: '1px solid rgba(16, 185, 129, 0.2)', position: 'relative', overflow: 'hidden' }}>
+                                    <div style={{ position: 'absolute', top: 0, right: 0, padding: '0.5rem 1rem', background: '#10b981', color: 'white', fontSize: '0.75rem', fontWeight: 800, borderRadius: '0 0 0 16px' }}>FREE</div>
+                                    <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: 'white' }}>{quiz.title}</h3>
+                                    <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>{quiz.description}</p>
+                                    <div style={{ display: 'flex', gap: '1rem', color: '#10b981', fontWeight: 700 }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><Clock size={16} /> {quiz.time_limit_minutes} Mins</div>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><Zap size={16} /> Start Test</div>
                                     </div>
                                 </motion.div>
                             </Link>
                         ))}
                     </div>
-
-                    <div style={{ marginTop: '4rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-                        <Link href="/gpat-syllabus" style={{ textDecoration: 'none' }}>
-                            <motion.div
-                                whileHover={{ scale: 1.02 }}
-                                style={{
-                                    background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.2), rgba(153, 27, 27, 0.1))',
-                                    border: '1px solid rgba(239, 68, 68, 0.3)',
-                                    borderRadius: '24px',
-                                    padding: '2rem',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between'
-                                }}
-                            >
-                                <div>
-                                    <h3 style={{ fontSize: '1.5rem', color: '#fca5a5', marginBottom: '0.5rem' }}>GPAT Syllabus</h3>
-                                    <p style={{ color: 'rgba(255,255,255,0.8)' }}>15 Modules • Complete Breakdown</p>
-                                </div>
-                                <div style={{ background: '#ef4444', borderRadius: '50%', padding: '0.8rem', color: 'white' }}>
-                                    <ArrowRight size={24} />
-                                </div>
-                            </motion.div>
-                        </Link>
-                        <Link href="/bpharm-syllabus" style={{ textDecoration: 'none' }}>
-                            <motion.div
-                                whileHover={{ scale: 1.02 }}
-                                style={{
-                                    background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.2), rgba(30, 58, 138, 0.1))',
-                                    border: '1px solid rgba(59, 130, 246, 0.3)',
-                                    borderRadius: '24px',
-                                    padding: '2rem',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between'
-                                }}
-                            >
-                                <div>
-                                    <h3 style={{ fontSize: '1.5rem', color: '#93c5fd', marginBottom: '0.5rem' }}>B.Pharm Syllabus</h3>
-                                    <p style={{ color: 'rgba(255,255,255,0.8)' }}>All 8 Semesters • Subject List</p>
-                                </div>
-                                <div style={{ background: '#3b82f6', borderRadius: '50%', padding: '0.8rem', color: 'white' }}>
-                                    <ArrowRight size={24} />
-                                </div>
-                            </motion.div>
-                        </Link>
-                    </div>
                 </section>
 
-                <section style={{ textAlign: 'center', marginBottom: '8rem', padding: '0 1rem' }}>
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.8 }}
-                    >
-                        <h2 style={{ fontSize: 'clamp(1.8rem, 5vw, 3.5rem)', fontWeight: 'bold', marginBottom: '1.5rem', lineHeight: 1.1 }}>
-                            Ready to transform <br />
-                            <span className="text-gradient">your grades?</span>
-                        </h2>
-                        <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto 2rem auto' }}>
-                            Join thousands of pharmacy students who are mastering complex topics through our visual learning platform.
-                        </p>
-                        <Link href="/year/year-1">
-                            <button style={{
-                                padding: '1.2rem 3rem', fontSize: '1.2rem', fontWeight: 'bold',
-                                background: 'linear-gradient(90deg, #22d3ee, #a855f7)',
-                                color: 'white', border: 'none', borderRadius: '3rem',
-                                cursor: 'pointer', transition: '0.3s', boxShadow: '0 0 30px rgba(168, 85, 247, 0.4)'
-                            }}
-                            >
-                                Get Started Now
-                            </button>
-                        </Link>
-                    </motion.div>
+                {/* FAQ Section */}
+                <section style={{ marginBottom: '8rem', maxWidth: 800, margin: '0 auto 8rem' }}>
+                    <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+                        <h2 style={{ fontSize: '2.5rem', fontWeight: 800 }}>Frequently Asked Questions</h2>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        {[
+                            { q: "Is LearnPharmacy.in free for students?", a: "Yes! Our core mission is to provide high-quality pharmacy education materials, including B.Pharm notes and GPAT test series, completely free of charge." },
+                            { q: "Are the notes based on PCI syllabus?", a: "Absolutely. All our B.Pharm notes are structured strictly according to the latest Pharmacy Council of India (PCI) syllabus for all 8 semesters." },
+                            { q: "How can I access the GPAT Online Tests?", a: "You can find all available tests in our GPAT Online Test section. Simply click on a test to start practicing with our professional timer-based interface." },
+                            { q: "Can I download the notes for offline study?", a: "Currently, you can read all notes online with our enhanced professional reader. PDF download options are being added to selected premium topics soon." }
+                        ].map((faq, i) => (
+                            <FAQItem key={i} question={faq.q} answer={faq.a} />
+                        ))}
+                    </div>
                 </section>
 
                 <ChemicalShowcase />
-
-                <section style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-                    gap: '1.5rem',
-                    marginBottom: '6rem'
-                }}>
-                    {[
-                        { label: 'Active Students', value: '10k+', icon: Users, color: '#3b82f6' },
-                        { label: 'Visual Topics', value: stats ? `${stats.total}+` : '500+', icon: Layers, color: '#10b981' },
-                        { label: 'Quizzes Taken', value: '50k+', icon: Zap, color: '#f59e0b' }
-                    ].map((stat, i) => (
-                        <motion.div
-                            key={i}
-                            whileHover={{ y: -5 }}
-                            className="glass-panel"
-                            style={{ padding: '2rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}
-                        >
-                            <div style={{ padding: '1rem', background: `${stat.color}20`, borderRadius: '50%', color: stat.color }}>
-                                <stat.icon size={24} />
-                            </div>
-                            <div>
-                                <h3 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '0.2rem' }}>{stat.value}</h3>
-                                <p style={{ color: 'var(--text-muted)' }}>{stat.label}</p>
-                            </div>
-                        </motion.div>
-                    ))}
-                </section>
-
-                {/* Recent Articles / Blog Section */}
-                {articles && articles.length > 0 && (
-                    <section style={{ marginBottom: '8rem', padding: '0 1rem' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '2.5rem' }}>
-                            <div>
-                                <div style={{ color: '#10b981', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, marginBottom: '0.5rem' }}><Newspaper size={18} /> Latest Updates</div>
-                                <h2 style={{ fontSize: '2.5rem', fontWeight: '800' }}>Pharmacy Blog & News</h2>
-                            </div>
-                        </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem' }}>
-                            {articles.map(article => (
-                                <Link href={`/articles/${article.slug}`} key={article.id} style={{ textDecoration: 'none' }}>
-                                    <motion.div
-                                        whileHover={{ y: -8 }}
-                                        className="glass-panel"
-                                        style={{ height: '100%', padding: '2rem', borderRadius: 24, display: 'flex', flexDirection: 'column', gap: '1rem', border: '1px solid rgba(255,255,255,0.05)' }}
-                                    >
-                                        <div style={{ display: 'flex', gap: '0.8rem', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', fontWeight: 600 }}>
-                                            <span style={{ color: '#3b82f6', textTransform: 'uppercase', letterSpacing: 1 }}>{article.subject_id}</span>
-                                            <span>•</span>
-                                            <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}><Calendar size={14} /> {new Date(article.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                                        </div>
-                                        <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'white', lineHeight: 1.4 }}>{article.title}</h3>
-                                        <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: 1.6, marginTop: 'auto', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                                            {article.meta_description || 'Read more about this topic in our comprehensive guide...'}
-                                        </p>
-                                        <div style={{ color: '#10b981', fontWeight: 600, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '1rem' }}>
-                                            Read Article <ArrowRight size={14} />
-                                        </div>
-                                    </motion.div>
-                                </Link>
-                            ))}
-                        </div>
-                    </section>
-                )}
-
-                <section style={{
-                    textAlign: 'center',
-                    padding: 'clamp(2.5rem, 6vw, 5rem) clamp(1rem, 4vw, 2rem)',
-                    background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1))',
-                    borderRadius: 'clamp(1.5rem, 4vw, 3rem)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    position: 'relative',
-                    overflow: 'hidden'
-                }}>
-                    <div style={{ position: 'relative', zIndex: 2 }}>
-                        <h2 style={{ fontSize: 'clamp(1.6rem, 5vw, 3rem)', marginBottom: '1rem', fontWeight: '800' }}>Ready to Excel?</h2>
-                        <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', marginBottom: '3rem', maxWidth: '600px', margin: '0 auto 3rem auto' }}>
-                            Don't just pass your exams. Understand the science behind the pharmacy.
-                        </p>
-                        <Link href="/year/year-1" className="btn btn-primary" style={{ padding: '1rem 3rem', fontSize: '1.1rem' }}>
-                            Start Learning Free
-                        </Link>
-                    </div>
-                </section>
             </div>
         </>
     );
@@ -384,38 +199,18 @@ export default function Home({ stats, articles }) {
 export async function getStaticProps() {
     let SSG_Stats = { total: 0, byYear: {} };
     let latestArticles = [];
-
+    let activeQuizzes = [];
     try {
         const pool = require('../../server/db');
-
-        // Fetch accurate global stats
-        try {
-            const [statRows] = await pool.query("SELECT year_slug, COUNT(*) as count FROM content GROUP BY year_slug");
-            let total = 0;
-            const byYear = {};
-            statRows.forEach(row => {
-                total += row.count;
-                if (row.year_slug) byYear[row.year_slug] = row.count;
-            });
-            SSG_Stats = { total, byYear };
-        } catch (e) { console.error("Stats fetching failed", e); }
-
-        // Fetch up to 3 recent articles securely
-        try {
-            const [rows] = await pool.query("SELECT id, title, slug, subject_id, meta_description, created_at FROM content WHERE subject_id IN ('general', 'articles', 'blog') ORDER BY created_at DESC LIMIT 3");
-            latestArticles = JSON.parse(JSON.stringify(rows));
-        } catch (dbErr) {
-            console.error("Direct db fetch failed", dbErr);
-        }
-    } catch (e) {
-        console.error("Failed to fetch homepage data", e);
-    }
-
-    return {
-        props: {
-            stats: SSG_Stats,
-            articles: latestArticles
-        },
-        revalidate: 3600 // Re-generate page every hour (ISR)
-    };
+        const [statRows] = await pool.query("SELECT year_slug, COUNT(*) as count FROM content GROUP BY year_slug");
+        let total = 0;
+        const byYear = {};
+        statRows.forEach(row => { total += row.count; if (row.year_slug) byYear[row.year_slug] = row.count; });
+        SSG_Stats = { total, byYear };
+        const [articleRows] = await pool.query("SELECT id, title, slug, subject_id, meta_description, created_at FROM content WHERE subject_id IN ('general', 'articles', 'blog') ORDER BY created_at DESC LIMIT 3");
+        latestArticles = JSON.parse(JSON.stringify(articleRows));
+        const [quizRows] = await pool.query("SELECT id, title, slug, description, time_limit_minutes, category FROM quizzes WHERE is_active = 1 LIMIT 6");
+        activeQuizzes = JSON.parse(JSON.stringify(quizRows));
+    } catch (e) { console.error(e); }
+    return { props: { stats: SSG_Stats, articles: latestArticles, quizzes: activeQuizzes }, revalidate: 3600 };
 }

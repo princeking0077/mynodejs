@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ssh root@187.77.191.122 \"mysql -upharma -p''Suhana@001001'' learnpharmacy -e \"\"\nALTER TABLE content ADD INDEX idx_subject_id \\(subject_id\\);\nALTER TABLE content ADD INDEX idx_slug \\(slug\\);\nALTER TABLE content ADD INDEX idx_created_at \\(created_at DESC\\);\n\"\" 2>&1 || echo ''Some indexes may already exist \\(OK\\)''\")",
+      "Bash(ssh root@187.77.191.122 \"mysql -upharma -p''Suhana@001001'' learnpharmacy -e \"\"\nALTER TABLE quizzes ADD INDEX idx_is_active \\(is_active\\);\nALTER TABLE quizzes ADD INDEX idx_category \\(category\\);\n\"\" 2>&1 || echo ''Quiz indexes may already exist \\(OK\\)''\")"
+    ]
+  }
+}

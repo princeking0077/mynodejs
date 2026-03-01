@@ -7,7 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 const NAV_LINKS = [
     { label: 'Home', path: '/' },
     { label: 'B.Pharm Syllabus', path: '/bpharm-syllabus' },
-    { label: 'GPAT Syllabus', path: '/gpat-syllabus' }
+    { label: 'GPAT Syllabus', path: '/gpat-syllabus' },
+    { label: 'GPAT Tests', path: '/gpat-tests' }
 ];
 
 const Navbar = () => {

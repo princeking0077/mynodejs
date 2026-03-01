@@ -10,24 +10,31 @@ if (!process.env.DB_USER) {
 }
 
 const pool = mysql.createPool({
-    host: '127.0.0.1', // Force IPv4 to avoid ::1 access denied errors
-    user: 'u480091743_shoaib',
-    password: 'Shaikh@001001',
-    database: 'u480091743_pharmacy',
+    host: process.env.DB_HOST || '127.0.0.1', // Force IPv4 to avoid ::1 access denied errors
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
 });
 
-// Test Connection Immediately
-pool.getConnection()
-    .then(connection => {
-        console.log('DATABASE CONNECTED SUCCESSFULLY');
-        connection.release();
-    })
-    .catch(err => {
-        console.error('DATABASE CONNECTION FAILED:', err.message);
-        console.error('Check your DB_HOST, DB_USER, DB_PASS in environment variables.');
-    });
+// Test Connection Only in Runtime (not during build)
+// Skip DB connection during Next.js build, export, or test phases
+const isBuildTime = process.env.NEXT_PHASE === 'phase-production-build' ||
+                    process.env.NEXT_PHASE === 'phase-export' ||
+                    process.env.NODE_ENV === 'test';
+
+if (!isBuildTime && process.env.DB_USER) {
+    pool.getConnection()
+        .then(connection => {
+            console.log('DATABASE CONNECTED SUCCESSFULLY');
+            connection.release();
+        })
+        .catch(err => {
+            console.error('DATABASE CONNECTION FAILED:', err.message);
+            console.error('Check your DB_HOST, DB_USER, DB_PASS in environment variables.');
+        });
+}
 
 module.exports = pool;

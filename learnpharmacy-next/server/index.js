@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+const cookieParser = require('cookie-parser');
 
 // --- SERVER-SIDE BOOTSTRAP PROTECTION ---
 // Hostinger often runs this file directly, so we must protect it here too.
@@ -82,7 +83,12 @@ app.use(helmet({
 }));
 app.use(compression());
 app.use(morgan('combined'));
-app.use(cors());
+app.use(cors({
+    origin: ['https://www.learnpharmacy.in', 'http://localhost:3000', 'https://187.77.191.122:3000', 'http://187.77.191.122:3000', 'http://localhost:3005'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+}));
+app.use(cookieParser());
 app.use(express.json({ limit: '200mb' }));
 app.use(express.urlencoded({ extended: true, limit: '200mb' }));
 

@@ -1,31 +1,19 @@
 import { useState, useEffect, useCallback } from 'react';
 import AdminLayout from '../../components/AdminLayout';
+import TipTapEditor from '../../components/TipTapEditor';
 import { Plus, Pencil, Trash2, Search, X, Save, ChevronDown } from 'lucide-react';
 import { curriculum } from '../../data/curriculum';
-import TipTapEditor from '../../components/TipTapEditor';
-
-const API = process.env.NEXT_PUBLIC_API_URL || '';
-
-// Flatten all subjects from curriculum
-const ALL_SUBJECTS = [];
-curriculum.forEach(year => {
-    year.semesters.forEach(sem => {
-        sem.subjects.forEach(sub => {
-            ALL_SUBJECTS.push({ id: sub.id, title: sub.title, year: year.title, sem: sem.title });
-        });
-    });
-});
-
-const slugify = (str) => str.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/-+/g, '-').replace(/^-+|-+$/g, '');
-
 const emptyForm = {
     id: null, subjectId: '', title: '', description: '', blogContent: '',
     youtubeId: '', metaTitle: '', metaDescription: '', primaryKeyword: '',
-    unitNumber: '', yearSlug: ''
+    unitNumber: '', yearSlug: '', faqs: []
 };
+
+const API = process.env.NEXT_PUBLIC_API_URL || '';
 
 export default function ContentManager() {
     const [topics, setTopics] = useState([]);
+    const [allSubjects, setAllSubjects] = useState([]);
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState('');
     const [selectedSubject, setSelectedSubject] = useState('');
@@ -35,6 +23,15 @@ export default function ContentManager() {
     const [msg, setMsg] = useState(null);
 
     const headers = { 'Content-Type': 'application/json' };
+
+    const fetchSubjects = async () => {
+        try {
+            const r = await fetch(`${API}/api/subjects/subjects`, { credentials: 'include' });
+            if (r.ok) setAllSubjects(await r.json());
+        } catch (e) { console.error(e); }
+    };
+
+    useEffect(() => { fetchSubjects(); }, []);
 
     const fetchTopics = useCallback(async () => {
         if (!selectedSubject && !search) { setTopics([]); return; }
@@ -122,7 +119,7 @@ export default function ContentManager() {
                 <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
                     <select value={selectedSubject} onChange={e => setSelectedSubject(e.target.value)} style={{ ...inputStyle, flex: '0 0 auto', width: 280 }}>
                         <option value="">— Filter by Subject —</option>
-                        {ALL_SUBJECTS.map(s => <option key={s.id} value={s.id}>{s.title}</option>)}
+                        {allSubjects.map(s => <option key={s.id} value={s.id}>{s.title}</option>)}
                     </select>
                     <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
                         <Search size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.3)' }} />
@@ -178,7 +175,7 @@ export default function ContentManager() {
                                     <label style={labelStyle}>Subject *</label>
                                     <select value={form.subjectId} onChange={e => setForm(f => ({ ...f, subjectId: e.target.value }))} style={inputStyle}>
                                         <option value="">— Select Subject —</option>
-                                        {ALL_SUBJECTS.map(s => <option key={s.id} value={s.id}>{s.title}</option>)}
+                                        {allSubjects.map(s => <option key={s.id} value={s.id}>{s.title}</option>)}
                                     </select>
                                 </div>
                                 <div style={{ gridColumn: '1 / -1', marginBottom: '1rem' }}>
@@ -240,6 +237,21 @@ export default function ContentManager() {
                     </div>
                 )}
             </div>
+
+            <style jsx>{`
+                select option {
+                    background: #1a1a2e;
+                    color: white;
+                    padding: 8px;
+                }
+                select option:checked {
+                    background: #10b981;
+                    color: white;
+                }
+                select option:hover {
+                    background: rgba(16, 185, 129, 0.2);
+                }
+            `}</style>
         </AdminLayout>
     );
 }

@@ -48,7 +48,7 @@ export default function Article({ articleStatic, relatedArticles }) {
         return (
             <div className="container flex-center" style={{ minHeight: '60vh', flexDirection: 'column', gap: '1rem' }}>
                 <h2>Article Not Found</h2>
-                <Link href="/year/1" className="btn btn-primary">Browse Subjects</Link>
+                <Link href="/year/year-1" className="btn btn-primary">Browse Subjects</Link>
             </div>
         );
     }
