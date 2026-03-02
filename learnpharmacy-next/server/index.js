@@ -45,6 +45,14 @@ const morgan = require('morgan');
 const pool = require('./db');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
+// New Security & Monitoring Middleware
+const { createRateLimiter } = require('./middleware/rateLimit');
+const { sanitizeMiddleware } = require('./middleware/sanitize');
+const { securityHeaders } = require('./middleware/securityHeaders');
+const { requestLogger, errorHandler, Logger } = require('./utils/logger');
+
+const logger = new Logger('SERVER');
+
 // Bump this value on deploy-related changes. Used to verify Hostinger is running the latest code.
 const DEPLOY_MARKER = '2026-01-04T00:00:00.000Z';
 
@@ -75,6 +83,11 @@ if (!fs.existsSync(uploadDir)) {
 
 const app = express();
 
+// Security & Logging Middleware (Apply first)
+app.use(securityHeaders);
+app.use(requestLogger);
+app.use(sanitizeMiddleware);
+
 // Middleware
 app.use(helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
@@ -92,15 +105,22 @@ app.use(cookieParser());
 app.use(express.json({ limit: '200mb' }));
 app.use(express.urlencoded({ extended: true, limit: '200mb' }));
 
+// Rate limiting for API routes
+app.use('/api/auth', createRateLimiter.auth());
+app.use('/api', createRateLimiter.api());
+
 // Serve Uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/content', require('./routes/content.routes'));
+app.use('/api/content', require('./routes/public.routes')); // Public routes (all, recent, stats)
 app.use('/api/upload', require('./routes/upload.routes'));
 app.use('/api/settings', require('./routes/settings.routes'));
 app.use('/api/seo', require('./routes/seo.routes'));
+app.use('/api/analytics', require('./routes/analytics.routes'));
+app.use('/api/health', require('./routes/health.routes'));
 // app.use('/', require('./routes/ads.routes')); 
 
 // SEO Endpoints (serve at root level for Google)
@@ -380,22 +400,11 @@ app.use('*', createProxyMiddleware({
 
 
 // Global Error Handler (Must be last)
-app.use((err, req, res, next) => {
-    console.error("Global Error:", err);
-    if (res.headersSent) return next(err);
-
-    // Handle Body Parser 413
-    if (err.type === 'entity.too.large') {
-        return res.status(413).json({ message: "File/Content too large (Max 50MB)" });
-    }
-
-    res.status(err.status || 500).json({
-        message: err.message || "Internal Server Error",
-        error: process.env.NODE_ENV === 'development' ? err : {}
-    });
-});
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    logger.info(`Server running on port ${PORT}`);
+    logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    logger.info(`Security features: Rate limiting, Input sanitization, Security headers enabled`);
 });
