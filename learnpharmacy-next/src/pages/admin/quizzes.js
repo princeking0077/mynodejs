@@ -17,6 +17,8 @@ export default function QuizManager() {
         slug: '',
         description: '',
         time_limit_minutes: 60,
+        positive_marks: 1,
+        negative_marks: 0.25,
         category: 'GPAT',
         is_active: true
     });
@@ -255,6 +257,8 @@ export default function QuizManager() {
                                 slug: '',
                                 description: '',
                                 time_limit_minutes: 60,
+                                positive_marks: 1,
+                                negative_marks: 0.25,
                                 category: 'GPAT',
                                 is_active: true
                             });
@@ -335,6 +339,11 @@ export default function QuizManager() {
                                         <div style={statBox}>
                                             <HelpCircle size={14} /> {q.question_count || 0} Qs
                                         </div>
+                                        <div style={statBox} title="Marking: +positive / -negative">
+                                            <span style={{ color: '#10b981' }}>+{q.positive_marks || 1}</span>
+                                            <span style={{ color: 'rgba(255,255,255,0.3)' }}> / </span>
+                                            <span style={{ color: '#ef4444' }}>-{q.negative_marks || 0}</span>
+                                        </div>
                                         <div style={{
                                             ...statBox,
                                             color: q.is_active ? '#10b981' : '#ef4444'
@@ -409,6 +418,33 @@ export default function QuizManager() {
                                             style={inputStyle}
                                             value={quizForm.category}
                                             onChange={e => setQuizForm({ ...quizForm, category: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                    <div>
+                                        <label style={labelStyle}>Positive Marks (per correct answer)</label>
+                                        <input
+                                            type="number"
+                                            step="0.25"
+                                            min="0"
+                                            style={inputStyle}
+                                            value={quizForm.positive_marks}
+                                            onChange={e => setQuizForm({ ...quizForm, positive_marks: parseFloat(e.target.value) || 1 })}
+                                            placeholder="e.g., 1, 2, 4"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label style={labelStyle}>Negative Marks (per wrong answer)</label>
+                                        <input
+                                            type="number"
+                                            step="0.25"
+                                            min="0"
+                                            style={inputStyle}
+                                            value={quizForm.negative_marks}
+                                            onChange={e => setQuizForm({ ...quizForm, negative_marks: parseFloat(e.target.value) || 0 })}
+                                            placeholder="e.g., 0.25, 0.33, 0.5"
                                         />
                                     </div>
                                 </div>

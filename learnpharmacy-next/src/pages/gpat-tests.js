@@ -177,6 +177,12 @@ export default function GPATTests({ quizzes }) {
                                                     {quiz.question_count || 50} Qs
                                                 </span>
                                             </div>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#8b5cf6' }}>
+                                                <TrendingUp size={16} />
+                                                <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>
+                                                    +{quiz.positive_marks || 1} / -{quiz.negative_marks || 0}
+                                                </span>
+                                            </div>
                                         </div>
 
                                         {/* CTA */}
@@ -234,7 +240,7 @@ export async function getStaticProps() {
     try {
         const pool = require('../../server/db');
         const [quizRows] = await pool.query(
-            "SELECT id, title, slug, description, time_limit_minutes, category, question_count FROM quizzes WHERE is_active = 1 ORDER BY created_at DESC"
+            "SELECT id, title, slug, description, time_limit_minutes, positive_marks, negative_marks, category, question_count FROM quizzes WHERE is_active = 1 ORDER BY created_at DESC"
         );
         quizzes = JSON.parse(JSON.stringify(quizRows));
     } catch (e) {
