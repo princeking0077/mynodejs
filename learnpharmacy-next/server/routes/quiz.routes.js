@@ -43,11 +43,11 @@ router.get('/:id', async (req, res) => {
 
 // POST new quiz
 router.post('/', authenticateToken, async (req, res) => {
-    const { title, slug, description, time_limit_minutes, category } = req.body;
+    const { title, slug, description, time_limit_minutes, positive_marks, negative_marks, category, is_active } = req.body;
     try {
         const [result] = await pool.query(
-            "INSERT INTO quizzes (title, slug, description, time_limit_minutes, category) VALUES (?, ?, ?, ?, ?)",
-            [title, slug, description, time_limit_minutes || 60, category]
+            "INSERT INTO quizzes (title, slug, description, time_limit_minutes, positive_marks, negative_marks, category, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            [title, slug, description, time_limit_minutes || 60, positive_marks || 1, negative_marks || 0, category, is_active !== undefined ? is_active : 1]
         );
         res.json({ id: result.insertId, message: "Quiz created" });
     } catch (error) {
@@ -57,11 +57,11 @@ router.post('/', authenticateToken, async (req, res) => {
 
 // PUT update quiz
 router.put('/:id', authenticateToken, async (req, res) => {
-    const { title, slug, description, time_limit_minutes, category, is_active } = req.body;
+    const { title, slug, description, time_limit_minutes, positive_marks, negative_marks, category, is_active } = req.body;
     try {
         await pool.query(
-            "UPDATE quizzes SET title = ?, slug = ?, description = ?, time_limit_minutes = ?, category = ?, is_active = ? WHERE id = ?",
-            [title, slug, description, time_limit_minutes, category, is_active, req.params.id]
+            "UPDATE quizzes SET title = ?, slug = ?, description = ?, time_limit_minutes = ?, positive_marks = ?, negative_marks = ?, category = ?, is_active = ? WHERE id = ?",
+            [title, slug, description, time_limit_minutes, positive_marks, negative_marks, category, is_active, req.params.id]
         );
         res.json({ message: "Quiz updated" });
     } catch (error) {
