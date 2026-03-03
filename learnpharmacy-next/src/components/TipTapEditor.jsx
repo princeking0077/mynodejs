@@ -1,20 +1,20 @@
 import React, { useCallback, useState } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Image from '@tiptap/extension-image';
-import Link from '@tiptap/extension-link';
-import Table from '@tiptap/extension-table';
-import TableRow from '@tiptap/extension-table-row';
-import TableCell from '@tiptap/extension-table-cell';
-import TableHeader from '@tiptap/extension-table-header';
-import TextAlign from '@tiptap/extension-text-align';
-import Underline from '@tiptap/extension-underline';
-import Highlight from '@tiptap/extension-highlight';
-import Youtube from '@tiptap/extension-youtube';
-import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
-import TextStyle from '@tiptap/extension-text-style';
-import Color from '@tiptap/extension-color';
-import { lowlight } from 'lowlight';
+import { Image } from '@tiptap/extension-image';
+import { Link } from '@tiptap/extension-link';
+import { Table } from '@tiptap/extension-table';
+import { TableRow } from '@tiptap/extension-table-row';
+import { TableCell } from '@tiptap/extension-table-cell';
+import { TableHeader } from '@tiptap/extension-table-header';
+import { TextAlign } from '@tiptap/extension-text-align';
+import { Underline } from '@tiptap/extension-underline';
+import { Highlight } from '@tiptap/extension-highlight';
+import { Youtube } from '@tiptap/extension-youtube';
+import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight';
+import { TextStyle } from '@tiptap/extension-text-style';
+import { Color } from '@tiptap/extension-color';
+import { common, createLowlight } from 'lowlight';
 import {
     Bold, Italic, Underline as UnderlineIcon, Strikethrough, Heading1, Heading2, Heading3,
     List, ListOrdered, Quote, Minus, Image as ImageIcon, Link as LinkIcon, Video,
@@ -69,6 +69,9 @@ const TipTapEditor = ({ value, onChange }) => {
     const [youtubeUrl, setYoutubeUrl] = useState('');
     const [codeSnippet, setCodeSnippet] = useState('');
     const [codeLanguage, setCodeLanguage] = useState('javascript');
+
+    // Initialize lowlight
+    const lowlight = createLowlight(common);
 
     const editor = useEditor({
         extensions: [
