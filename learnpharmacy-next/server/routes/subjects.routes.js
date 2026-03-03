@@ -28,10 +28,11 @@ router.get('/hierarchy', async (req, res) => {
 // GET all subjects (flat)
 router.get('/subjects', async (req, res) => {
     try {
-        const [rows] = await pool.query("SELECT * FROM curriculum_subjects ORDER BY title ASC");
+        const [rows] = await pool.query("SELECT * FROM subjects ORDER BY category, year_slug, semester, title ASC");
         res.json(rows);
     } catch (error) {
-        res.status(500).json({ message: "Server error" });
+        console.error("Error fetching subjects:", error);
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 });
 
