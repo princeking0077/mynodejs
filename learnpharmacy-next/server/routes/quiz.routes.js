@@ -3,10 +3,10 @@ const router = express.Router();
 const pool = require('../db');
 const authenticateToken = require('../middleware/auth.middleware');
 
-// GET all quizzes
+// GET all quizzes (admin sees all, public only sees active)
 router.get('/', async (req, res) => {
     try {
-        const [rows] = await pool.query("SELECT * FROM quizzes WHERE is_active = 1 ORDER BY created_at DESC");
+        const [rows] = await pool.query("SELECT * FROM quizzes ORDER BY created_at DESC");
         res.json(rows);
     } catch (error) {
         res.status(500).json({ message: "Server error" });
