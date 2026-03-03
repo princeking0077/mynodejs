@@ -121,6 +121,8 @@ app.use('/api/settings', require('./routes/settings.routes'));
 app.use('/api/seo', require('./routes/seo.routes'));
 app.use('/api/analytics', require('./routes/analytics.routes'));
 app.use('/api/health', require('./routes/health.routes'));
+app.use('/api/subjects', require('./routes/subjects.routes'));
+app.use('/api/quiz', require('./routes/quiz.routes'));
 // app.use('/', require('./routes/ads.routes')); 
 
 // SEO Endpoints (serve at root level for Google)
