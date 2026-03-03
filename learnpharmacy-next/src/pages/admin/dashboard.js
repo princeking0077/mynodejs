@@ -55,10 +55,11 @@ export default function Dashboard() {
     useEffect(() => { fetchStats(); }, []);
 
     const quickLinks = [
-        { label: 'Add New Topic', href: '/admin/content?action=new', color: '#10b981' },
-        { label: 'Write Article', href: '/admin/articles?action=new', color: '#3b82f6' },
+        { label: 'B.Pharm Syllabus', href: '/admin/bpharm-syllabus', color: '#10b981' },
+        { label: 'Add New Topic', href: '/admin/content?action=new', color: '#3b82f6' },
+        { label: 'Write Article', href: '/admin/articles?action=new', color: '#8b5cf6' },
         { label: 'Edit SEO Settings', href: '/admin/seo', color: '#f59e0b' },
-        { label: 'View Sitemap', href: '/sitemap.xml', color: '#8b5cf6', external: true },
+        { label: 'View Sitemap', href: '/sitemap.xml', color: '#6366f1', external: true },
         { label: 'View Live Site', href: '/', color: '#ec4899', external: true },
     ];
 

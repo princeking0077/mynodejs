@@ -5,6 +5,7 @@ import { LayoutDashboard, BookOpen, FileText, Settings, LogOut, Menu, ChevronRig
 
 const NAV = [
     { icon: LayoutDashboard, label: 'Dashboard', href: '/admin/dashboard' },
+    { icon: BookOpen, label: 'B.Pharm Syllabus', href: '/admin/bpharm-syllabus' },
     { icon: GraduationCap, label: 'Subject Manager', href: '/admin/subjects' },
     { icon: Pill, label: 'B.Pharm Content', href: '/admin/bpharm-content' },
     { icon: Microscope, label: 'GPAT Content', href: '/admin/gpat-content' },

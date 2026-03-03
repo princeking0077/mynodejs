@@ -1,6 +1,17 @@
 const fs = require('fs');
 const path = require('path');
-const pool = require('./db');
+const mysql = require('mysql2/promise');
+
+// Create pool with direct credentials
+const pool = mysql.createPool({
+    host: 'localhost',
+    user: 'learnpharmacy_user',
+    password: 'Pharmacy@2024Secure#',
+    database: 'learnpharmacy',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+});
 
 // Define Slug Generator locally if needed
 function makeSlug(text) {
@@ -172,8 +183,8 @@ async function seedBPharmSyllabus() {
     } catch (error) {
         console.error('Error seeding syllabus:', error);
     } finally {
-        // We are done, we can exit.
-        // process.exit(0); // Removed to allow server integration
+        await pool.end();
+        process.exit(0);
     }
 }
 
