@@ -240,7 +240,9 @@ export async function getStaticProps() {
     try {
         const pool = require('../../server/db');
         const [quizRows] = await pool.query(
-            "SELECT id, title, slug, description, time_limit_minutes, positive_marks, negative_marks, category, question_count FROM quizzes WHERE is_active = 1 ORDER BY created_at DESC"
+            `SELECT q.id, q.title, q.slug, q.description, q.time_limit_minutes, q.positive_marks, q.negative_marks, q.category,
+             (SELECT COUNT(*) FROM quiz_questions WHERE quiz_id = q.id) as question_count
+             FROM quizzes q WHERE q.is_active = 1 ORDER BY q.created_at DESC`
         );
         quizzes = JSON.parse(JSON.stringify(quizRows));
     } catch (e) {
