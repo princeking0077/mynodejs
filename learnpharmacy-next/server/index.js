@@ -286,6 +286,32 @@ app.get('/test-db', async (req, res) => {
     }
 })();
 
+// AUTO-RUN GLOBAL SETTINGS TABLE MIGRATION
+(async () => {
+    const migrationLockFile = path.join(__dirname, 'migrations', '.global-settings-completed');
+
+    // Check if migration already ran
+    if (fs.existsSync(migrationLockFile)) {
+        console.log('ℹ️ Global settings migration already completed (lock file exists)');
+        return;
+    }
+
+    console.log('🔄 Running global settings table migration...');
+
+    try {
+        const createGlobalSettingsTable = require('./migrations/create-global-settings-table');
+        await createGlobalSettingsTable();
+
+        // Create lock file to prevent re-running
+        fs.writeFileSync(migrationLockFile, new Date().toISOString());
+        console.log('✅ Global settings migration completed successfully!');
+    } catch (error) {
+        console.error('❌ Global settings migration failed:', error.message);
+        console.error('⚠️ Settings page may not function correctly.');
+        // Don't crash server, just log error
+    }
+})();
+
 // AUTO-REGENERATE INTERNAL LINKS ON STARTUP (Ensures new URL structure is applied)
 (async () => {
     // Wait 5s to allow server to stabilize
