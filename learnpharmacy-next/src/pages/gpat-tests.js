@@ -235,7 +235,7 @@ export default function GPATTests({ quizzes }) {
     );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
     let quizzes = [];
     try {
         const pool = require('../../server/db');
@@ -248,5 +248,5 @@ export async function getStaticProps() {
     } catch (e) {
         console.error('Error fetching quizzes:', e);
     }
-    return { props: { quizzes }, revalidate: 3600 };
+    return { props: { quizzes } };
 }

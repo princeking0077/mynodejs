@@ -468,28 +468,8 @@ export default function Subject({ subjectStatic, topics }) {
     );
 }
 
-export async function getStaticPaths() {
-    const paths = [];
-
-    // Extract all subject slugs from the local curriculum file
-    curriculum.forEach(year => {
-        year.semesters.forEach(sem => {
-            sem.subjects.forEach(sub => {
-                const normalize = (str) => str.toLowerCase().replace('gpat ', '').replace(/–/g, '-').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-                const slug = normalize(sub.title);
-                paths.push({ params: { subject: slug } });
-            });
-        });
-    });
-
-    return {
-        paths,
-        fallback: 'blocking' // If a new subject is added, generate it on-the-fly
-    };
-}
-
-// 2. Fetch Data at Build Time (Executes on Node.js Server)
-export async function getStaticProps({ params }) {
+// Fetch Data on Every Request (Server-Side Rendering)
+export async function getServerSideProps({ params }) {
     const { subject } = params;
     let subjectStatic = null;
 
@@ -548,7 +528,6 @@ export async function getStaticProps({ params }) {
         props: {
             subjectStatic,
             topics
-        },
-        revalidate: 600 // Revalidate cache every 10 minutes continuously
+        }
     };
 }
