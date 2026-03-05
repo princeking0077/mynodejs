@@ -153,11 +153,26 @@ export default function QuizManager() {
             // Check if it's JSON
             if (bulkData.trim().startsWith('[')) {
                 try {
-                    // Clean up common JSON issues
+                    // Aggressive JSON cleaning
                     let cleanedData = bulkData.trim();
 
-                    // Remove any BOM or invisible characters
+                    // Remove BOM and invisible characters
                     cleanedData = cleanedData.replace(/^\uFEFF/, '');
+                    cleanedData = cleanedData.replace(/[\u200B-\u200D\uFEFF]/g, ''); // Zero-width spaces
+
+                    // Find the JSON array boundaries
+                    const firstBracket = cleanedData.indexOf('[');
+                    const lastBracket = cleanedData.lastIndexOf(']');
+
+                    if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
+                        cleanedData = cleanedData.substring(firstBracket, lastBracket + 1);
+                    }
+
+                    // Replace smart quotes with straight quotes
+                    cleanedData = cleanedData.replace(/[\u201C\u201D]/g, '"'); // Smart double quotes
+                    cleanedData = cleanedData.replace(/[\u2018\u2019]/g, "'"); // Smart single quotes
+
+                    console.log('Cleaned JSON (first 200 chars):', cleanedData.substring(0, 200));
 
                     // Parse the JSON
                     questionsArray = JSON.parse(cleanedData);
