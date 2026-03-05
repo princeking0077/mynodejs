@@ -117,6 +117,7 @@ app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/content', require('./routes/content.routes'));
 app.use('/api/content', require('./routes/public.routes')); // Public routes (all, recent, stats)
 app.use('/api/upload', require('./routes/upload.routes'));
+app.use('/api/build', require('./routes/build.routes'));
 app.use('/api/settings', require('./routes/settings.routes'));
 app.use('/api/seo', require('./routes/seo.routes'));
 app.use('/api/analytics', require('./routes/analytics.routes'));
