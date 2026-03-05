@@ -64,6 +64,8 @@ const TipTapEditor = ({ value, onChange }) => {
     const [showYoutubeDialog, setShowYoutubeDialog] = useState(false);
     const [showCodeDialog, setShowCodeDialog] = useState(false);
     const [imageUrl, setImageUrl] = useState('');
+    const [imageFile, setImageFile] = useState(null);
+    const [imageUploading, setImageUploading] = useState(false);
     const [linkUrl, setLinkUrl] = useState('');
     const [linkText, setLinkText] = useState('');
     const [youtubeUrl, setYoutubeUrl] = useState('');
@@ -139,13 +141,48 @@ const TipTapEditor = ({ value, onChange }) => {
         }
     });
 
-    const addImage = useCallback(() => {
-        if (imageUrl && editor) {
-            editor.chain().focus().setImage({ src: imageUrl }).run();
-            setImageUrl('');
-            setShowImageDialog(false);
+    const addImage = useCallback(async () => {
+        if (editor) {
+            let finalImageUrl = imageUrl;
+
+            // If user selected a file, upload it first
+            if (imageFile) {
+                setImageUploading(true);
+                try {
+                    const formData = new FormData();
+                    formData.append('image', imageFile);
+
+                    const API = process.env.NEXT_PUBLIC_API_URL || '';
+                    const response = await fetch(`${API}/api/upload/image`, {
+                        method: 'POST',
+                        credentials: 'include',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        finalImageUrl = data.url;
+                    } else {
+                        alert('Failed to upload image');
+                        setImageUploading(false);
+                        return;
+                    }
+                } catch (error) {
+                    alert('Error uploading image: ' + error.message);
+                    setImageUploading(false);
+                    return;
+                }
+                setImageUploading(false);
+            }
+
+            if (finalImageUrl) {
+                editor.chain().focus().setImage({ src: finalImageUrl }).run();
+                setImageUrl('');
+                setImageFile(null);
+                setShowImageDialog(false);
+            }
         }
-    }, [editor, imageUrl]);
+    }, [editor, imageUrl, imageFile]);
 
     const addLink = useCallback(() => {
         if (linkUrl && editor) {
@@ -383,36 +420,105 @@ const TipTapEditor = ({ value, onChange }) => {
                         border: '1px solid rgba(255,255,255,0.1)', width: '90%', maxWidth: 500
                     }}>
                         <h3 style={{ marginBottom: '1rem', color: 'white' }}>Insert Image</h3>
-                        <input
-                            type="text"
-                            placeholder="Image URL"
-                            value={imageUrl}
-                            onChange={(e) => setImageUrl(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && addImage()}
-                            autoFocus
-                            style={{
-                                width: '100%', padding: '0.75rem', background: 'rgba(255,255,255,0.05)',
-                                border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8,
-                                color: 'white', marginBottom: '1rem', boxSizing: 'border-box'
-                            }}
-                        />
+
+                        {/* File Upload Option */}
+                        <div style={{ marginBottom: '1rem' }}>
+                            <label style={{
+                                display: 'block', color: 'rgba(255,255,255,0.7)',
+                                fontSize: '0.9rem', marginBottom: '0.5rem'
+                            }}>
+                                Upload Image File:
+                            </label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => {
+                                    if (e.target.files && e.target.files[0]) {
+                                        setImageFile(e.target.files[0]);
+                                        setImageUrl(''); // Clear URL if file is selected
+                                    }
+                                }}
+                                style={{
+                                    width: '100%', padding: '0.75rem', background: 'rgba(255,255,255,0.05)',
+                                    border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8,
+                                    color: 'white', boxSizing: 'border-box'
+                                }}
+                            />
+                            {imageFile && (
+                                <p style={{
+                                    color: '#10b981', fontSize: '0.85rem', marginTop: '0.5rem'
+                                }}>
+                                    Selected: {imageFile.name}
+                                </p>
+                            )}
+                        </div>
+
+                        {/* Divider */}
+                        <div style={{
+                            display: 'flex', alignItems: 'center', marginBottom: '1rem'
+                        }}>
+                            <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.1)' }} />
+                            <span style={{
+                                padding: '0 1rem', color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem'
+                            }}>OR</span>
+                            <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.1)' }} />
+                        </div>
+
+                        {/* URL Input Option */}
+                        <div style={{ marginBottom: '1rem' }}>
+                            <label style={{
+                                display: 'block', color: 'rgba(255,255,255,0.7)',
+                                fontSize: '0.9rem', marginBottom: '0.5rem'
+                            }}>
+                                Or Enter Image URL:
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="https://example.com/image.jpg"
+                                value={imageUrl}
+                                onChange={(e) => {
+                                    setImageUrl(e.target.value);
+                                    if (e.target.value) setImageFile(null); // Clear file if URL is entered
+                                }}
+                                onKeyDown={(e) => e.key === 'Enter' && addImage()}
+                                disabled={!!imageFile}
+                                style={{
+                                    width: '100%', padding: '0.75rem', background: 'rgba(255,255,255,0.05)',
+                                    border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8,
+                                    color: 'white', boxSizing: 'border-box',
+                                    opacity: imageFile ? 0.5 : 1
+                                }}
+                            />
+                        </div>
+
                         <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                             <button
-                                onClick={() => { setShowImageDialog(false); setImageUrl(''); }}
+                                onClick={() => {
+                                    setShowImageDialog(false);
+                                    setImageUrl('');
+                                    setImageFile(null);
+                                }}
+                                disabled={imageUploading}
                                 style={{
                                     padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.05)',
                                     border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8,
-                                    color: 'white', cursor: 'pointer'
+                                    color: 'white', cursor: imageUploading ? 'not-allowed' : 'pointer',
+                                    opacity: imageUploading ? 0.5 : 1
                                 }}
                             >Cancel</button>
                             <button
                                 onClick={addImage}
+                                disabled={imageUploading || (!imageUrl && !imageFile)}
                                 style={{
                                     padding: '0.5rem 1rem', background: '#3b82f6',
                                     border: 'none', borderRadius: 8, color: 'white',
-                                    cursor: 'pointer', fontWeight: 600
+                                    cursor: (imageUploading || (!imageUrl && !imageFile)) ? 'not-allowed' : 'pointer',
+                                    fontWeight: 600,
+                                    opacity: (imageUploading || (!imageUrl && !imageFile)) ? 0.5 : 1
                                 }}
-                            >Insert</button>
+                            >
+                                {imageUploading ? 'Uploading...' : 'Insert'}
+                            </button>
                         </div>
                     </div>
                 </div>
