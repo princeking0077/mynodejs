@@ -8,7 +8,6 @@ import Breadcrumbs from '../../components/Breadcrumbs';
 import AnimationViewer from '../../components/AnimationViewer';
 import Quiz from '../../components/Quiz';
 import { curriculum } from '../../data/curriculum';
-import { api } from '../../services/api';
 
 export default function Subject({ subjectStatic, topics }) {
     const router = useRouter();
@@ -490,10 +489,15 @@ export async function getServerSideProps({ params }) {
         return { notFound: true };
     }
 
-    // B. Fetch the Topics for this Subject from the API
+    // B. Fetch the Topics for this Subject directly from Database
     let topics = [];
     try {
-        const dynamicTopics = await api.getContent(subjectStatic.id);
+        // Direct database query for SSR
+        const pool = require('../../../server/db');
+        const [dynamicTopics] = await pool.query(
+            "SELECT * FROM content WHERE subject_id = ? ORDER BY created_at DESC",
+            [subjectStatic.id]
+        );
 
         if (Array.isArray(dynamicTopics)) {
             // Map the SQL columns into React props safely
