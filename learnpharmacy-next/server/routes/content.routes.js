@@ -7,6 +7,17 @@ const InternalLinkingEngine = require('../services/internal-linking-engine');
 const SitemapGenerator = require('../services/sitemap-generator');
 const { sanitizeHtml } = require('../utils/sanitize');
 
+// Helper: Trigger on-demand revalidation
+const triggerRevalidation = async (subjectId, slug) => {
+    try {
+        const revalidateUrl = `http://localhost:3005/api/revalidate?secret=learnpharmacy_revalidate_2024&path=/subjects/${subjectId}`;
+        await fetch(revalidateUrl).catch(() => {});
+        console.log(`✅ Revalidated: /subjects/${subjectId}`);
+    } catch (error) {
+        console.error('Revalidation failed:', error.message);
+    }
+};
+
 // Get content by Subject ID
 router.get('/', async (req, res) => {
     const { subject } = req.query;
@@ -167,6 +178,9 @@ router.post('/', authenticateToken, async (req, res) => {
             console.error('Sitemap invalidation failed:', err)
         );
 
+        // Trigger on-demand revalidation for the subject page
+        triggerRevalidation(subjectId, slug);
+
         res.json({ message: "Topic created successfully", slug, id: contentId });
     } catch (error) {
         console.error("Save Topic DB Error:", error);
@@ -238,6 +252,12 @@ router.put('/', authenticateToken, async (req, res) => {
         SitemapGenerator.invalidateCache('content').catch(err =>
             console.error('Sitemap invalidation failed:', err)
         );
+
+        // Trigger on-demand revalidation
+        const [content] = await pool.query("SELECT subject_id, slug FROM content WHERE id = ?", [id]);
+        if (content.length > 0) {
+            triggerRevalidation(content[0].subject_id, content[0].slug);
+        }
 
         res.json({ message: "Topic updated successfully" });
     } catch (error) {
