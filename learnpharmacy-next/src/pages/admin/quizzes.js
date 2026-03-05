@@ -152,13 +152,44 @@ export default function QuizManager() {
 
             // Check if it's JSON
             if (bulkData.trim().startsWith('[')) {
-                questionsArray = JSON.parse(bulkData);
+                try {
+                    // Clean up common JSON issues
+                    let cleanedData = bulkData.trim();
+
+                    // Remove any BOM or invisible characters
+                    cleanedData = cleanedData.replace(/^\uFEFF/, '');
+
+                    // Parse the JSON
+                    questionsArray = JSON.parse(cleanedData);
+
+                    // Validate structure
+                    if (!Array.isArray(questionsArray)) {
+                        throw new Error('JSON must be an array of questions');
+                    }
+
+                    // Validate each question
+                    questionsArray = questionsArray.filter(q => {
+                        if (!q.question_text || !Array.isArray(q.options) || q.options.length < 4) {
+                            console.warn('Skipping invalid question:', q);
+                            return false;
+                        }
+                        return true;
+                    });
+
+                } catch (jsonError) {
+                    console.error('JSON parse error:', jsonError);
+                    toast.error(`JSON Error: ${jsonError.message}. Check format and try again.`);
+                    return;
+                }
             } else {
                 // Parse CSV format
-                const lines = bulkData.trim().split('\n');
-                questionsArray = lines.map(line => {
+                const lines = bulkData.trim().split('\n').filter(line => line.trim());
+                questionsArray = lines.map((line, idx) => {
                     const parts = line.split('|').map(p => p.trim());
-                    if (parts.length < 6) return null;
+                    if (parts.length < 6) {
+                        console.warn(`Line ${idx + 1}: Not enough fields (need at least 6)`);
+                        return null;
+                    }
 
                     return {
                         question_text: parts[0],
@@ -170,12 +201,14 @@ export default function QuizManager() {
             }
 
             if (questionsArray.length === 0) {
-                toast.error('No valid questions found');
+                toast.error('No valid questions found. Check format.');
                 return;
             }
 
             // Upload all questions
             let successCount = 0;
+            let failCount = 0;
+
             for (const q of questionsArray) {
                 try {
                     const r = await fetch(`${API}/api/quiz/${showQuestions}/questions`, {
@@ -184,18 +217,30 @@ export default function QuizManager() {
                         credentials: 'include',
                         body: JSON.stringify(q)
                     });
-                    if (r.ok) successCount++;
+                    if (r.ok) {
+                        successCount++;
+                    } else {
+                        failCount++;
+                        console.error('Failed to upload question:', await r.text());
+                    }
                 } catch (e) {
+                    failCount++;
                     console.error('Failed to upload question:', e);
                 }
             }
 
-            toast.success(`${successCount}/${questionsArray.length} questions uploaded!`);
+            if (failCount > 0) {
+                toast.error(`${successCount} uploaded, ${failCount} failed. Check console for details.`);
+            } else {
+                toast.success(`Successfully uploaded all ${successCount} questions!`);
+            }
+
             setBulkData('');
             setShowBulkUpload(false);
             fetchQuestions(showQuestions);
         } catch (error) {
-            toast.error('Invalid format. Use JSON or CSV (pipe-separated)');
+            console.error('Bulk upload error:', error);
+            toast.error(`Error: ${error.message || 'Invalid format'}`);
         }
     };
 
