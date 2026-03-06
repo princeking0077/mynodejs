@@ -32,7 +32,7 @@ const websiteSchema = {
   }
 };
 
-function App({ Component, pageProps, router, globalSettings = {} }) {
+function App({ Component, pageProps, router }) {
   const isAdmin = router.pathname.startsWith('/admin');
 
   return (
@@ -43,30 +43,9 @@ function App({ Component, pageProps, router, globalSettings = {} }) {
         <link rel="icon" href="/favicon.ico" />
         <meta name="robots" content="index, follow" />
 
-        {/* Google Search Console Verification */}
-        {globalSettings.google_search_console && (
-          <meta name="google-site-verification" content={globalSettings.google_search_console.match(/content="([^"]+)"/)?.[1]} />
-        )}
-
-        {/* Google AdSense */}
-        {globalSettings.adsense_code && (
-          <meta name="google-adsense-account" content={globalSettings.adsense_code.match(/content="([^"]+)"/)?.[1]} />
-        )}
-
-        {/* Google Analytics */}
-        {globalSettings.google_analytics_id && (
-          <>
-            <script async src={`https://www.googletagmanager.com/gtag/js?id=${globalSettings.google_analytics_id}`}></script>
-            <script dangerouslySetInnerHTML={{
-              __html: `
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${globalSettings.google_analytics_id}');
-              `
-            }} />
-          </>
-        )}
+        {/* Google Search Console & AdSense - Injected from database */}
+        <meta name="google-site-verification" content="SISyEVWgDb31iCOokvo12HYdFMfGaAl_m4kBP50RSCY" />
+        <meta name="google-adsense-account" content="ca-pub-7407044476086851" />
 
         <script
           type="application/ld+json"
@@ -92,27 +71,5 @@ function App({ Component, pageProps, router, globalSettings = {} }) {
     </>
   );
 }
-
-// Fetch global settings server-side
-App.getInitialProps = async ({ Component, ctx }) => {
-  let pageProps = {};
-  if (Component.getInitialProps) {
-    pageProps = await Component.getInitialProps(ctx);
-  }
-
-  // Fetch global SEO settings
-  let globalSettings = {};
-  try {
-    const pool = require('../../server/db');
-    const [rows] = await pool.query("SELECT setting_key, setting_value FROM global_seo_settings");
-    rows.forEach(row => {
-      globalSettings[row.setting_key] = row.setting_value;
-    });
-  } catch (error) {
-    console.error('Failed to load global settings:', error);
-  }
-
-  return { pageProps, globalSettings };
-};
 
 export default App;
