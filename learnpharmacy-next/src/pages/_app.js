@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Head from 'next/head';
 import { AnimatePresence } from 'framer-motion';
 // import { AuthProvider } from '../contexts/AuthContext';
@@ -32,18 +32,8 @@ const websiteSchema = {
   }
 };
 
-export default function App({ Component, pageProps, router }) {
+function App({ Component, pageProps, router, globalSettings = {} }) {
   const isAdmin = router.pathname.startsWith('/admin');
-  const [globalSettings, setGlobalSettings] = useState({});
-
-  useEffect(() => {
-    // Fetch global SEO settings
-    const API = process.env.NEXT_PUBLIC_API_URL || '';
-    fetch(`${API}/api/settings/public`)
-      .then(res => res.json())
-      .then(data => setGlobalSettings(data))
-      .catch(err => console.error('Failed to load global settings:', err));
-  }, []);
 
   return (
     <>
@@ -102,3 +92,27 @@ export default function App({ Component, pageProps, router }) {
     </>
   );
 }
+
+// Fetch global settings server-side
+App.getInitialProps = async ({ Component, ctx }) => {
+  let pageProps = {};
+  if (Component.getInitialProps) {
+    pageProps = await Component.getInitialProps(ctx);
+  }
+
+  // Fetch global SEO settings
+  let globalSettings = {};
+  try {
+    const pool = require('../../server/db');
+    const [rows] = await pool.query("SELECT setting_key, setting_value FROM global_seo_settings");
+    rows.forEach(row => {
+      globalSettings[row.setting_key] = row.setting_value;
+    });
+  } catch (error) {
+    console.error('Failed to load global settings:', error);
+  }
+
+  return { pageProps, globalSettings };
+};
+
+export default App;
