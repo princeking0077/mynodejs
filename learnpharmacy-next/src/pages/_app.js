@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { AnimatePresence } from 'framer-motion';
 // import { AuthProvider } from '../contexts/AuthContext';
@@ -34,6 +34,16 @@ const websiteSchema = {
 
 export default function App({ Component, pageProps, router }) {
   const isAdmin = router.pathname.startsWith('/admin');
+  const [globalSettings, setGlobalSettings] = useState({});
+
+  useEffect(() => {
+    // Fetch global SEO settings
+    const API = process.env.NEXT_PUBLIC_API_URL || '';
+    fetch(`${API}/api/settings/public`)
+      .then(res => res.json())
+      .then(data => setGlobalSettings(data))
+      .catch(err => console.error('Failed to load global settings:', err));
+  }, []);
 
   return (
     <>
@@ -42,6 +52,32 @@ export default function App({ Component, pageProps, router }) {
         <meta name="theme-color" content="#05050a" />
         <link rel="icon" href="/favicon.ico" />
         <meta name="robots" content="index, follow" />
+
+        {/* Google Search Console Verification */}
+        {globalSettings.google_search_console && (
+          <meta name="google-site-verification" content={globalSettings.google_search_console.match(/content="([^"]+)"/)?.[1]} />
+        )}
+
+        {/* Google AdSense */}
+        {globalSettings.adsense_code && (
+          <meta name="google-adsense-account" content={globalSettings.adsense_code.match(/content="([^"]+)"/)?.[1]} />
+        )}
+
+        {/* Google Analytics */}
+        {globalSettings.google_analytics_id && (
+          <>
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${globalSettings.google_analytics_id}`}></script>
+            <script dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${globalSettings.google_analytics_id}');
+              `
+            }} />
+          </>
+        )}
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
